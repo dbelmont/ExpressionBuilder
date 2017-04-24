@@ -21,13 +21,13 @@ namespace ExpressionBuilder.Builder
 		static Builder()
 		{
 			Expressions = new Dictionary<Operation, Func<Expression, Expression, Expression>>();
-            Expressions.Add(Operation.Equals, (member, constant) => Expression.Equal(member, constant));
-            Expressions.Add(Operation.NotEquals, (member, constant) => Expression.NotEqual(member, constant));
-            Expressions.Add(Operation.GreaterThan, (member, constant) => Expression.GreaterThan(member, constant));
-            Expressions.Add(Operation.GreaterThanOrEquals, (member, constant) => Expression.GreaterThanOrEqual(member, constant));
-            Expressions.Add(Operation.LessThan, (member, constant) => Expression.LessThan(member, constant));
-            Expressions.Add(Operation.LessThanOrEquals, (member, constant) => Expression.LessThanOrEqual(member, constant));
-            Expressions.Add(Operation.Contains, (member, constant) => Contains(member, constant));
+			Expressions.Add(Operation.Equals, Expression.Equal);
+			Expressions.Add(Operation.NotEquals, Expression.NotEqual);
+			Expressions.Add(Operation.GreaterThan, Expression.GreaterThan);
+			Expressions.Add(Operation.GreaterThanOrEquals, Expression.GreaterThanOrEqual);
+			Expressions.Add(Operation.LessThan, Expression.LessThan);
+			Expressions.Add(Operation.LessThanOrEquals, Expression.LessThanOrEqual);
+			Expressions.Add(Operation.Contains, Contains);
             Expressions.Add(Operation.StartsWith, (member, constant) => Expression.Call(member, startsWithMethod, constant));
             Expressions.Add(Operation.EndsWith, (member, constant) => Expression.Call(member, endsWithMethod, constant));
 		}

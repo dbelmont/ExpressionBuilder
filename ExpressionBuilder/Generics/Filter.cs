@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using ExpressionBuilder.Builders;
+using ExpressionBuilder.Interfaces;
+using ExpressionBuilder.Interfaces.Generics;
 
-namespace ExpressionBuilder.Builder.Generic
+namespace ExpressionBuilder.Generics
 {
 	public class Filter<TClass> : IFilter<TClass> where TClass : class
 	{
@@ -33,9 +36,17 @@ namespace ExpressionBuilder.Builder.Generic
 			_statements.Clear();
 		}
 
+		[Obsolete("\r\nThere is no need to use this anymore, because the Filter can be passed directly to the 'Where' LINQ method (as it is being implicitly converted).\r\ne.g.: People.Where(filter);")]
 		public System.Linq.Expressions.Expression<Func<TClass, bool>> BuildExpression()
 		{
-			return Builder.GetExpression<TClass>(this);
+			var builder = new FilterBuilder(new BuilderHelper());
+			return builder.GetExpression(this);
+		}
+		
+		public static implicit operator Func<TClass, bool>(Filter<TClass> filter)
+		{
+			var builder = new FilterBuilder(new BuilderHelper());
+			return builder.GetExpression(filter).Compile();
 		}
 		
 		public override string ToString()
