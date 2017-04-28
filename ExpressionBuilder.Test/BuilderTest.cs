@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ExpressionBuilder.Generics;
 using ExpressionBuilder.Builders;
-using ExpressionBuilder.Extensions;
 using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
 
@@ -90,35 +89,6 @@ namespace ExpressionBuilder.Test
         	filter.By("Id", Operation.Contains, new []{ 1, 2, 4, 5 });
             var people = People.Where(filter);
             Assert.That(people.Count(), Is.EqualTo(4));
-        }
-        
-        [TestCase(TestName="Build expression with an empty 'order by'")]
-        public void BuilderWithEmptyOrderBy()
-        {
-        	var sortExpression = new SortExpression<Person>();
-        	var firstPersonId = People.First().Id;
-        	People.OrderBy(sortExpression);
-        	Assert.That(People.First().Id, Is.EqualTo(firstPersonId));
-        }
-        
-        [TestCase(TestName="Build expression ordering by only one property")]
-        public void BuilderOrderingByOneProperty()
-        {
-        	var sortExpression = new SortExpression<Person>();
-        	sortExpression.By("Name");
-        	var sortedPeople = People.OrderBy(sortExpression);
-        	Assert.That(sortedPeople.First().Name, Is.EqualTo("Fulano Silva"));
-        	Assert.That(sortedPeople.Last().Name, Is.EqualTo("Wade Wilson"));
-        }
-        
-        [TestCase(TestName="Build expression ordering by two properties")]
-        public void BuilderOrderingByTwoProperties()
-        {
-        	var sortExpression = new SortExpression<Person>();
-        	sortExpression.By("Gender").By("Name", SortDirection.Descending);
-        	var sortedPeople = People.OrderBy(sortExpression);
-        	Assert.That(sortedPeople.First().Name, Is.EqualTo("Wade Wilson"));
-        	Assert.That(sortedPeople.Last().Name, Is.EqualTo("Jane Doe"));
         }
 	}
 }

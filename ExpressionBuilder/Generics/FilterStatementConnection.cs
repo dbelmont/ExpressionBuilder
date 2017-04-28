@@ -5,18 +5,18 @@ using ExpressionBuilder.Interfaces.Generics;
 
 namespace ExpressionBuilder.Generics
 {
-	public class FilterStatementConnection<TClass> : IFilterStatementConnection<TClass> where TClass : class
+	public class FilterStatementConnection<TClass> : IFilterStatementConnection where TClass : class
 	{
-		readonly IFilter<TClass> _filter;
+		readonly IFilter _filter;
 		readonly IFilterStatement _statement;
 		
-		public FilterStatementConnection(IFilter<TClass> filter, IFilterStatement statement)
+		public FilterStatementConnection(IFilter filter, IFilterStatement statement)
 		{
 			_filter = filter;
 			_statement = statement;
 		}
 
-		public IFilter<TClass> And
+		public IFilter And
 		{
 			get
 			{
@@ -25,7 +25,7 @@ namespace ExpressionBuilder.Generics
 			}
 		}
 
-		public IFilter<TClass> Or
+		public IFilter Or
 		{
 			get
 			{

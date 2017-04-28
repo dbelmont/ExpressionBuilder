@@ -1,5 +1,4 @@
-﻿using System;
-using ExpressionBuilder.Builders;
+﻿using ExpressionBuilder.Builders;
 
 namespace ExpressionBuilder.Interfaces
 {
@@ -24,5 +23,5 @@ namespace ExpressionBuilder.Interfaces
 		/// Constant value that will interact with the property defined in this filter statement.
 		/// </summary>
 		object Value { get; set; }
-	}
+    }
 }

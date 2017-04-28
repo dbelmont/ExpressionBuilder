@@ -1,16 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using ExpressionBuilder.Builders;
+﻿using ExpressionBuilder.Builders;
 using ExpressionBuilder.Interfaces;
 using ExpressionBuilder.Interfaces.Generics;
+using System;
+using System.Collections.Generic;
+using System.Xml.Serialization;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace ExpressionBuilder.Generics
 {
-	public class Filter<TClass> : IFilter<TClass> where TClass : class
+    [Serializable]
+    public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
 	{
-		private readonly List<IFilterStatement> _statements;
-		
-		public IEnumerable<IFilterStatement> Statements
+		private List<IFilterStatement> _statements;
+        
+        public IEnumerable<IFilterStatement> Statements
 		{
 			get
 			{
@@ -23,7 +27,7 @@ namespace ExpressionBuilder.Generics
 			_statements = new List<IFilterStatement>();
 		}
 
-		public IFilterStatementConnection<TClass> By<TPropertyType>(string propertyName, Operation operation, TPropertyType value, FilterStatementConnector connector = FilterStatementConnector.And)
+		public IFilterStatementConnection By<TPropertyType>(string propertyName, Operation operation, TPropertyType value, FilterStatementConnector connector = FilterStatementConnector.And)
 		{
 			IFilterStatement statement = null;
 			statement = new FilterStatement<TPropertyType>(propertyName, operation, value, connector);
@@ -35,21 +39,14 @@ namespace ExpressionBuilder.Generics
 		{
 			_statements.Clear();
 		}
-
-		[Obsolete("\r\nThere is no need to use this anymore, because the Filter can be passed directly to the 'Where' LINQ method (as it is being implicitly converted).\r\ne.g.: People.Where(filter);")]
-		public System.Linq.Expressions.Expression<Func<TClass, bool>> BuildExpression()
-		{
-			var builder = new FilterBuilder(new BuilderHelper());
-			return builder.GetExpression(this);
-		}
 		
 		public static implicit operator Func<TClass, bool>(Filter<TClass> filter)
 		{
-			var builder = new FilterBuilder(new BuilderHelper());
-			return builder.GetExpression(filter).Compile();
+			var builder = new FilterBuilder(new BuilderHelper(), new BuilderDefinitions());
+			return builder.GetExpression<TClass>(filter).Compile();
 		}
-		
-		public override string ToString()
+
+        public override string ToString()
 		{
 			var result = "";
 			FilterStatementConnector lastConector = FilterStatementConnector.And;
@@ -62,5 +59,38 @@ namespace ExpressionBuilder.Generics
 			
 			return result.Trim();
 		}
-	}
+
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            while (reader.Read())
+            {
+                if (reader.Name.StartsWith("FilterStatementOf"))
+                {
+                    var type = reader.GetAttribute("Type");
+                    var filterType = typeof(FilterStatement<>).MakeGenericType(Type.GetType(type));
+                    var serializer = new XmlSerializer(filterType);
+                    var statement = (IFilterStatement)serializer.Deserialize(reader);
+                    _statements.Add(statement);
+                }
+            }
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            writer.WriteAttributeString("Type", typeof(TClass).AssemblyQualifiedName);
+            writer.WriteStartElement("Statements");
+            foreach (var statement in _statements)
+            {
+                var serializer = new XmlSerializer(statement.GetType());
+                serializer.Serialize(writer, statement);
+            }
+
+            writer.WriteEndElement();
+        }
+    }
 }

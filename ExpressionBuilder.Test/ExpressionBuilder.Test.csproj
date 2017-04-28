@@ -49,9 +49,10 @@
   <ItemGroup>
     <Compile Include="BuilderTest.cs" />
     <Compile Include="FilterTest.cs" />
+    <Compile Include="FilterXmlSerializerTests.cs" />
+    <Compile Include="HelperTests.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Person.cs" />
-    <Compile Include="OrderByTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

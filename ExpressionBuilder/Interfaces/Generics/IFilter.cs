@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
 using ExpressionBuilder.Builders;
+using System.Xml;
 
 namespace ExpressionBuilder.Interfaces.Generics
 {
 	/// <summary>
 	/// Defines a filter from which a expression will be built.
 	/// </summary>
-	public interface IFilter<TClass> where TClass : class
+	public interface IFilter
 	{
 		/// <summary>
 		/// Group of statements that compose this filter.
@@ -22,16 +21,10 @@ namespace ExpressionBuilder.Interfaces.Generics
 		/// <param name="value">Constant value that will interact with the property.</param>
 		/// <param name="connector">Establishes how this filter statement will connect to the next one.</param>
 		/// <returns>A FilterStatementConnection object that defines how this statement will be connected to the next one.</returns>
-		IFilterStatementConnection<TClass> By<TPropertyType>(string propertyName, Operation operation, TPropertyType value, FilterStatementConnector connector = FilterStatementConnector.And);
+		IFilterStatementConnection By<TPropertyType>(string propertyName, Operation operation, TPropertyType value, FilterStatementConnector connector = FilterStatementConnector.And);
 		/// <summary>
 		/// Removes all statements from this filter.
 		/// </summary>
 		void Clear();
-		/// <summary>
-		/// Builds a LINQ expression based upon the statements included in this filter.
-		/// [Obsolete] - When calling the 'Where' method just pass the filter object as an argument instead of calling 'filter.BuildExpression().Compile()'.
-		/// </summary>
-		/// <returns></returns>
-		Expression<Func<TClass, bool>> BuildExpression();
-	}
+    }
 }

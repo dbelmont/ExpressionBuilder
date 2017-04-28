@@ -11,30 +11,19 @@ namespace ExpressionBuilder.Builders
 {
 	public class FilterBuilder
 	{
-		readonly MethodInfo containsMethod = typeof(string).GetMethod("Contains");
 		readonly MethodInfo trimMethod = typeof(string).GetMethod("Trim", new Type[0]);
-        readonly MethodInfo toLowerMethod = typeof(string).GetMethod("ToLower", new Type[0]);
-        readonly MethodInfo startsWithMethod = typeof(string).GetMethod("StartsWith", new [] { typeof(string) });
-        readonly MethodInfo endsWithMethod = typeof(string).GetMethod("EndsWith", new [] { typeof(string) });
-        readonly Dictionary<Operation, Func<Expression, Expression, Expression>> Expressions;
-        readonly BuilderHelper helper;
+        readonly MethodInfo toLowerMethod = typeof(string).GetMethod("ToLower", new Type[0]);        
         
-		public FilterBuilder(BuilderHelper helper)
+        readonly BuilderHelper helper;
+        readonly BuilderDefinitions definitions;
+
+        public FilterBuilder(BuilderHelper helper, BuilderDefinitions definitions)
 		{
-			Expressions = new Dictionary<Operation, Func<Expression, Expression, Expression>>();
-			Expressions.Add(Operation.Equals, Expression.Equal);
-			Expressions.Add(Operation.NotEquals, Expression.NotEqual);
-			Expressions.Add(Operation.GreaterThan, Expression.GreaterThan);
-			Expressions.Add(Operation.GreaterThanOrEquals, Expression.GreaterThanOrEqual);
-			Expressions.Add(Operation.LessThan, Expression.LessThan);
-			Expressions.Add(Operation.LessThanOrEquals, Expression.LessThanOrEqual);
-			Expressions.Add(Operation.Contains, Contains);
-            Expressions.Add(Operation.StartsWith, (member, constant) => Expression.Call(member, startsWithMethod, constant));
-            Expressions.Add(Operation.EndsWith, (member, constant) => Expression.Call(member, endsWithMethod, constant));
+            this.definitions = definitions;
             this.helper = helper;
 		}
 		
-		public Expression<Func<T, bool>> GetExpression<T>(IFilter<T> filter) where T : class
+		public Expression<Func<T, bool>> GetExpression<T>(IFilter filter) where T : class
         {
             var param = Expression.Parameter(typeof(T), "x");
             Expression expression = Expression.Constant(true);
@@ -91,23 +80,7 @@ namespace ExpressionBuilder.Builders
             	constant = Expression.Call(trimConstantCall, toLowerMethod);
             }
             
-            return Expressions[statement.Operation].Invoke(member, constant);
-        }
-
-        Expression Contains(Expression member, Expression expression)
-        {
-        	if (expression is ConstantExpression) {
-        		var constant = (ConstantExpression)expression;
-	        	if (constant.Value is IList && constant.Value.GetType().IsGenericType)
-	            {
-	                var type = constant.Value.GetType();
-	                var containsInfo = type.GetMethod("Contains", new [] { type.GetGenericArguments()[0] });
-	                var contains = Expression.Call(constant, containsInfo, member);
-	                return contains;
-	            }
-        	}
-
-            return Expression.Call(member, containsMethod, expression);
+            return definitions.Expressions[statement.Operation].Invoke(member, constant);
         }
 	}
 }

@@ -1,8 +1,10 @@
-﻿using System;
-
-namespace ExpressionBuilder.Builders
+﻿namespace ExpressionBuilder.Builders
 {
-	public enum FilterStatementConnector { And, Or }
+	public enum FilterStatementConnector
+    {
+        And,
+        Or
+    }
 	
 	public enum Operation
 	{
@@ -16,9 +18,13 @@ namespace ExpressionBuilder.Builders
         LessThan,
         LessThanOrEquals
 	}
-	
-	public enum SortDirection {
-		Ascending,
-		Descending
-	}
+
+    public enum TypeGroup
+    {
+        Default,
+        Text,
+        Number,
+        Boolean,
+        Date
+    }
 }

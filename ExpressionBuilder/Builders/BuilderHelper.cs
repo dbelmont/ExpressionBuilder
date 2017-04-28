@@ -17,12 +17,5 @@ namespace ExpressionBuilder.Builders
         	
         	return Expression.Property(param, propertyName);
         }
-		
-		public MethodInfo MethodOf<T>(Expression<Func<T>> method)
-	    {
-	        MethodCallExpression mce = (MethodCallExpression) method.Body;
-	        var mi = mce.Method;
-	        return mi;
-	    }
 	}
 }
