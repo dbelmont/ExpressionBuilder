@@ -35,6 +35,7 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -44,10 +45,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builders\BuilderDefinitions.cs" />
+    <Compile Include="Attributes\NumberOfValuesAttribute.cs" />
+    <Compile Include="Attributes\SupportedOperationsAttribute.cs" />
     <Compile Include="Builders\FilterBuilder.cs" />
     <Compile Include="Builders\BuilderHelper.cs" />
     <Compile Include="Builders\Enumerations.cs" />
+    <Compile Include="Exceptions\WrongNumberOfValuesException.cs" />
+    <Compile Include="Exceptions\UnsupportedOperationException.cs" />
     <Compile Include="Generics\FilterStatement.cs" />
     <Compile Include="Generics\Filter.cs" />
     <Compile Include="Generics\FilterStatementConnection.cs" />

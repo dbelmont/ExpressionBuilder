@@ -11,22 +11,38 @@ namespace ExpressionBuilder.Builders
 {
 	public class FilterBuilder
 	{
-		readonly MethodInfo trimMethod = typeof(string).GetMethod("Trim", new Type[0]);
-        readonly MethodInfo toLowerMethod = typeof(string).GetMethod("ToLower", new Type[0]);        
-        
         readonly BuilderHelper helper;
-        readonly BuilderDefinitions definitions;
+        
+        readonly MethodInfo stringContainsMethod = typeof(string).GetMethod("Contains");
+        readonly MethodInfo startsWithMethod = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
+        readonly MethodInfo endsWithMethod = typeof(string).GetMethod("EndsWith", new[] { typeof(string) });
 
-        public FilterBuilder(BuilderHelper helper, BuilderDefinitions definitions)
+        public readonly Dictionary<Operation, Func<Expression, Expression, Expression, Expression>> Expressions;
+
+        public FilterBuilder(BuilderHelper helper)
 		{
-            this.definitions = definitions;
             this.helper = helper;
-		}
+
+            Expressions = new Dictionary<Operation, Func<Expression, Expression, Expression, Expression>>
+            {
+                { Operation.Equals, (member, constant, constant2) => Expression.Equal(member, constant) },
+                { Operation.NotEquals, (member, constant, constant2) => Expression.NotEqual(member, constant) },
+                { Operation.GreaterThan, (member, constant, constant2) => Expression.GreaterThan(member, constant) },
+                { Operation.GreaterThanOrEquals, (member, constant, constant2) => Expression.GreaterThanOrEqual(member, constant) },
+                { Operation.LessThan, (member, constant, constant2) => Expression.LessThan(member, constant) },
+                { Operation.LessThanOrEquals, (member, constant, constant2) => Expression.LessThanOrEqual(member, constant) },
+                { Operation.Contains, (member, constant, constant2) => Contains(member, constant) },
+                { Operation.StartsWith, (member, constant, constant2) => Expression.Call(member, startsWithMethod, constant) },
+                { Operation.EndsWith, (member, constant, constant2) => Expression.Call(member, endsWithMethod, constant) },
+                { Operation.Between, (member, constant, constant2) => Between(member, constant, constant2) },
+                { Operation.In, (member, constant, constant2) => Contains(member, constant) }
+            };
+        }
 		
 		public Expression<Func<T, bool>> GetExpression<T>(IFilter filter) where T : class
         {
             var param = Expression.Parameter(typeof(T), "x");
-            Expression expression = Expression.Constant(true);
+            Expression expression = null;
             var connector = FilterStatementConnector.And;
             foreach (var statement in filter.Statements)
             {
@@ -36,23 +52,26 @@ namespace ExpressionBuilder.Builders
                 else
                     expr = GetExpression(param, statement);
 
-                expression = CombineExpressions(expression, expr, connector);
+                expression = expression == null ? expr : CombineExpressions(expression, expr, connector);
                 connector = statement.Connector;
             }
+
+            expression = expression ?? Expression.Constant(true);
+
             return Expression.Lambda<Func<T, bool>>(expression, param);
         }
 		
-        bool IsList(IFilterStatement statement)
+        private bool IsList(IFilterStatement statement)
         {
             return statement.PropertyName.Contains("[") && statement.PropertyName.Contains("]");
         }
 
-        Expression CombineExpressions(Expression expr1, Expression expr2, FilterStatementConnector connector)
+        private Expression CombineExpressions(Expression expr1, Expression expr2, FilterStatementConnector connector)
         {
             return connector == FilterStatementConnector.And ? Expression.AndAlso(expr1, expr2) : Expression.OrElse(expr1, expr2);
         }
 
-        Expression ProcessListStatement(ParameterExpression param, IFilterStatement statement)
+        private Expression ProcessListStatement(ParameterExpression param, IFilterStatement statement)
         {
             var basePropertyName = statement.PropertyName.Substring(0, statement.PropertyName.IndexOf("["));
             var propertyName = statement.PropertyName.Replace(basePropertyName, "").Replace("[", "").Replace("]", "");
@@ -67,20 +86,51 @@ namespace ExpressionBuilder.Builders
             return Expression.Call(anyInfo, member, lambda);
         }
         
-        Expression GetExpression(ParameterExpression param, IFilterStatement statement, string propertyName = null)
+        private Expression GetExpression(ParameterExpression param, IFilterStatement statement, string propertyName = null)
         {
             Expression member = helper.GetMemberExpression(param, propertyName ?? statement.PropertyName);
-            Expression constant = Expression.Constant(statement.Value);
+            Expression constant = GetConstantExpression(member, statement.Value);
+            Expression constant2 = GetConstantExpression(member, statement.Value2);
 
-            if (statement.Value is string)
-            {
-            	var trimMemberCall = Expression.Call(member, trimMethod);
-            	member = Expression.Call(trimMemberCall, toLowerMethod);
-            	var trimConstantCall = Expression.Call(constant, trimMethod);
-            	constant = Expression.Call(trimConstantCall, toLowerMethod);
-            }
-            
-            return definitions.Expressions[statement.Operation].Invoke(member, constant);
+            return Expressions[statement.Operation].Invoke(member, constant, constant2);
         }
-	}
+
+        private Expression GetConstantExpression(Expression member, object value)
+        {
+            if (value == null) return null;
+
+            Expression constant = Expression.Constant(value);
+
+            if (value is string)
+            {
+                var trimConstantCall = Expression.Call(constant, helper.trimMethod);
+                constant = Expression.Call(trimConstantCall, helper.toLowerMethod);
+            }
+
+            return constant;
+        }
+
+        #region Operations 
+        private Expression Contains(Expression member, Expression expression)
+        {
+            MethodCallExpression contains = null;
+            if (expression is ConstantExpression constant && constant.Value is IList && constant.Value.GetType().IsGenericType)
+            {
+                var type = constant.Value.GetType();
+                var containsInfo = type.GetMethod("Contains", new[] { type.GetGenericArguments()[0] });
+                contains = Expression.Call(constant, containsInfo, member);
+            }
+
+            return contains ?? Expression.Call(member, stringContainsMethod, expression); ;
+        }
+
+        private Expression Between(Expression member, Expression constant, Expression constant2)
+        {
+            var left = Expressions[Operation.GreaterThanOrEquals].Invoke(member, constant, null);
+            var right = Expressions[Operation.LessThanOrEquals].Invoke(member, constant2, null);
+
+            return CombineExpressions(left, right, FilterStatementConnector.And);
+        }
+        #endregion
+    }
 }

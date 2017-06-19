@@ -9,7 +9,7 @@ namespace ExpressionBuilder.Test
     [TestFixture]
     public class HelperTests
     {
-        [TestCase(typeof(int), TestName ="Get supported operations for int")]
+        [TestCase(typeof(int), TestName ="Get supported operations for number int")]
         [TestCase(typeof(uint), TestName ="Get supported operations for number uint")]
         [TestCase(typeof(byte), TestName = "Get supported operations for number byte")]
         [TestCase(typeof(sbyte), TestName = "Get supported operations for number sbyte")]
@@ -20,31 +20,49 @@ namespace ExpressionBuilder.Test
         [TestCase(typeof(Single), TestName = "Get supported operations for number Single")]
         [TestCase(typeof(double), TestName = "Get supported operations for number double")]
         [TestCase(typeof(decimal), TestName = "Get supported operations for number decimal")]
+        [TestCase(typeof(int[]), TestName = "Get supported operations for an array of int")]
         public void SupportedOperationsForNumbers(Type numberType)
         {
             var definitions = new OperationHelper();
-            var numberOperations = new List<Operation> { Operation.Equals, Operation.NotEquals, Operation.GreaterThan, Operation.GreaterThanOrEquals, Operation.LessThan, Operation.LessThanOrEquals };
+            var numberOperations = new List<Operation> { Operation.Equals, Operation.NotEquals, Operation.GreaterThan, Operation.GreaterThanOrEquals,
+                                                         Operation.LessThan, Operation.LessThanOrEquals, Operation.Between };
+
+            if (numberType.IsArray)
+            {
+                numberOperations.Add(Operation.In);
+            }
+
             var operations = definitions.GetSupportedOperations(numberType);
-            Assert.That(operations, Is.EqualTo(numberOperations));
+            Assert.That(operations, Is.EquivalentTo(numberOperations));
         }
 
         [TestCase(typeof(string), TestName = "Get supported operations for string")]
         [TestCase(typeof(char), TestName = "Get supported operations for char")]
+        [TestCase(typeof(string[]), TestName = "Get supported operations for an array string")]
         public void SupportedOperationsForText(Type textType)
         {
             var definitions = new OperationHelper();
-            var textOperations = new List<Operation> { Operation.Equals, Operation.Contains, Operation.EndsWith, Operation.NotEquals, Operation.StartsWith };
+            var textOperations = new List<Operation> { Operation.Equals, Operation.Contains, Operation.EndsWith, Operation.NotEquals, Operation.StartsWith,
+                                                       Operation.IsEmpty, Operation.IsNotEmpty, Operation.IsNotNull, Operation.IsNotNullNorWhiteSpace, Operation.IsNull,
+                                                       Operation.IsNullOrWhiteSpace };
+
+            if (textType.IsArray)
+            {
+                textOperations.Add(Operation.In);
+            }
+
             var operations = definitions.GetSupportedOperations(textType);
-            Assert.That(operations, Is.EqualTo(textOperations));
+            Assert.That(operations, Is.EquivalentTo(textOperations));
         }
         
         [TestCase(TestName = "Get supported operations for dates")]
         public void SupportedOperationsForDates()
         {
             var definitions = new OperationHelper();
-            var dateOperations = new List<Operation> { Operation.Equals, Operation.NotEquals, Operation.GreaterThan, Operation.GreaterThanOrEquals, Operation.LessThan, Operation.LessThanOrEquals };
+            var dateOperations = new List<Operation> { Operation.Between, Operation.Equals, Operation.NotEquals, Operation.GreaterThan, Operation.GreaterThanOrEquals,
+                                                       Operation.LessThan, Operation.LessThanOrEquals, Operation.IsNull, Operation.IsNotNull };
             var operations = definitions.GetSupportedOperations(typeof(DateTime));
-            Assert.That(operations, Is.EqualTo(dateOperations));
+            Assert.That(operations, Is.EquivalentTo(dateOperations));
         }
         
         [TestCase(TestName = "Get supported operations for bool")]
@@ -53,7 +71,19 @@ namespace ExpressionBuilder.Test
             var definitions = new OperationHelper();
             var booleanOperations = new List<Operation> { Operation.Equals, Operation.NotEquals };
             var operations = definitions.GetSupportedOperations(typeof(bool));
-            Assert.That(operations, Is.EqualTo(booleanOperations));
+            Assert.That(operations, Is.EquivalentTo(booleanOperations));
+        }
+
+        [TestCase(TestName = "Get supported operations for nullable types")]
+        public void SupportedOperationsForNullable()
+        {
+            var definitions = new OperationHelper();
+            var nullableOperations = new List<Operation> { Operation.IsNotNull, Operation.IsNull };
+            var numberOperations = new List<Operation> { Operation.Equals, Operation.NotEquals, Operation.GreaterThan, Operation.GreaterThanOrEquals,
+                                                         Operation.LessThan, Operation.LessThanOrEquals, Operation.Between };
+            nullableOperations.AddRange(numberOperations);
+            var operations = definitions.GetSupportedOperations(typeof(int?));
+            Assert.That(operations, Is.EquivalentTo(nullableOperations));
         }
     }
 }
