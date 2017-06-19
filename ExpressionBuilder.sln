@@ -1,12 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-# SharpDevelop 5.1
-VisualStudioVersion = 12.0.20827.3
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionBuilder", "ExpressionBuilder\ExpressionBuilder.csproj", "{5706B594-1D5D-43EC-BFE3-BC6B971C448D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionBuilder.Test", "ExpressionBuilder.Test\ExpressionBuilder.Test.csproj", "{7A9F0112-5A67-467D-9983-5069DF3DC5E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionBuilder.WinForms", "ExpressionBuilder.WinForms\ExpressionBuilder.WinForms.csproj", "{5706B594-1D5D-43EC-BFE3-BC6B971C448D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionBuilder", "ExpressionBuilder\ExpressionBuilder.csproj", "{70BF550D-5943-4162-8FAB-0BBA743A3D93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,13 +15,20 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5706B594-1D5D-43EC-BFE3-BC6B971C448D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5706B594-1D5D-43EC-BFE3-BC6B971C448D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5706B594-1D5D-43EC-BFE3-BC6B971C448D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5706B594-1D5D-43EC-BFE3-BC6B971C448D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7A9F0112-5A67-467D-9983-5069DF3DC5E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7A9F0112-5A67-467D-9983-5069DF3DC5E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A9F0112-5A67-467D-9983-5069DF3DC5E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A9F0112-5A67-467D-9983-5069DF3DC5E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5706B594-1D5D-43EC-BFE3-BC6B971C448D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5706B594-1D5D-43EC-BFE3-BC6B971C448D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5706B594-1D5D-43EC-BFE3-BC6B971C448D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5706B594-1D5D-43EC-BFE3-BC6B971C448D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70BF550D-5943-4162-8FAB-0BBA743A3D93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70BF550D-5943-4162-8FAB-0BBA743A3D93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70BF550D-5943-4162-8FAB-0BBA743A3D93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70BF550D-5943-4162-8FAB-0BBA743A3D93}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

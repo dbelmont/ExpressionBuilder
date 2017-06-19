@@ -6,7 +6,7 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-namespace ExpressionBuilder.Controls
+namespace ExpressionBuilder.WinForms.Controls
 {
 	partial class ucFilter
 	{

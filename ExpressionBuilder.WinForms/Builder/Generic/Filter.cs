@@ -38,6 +38,11 @@ namespace ExpressionBuilder.Builder.Generic
 			return Builder.GetExpression<TClass>(this);
 		}
 		
+		public static implicit operator Func<TClass, bool>(Filter<TClass> filter)
+		{
+			return filter.BuildExpression().Compile();
+		}
+		
 		public override string ToString()
 		{
 			var result = "";

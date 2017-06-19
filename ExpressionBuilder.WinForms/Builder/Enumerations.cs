@@ -16,4 +16,9 @@ namespace ExpressionBuilder.Builder
         LessThan,
         LessThanOrEquals
 	}
+	
+	public enum OrderByDirection {
+		Ascending,
+		Descending
+	}
 }

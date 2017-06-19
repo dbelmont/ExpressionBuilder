@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using ExpressionBuilder.Builder.Generic;
-using ExpressionBuilder.Controls;
-using ExpressionBuilder.Models;
-using ExpressionBuilder.Builder;
+using ExpressionBuilder.WinForms.Controls;
+using ExpressionBuilder.Generics;
+using ExpressionBuilder.WinForms.Models;
 
-namespace ExpressionBuilder
+namespace ExpressionBuilder.WinForms
 {
 	/// <summary>
 	/// Description of MainForm.
@@ -57,7 +55,7 @@ namespace ExpressionBuilder
 		protected void AddFilter()
 		{
 			var control = new ucFilter();
-			control.TypeName = "ExpressionBuilder.Models.Person";
+			control.TypeName = "ExpressionBuilder.WinForms.Models.Person";
 			control.OnAdd += UcFilterOnAdd;
 			control.OnRemove += UcFilterOnRemove;
 			control.Name = "filter" + pnFilters.Controls.Count;
@@ -96,7 +94,7 @@ namespace ExpressionBuilder
 				filter.By(ufilter.PropertyName, ufilter.Operation, ufilter.Value, ufilter.Conector);
 			}
 			
-			grid.DataSource = People.Where(filter.BuildExpression().Compile()).ToList();
+			grid.DataSource = People.Where(filter).ToList();
 		}
 	}
 }

@@ -9,7 +9,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace ExpressionBuilder
+namespace ExpressionBuilder.WinForms
 {
 	/// <summary>
 	/// Class with program entry point.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ExpressionBuilder.Models
+namespace ExpressionBuilder.WinForms.Models
 {
 	public enum PersonGender
 	{

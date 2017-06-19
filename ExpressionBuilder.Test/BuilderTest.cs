@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ExpressionBuilder.Builder;
-using ExpressionBuilder.Builder.Generic;
-using ExpressionBuilder.Models;
+using ExpressionBuilder.Generics;
+using ExpressionBuilder.Builders;
+using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
 
 namespace ExpressionBuilder.Test
@@ -41,8 +41,15 @@ namespace ExpressionBuilder.Test
         public void BuilderWithEmptyFilter()
         {
         	var filter = new Filter<Person>();
-        	var expr = filter.BuildExpression();
-            var people = People.Where(expr.Compile());
+            var people = People.Where(filter);
+            Assert.That(people.Count(), Is.EqualTo(6));
+        }
+        
+		[TestCase(TestName="Build expression from an empty filter (but using implict cast): should return all records")]
+        public void BuilderWithEmptyFilterUsingImplicitCast()
+        {
+        	var filter = new Filter<Person>();
+            var people = People.Where(filter);
             Assert.That(people.Count(), Is.EqualTo(6));
         }
         
@@ -51,8 +58,7 @@ namespace ExpressionBuilder.Test
         {
         	var filter = new Filter<Person>();
         	filter.By("Name", Operation.EndsWith, "Doe").Or.By("Gender", Operation.Equals, PersonGender.Female);
-        	var expr = filter.BuildExpression();
-            var people = People.Where(expr.Compile());
+            var people = People.Where(filter);
             Assert.That(people.Count(), Is.EqualTo(4));
         }
         
@@ -63,8 +69,7 @@ namespace ExpressionBuilder.Test
         	filter.By("Birth.Country", Operation.Equals, "USA", FilterStatementConnector.Or);
         	filter.By("Birth.Date", Operation.LessThanOrEquals, new DateTime(1980, 1, 1), FilterStatementConnector.Or);
         	filter.By("Name", Operation.Contains, "Doe");
-        	var expr = filter.BuildExpression();
-            var people = People.Where(expr.Compile());
+            var people = People.Where(filter);
             Assert.That(people.Count(), Is.EqualTo(5));
         }
         
@@ -73,8 +78,7 @@ namespace ExpressionBuilder.Test
         {
         	var filter = new Filter<Person>();
         	filter.By("Contacts[Type]", Operation.Equals, ContactType.Email).And.By("Contacts[Value]", Operation.StartsWith, "jane");
-        	var expr = filter.BuildExpression();
-            var people = People.Where(expr.Compile());
+            var people = People.Where(filter);
             Assert.That(people.Count(), Is.EqualTo(2));
         }
         
@@ -83,8 +87,7 @@ namespace ExpressionBuilder.Test
         {
         	var filter = new Filter<Person>();
         	filter.By("Id", Operation.Contains, new []{ 1, 2, 4, 5 });
-        	var expr = filter.BuildExpression();
-            var people = People.Where(expr.Compile());
+            var people = People.Where(filter);
             Assert.That(people.Count(), Is.EqualTo(4));
         }
 	}

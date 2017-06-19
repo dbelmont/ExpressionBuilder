@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using ExpressionBuilder.Builder;
-using ExpressionBuilder.Builder.Generic;
-using ExpressionBuilder.Models;
+using ExpressionBuilder.Builders;
+using ExpressionBuilder.Generics;
+using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
 
 namespace ExpressionBuilder.Test

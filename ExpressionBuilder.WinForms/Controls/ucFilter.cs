@@ -6,9 +6,9 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using ExpressionBuilder.Builder;
+using ExpressionBuilder.Builders;
 
-namespace ExpressionBuilder.Controls
+namespace ExpressionBuilder.WinForms.Controls
 {
 	/// <summary>
 	/// Description of ucFilter.
@@ -21,7 +21,7 @@ namespace ExpressionBuilder.Controls
 		[Category("Data")]
 		public string TypeName
 		{
-			get { return _typeName ?? "ExpressionBuilder.Models.Person"; }
+			get { return _typeName ?? "ExpressionBuilder.WinForms.Models.Person"; }
 			set { _typeName = value; }
 		}
 		
