@@ -35,11 +35,11 @@ namespace ExpressionBuilder.Test
 			Assert.That(filter.Statements.Count(), Is.EqualTo(0));
 		}
 		
-		[TestCase(TestName="Only the 'Contains' operation should support arrays as parameters")]
+		[TestCase(TestName="Only the 'Contains' and the 'In' operations should support arrays as parameters")]
 		public void OnlyContainsOperationShouldSupportArraysAsParameters()
 		{
 			var filter = new Filter<Person>();
-			Assert.Throws<ArgumentException>(() => filter.By("Id", Operation.Equals, new []{ 1, 2, 3, 4 }), "Only 'Operacao.Contains' supports arrays as parameters.");
+			Assert.Throws<ArgumentException>(() => filter.By("Id", Operation.Equals, new []{ 1, 2, 3, 4 }), "Only 'Operacao.Contains' and 'Operacao.In' support arrays as parameters.");
 		}
 		
 		[TestCase(TestName="Should be able to 'read' a filter as a string")]

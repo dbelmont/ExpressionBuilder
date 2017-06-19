@@ -23,5 +23,9 @@ namespace ExpressionBuilder.Interfaces
 		/// Constant value that will interact with the property defined in this filter statement.
 		/// </summary>
 		object Value { get; set; }
+        /// <summary>
+        /// Constant value that will interact with the property defined in this filter statement when the operation demands a second value to compare to.
+        /// </summary>
+        object Value2 { get; set; }
     }
 }

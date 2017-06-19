@@ -5,6 +5,7 @@ using ExpressionBuilder.Generics;
 using ExpressionBuilder.Builders;
 using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
+using ExpressionBuilder.Exceptions;
 
 namespace ExpressionBuilder.Test
 {
@@ -29,8 +30,12 @@ namespace ExpressionBuilder.Test
 				foreach (var person in _people)
 				{
 					person.Id = id++;
-					var email = person.Name.ToLower().Replace(" ", ".") + "@email.com";
-					person.Contacts.Add(new Contact{ Type = ContactType.Email, Value = email, Comments = person.Name + "'s email" });
+
+                    if (id <= 5)
+                    {
+					    var email = person.Name.ToLower().Replace(" ", ".") + "@email.com";
+					    person.Contacts.Add(new Contact{ Type = ContactType.Email, Value = email, Comments = person.Name + "'s email" });
+                    }
 				}
 				
 				return _people;
@@ -45,19 +50,11 @@ namespace ExpressionBuilder.Test
             Assert.That(people.Count(), Is.EqualTo(6));
         }
         
-		[TestCase(TestName="Build expression from an empty filter (but using implict cast): should return all records")]
-        public void BuilderWithEmptyFilterUsingImplicitCast()
-        {
-        	var filter = new Filter<Person>();
-            var people = People.Where(filter);
-            Assert.That(people.Count(), Is.EqualTo(6));
-        }
-        
         [TestCase(TestName="Build expression from a filter with simple statements")]
         public void BuilderWithSimpleFilterStatements()
         {
         	var filter = new Filter<Person>();
-        	filter.By("Name", Operation.EndsWith, "Doe").Or.By("Gender", Operation.Equals, PersonGender.Female);
+            filter.By("Name", Operation.EndsWith, "Doe").Or.By("Gender", Operation.Equals, PersonGender.Female);
             var people = People.Where(filter);
             Assert.That(people.Count(), Is.EqualTo(4));
         }
@@ -66,8 +63,8 @@ namespace ExpressionBuilder.Test
         public void BuilderWithPropertyChainFilterStatements()
         {
         	var filter = new Filter<Person>();
-        	filter.By("Birth.Country", Operation.Equals, "USA", FilterStatementConnector.Or);
-        	filter.By("Birth.Date", Operation.LessThanOrEquals, new DateTime(1980, 1, 1), FilterStatementConnector.Or);
+        	filter.By("Birth.Country", Operation.Equals, "usa", default(string), FilterStatementConnector.Or);
+        	filter.By("Birth.Date", Operation.LessThanOrEquals, new DateTime(1980, 1, 1), connector: FilterStatementConnector.Or);
         	filter.By("Name", Operation.Contains, "Doe");
             var people = People.Where(filter);
             Assert.That(people.Count(), Is.EqualTo(5));
@@ -77,18 +74,61 @@ namespace ExpressionBuilder.Test
         public void BuilderWithPropertyListFilterStatements()
         {
         	var filter = new Filter<Person>();
-        	filter.By("Contacts[Type]", Operation.Equals, ContactType.Email).And.By("Contacts[Value]", Operation.StartsWith, "jane");
+        	filter.By("Contacts[Type]", Operation.Equals, ContactType.Email).And.By("Birth.Country", Operation.StartsWith, " usa ");
             var people = People.Where(filter);
-            Assert.That(people.Count(), Is.EqualTo(2));
+            Assert.That(people.Count(), Is.EqualTo(3));
         }
         
         [TestCase(TestName="Build expression from a filter statement with a list of values")]
         public void BuilderWithFilterStatementWithListOfValues()
         {
         	var filter = new Filter<Person>();
-        	filter.By("Id", Operation.Contains, new []{ 1, 2, 4, 5 });
+        	filter.By("Id", Operation.In, new []{ 1, 2, 4, 5 });
             var people = People.Where(filter);
             Assert.That(people.Count(), Is.EqualTo(4));
         }
-	}
+
+        [TestCase(TestName="Builder with a single filter statement using a between operation")]
+        public void BuilderWithSingleFilterStatementWithBetween()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Id", Operation.Between, 2, 4);
+            var people = People.Where(filter);
+            Assert.That(people.Count, Is.EqualTo(3));
+        }
+
+        [TestCase(TestName="Builder with a single filter statement using a between operation and a simple statement")]
+        public void BuilderWithBetweenAndSimpleFilterStatements()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Id", Operation.Between, 2, 6).And.By("Birth.Country", Operation.Equals, " usa ");
+            var people = People.Where(filter);
+            Assert.That(people.Count, Is.EqualTo(3));
+            Assert.That(people.All(p => p.Birth.Country == "USA"), Is.True);
+        }
+
+        [TestCase(TestName = "Builder with a single filter statement using a between operation and a list of values statement")]
+        public void BuilderWithBetweenAndListOfValuesFilterStatements()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Id", Operation.Between, 2, 6).And.By("Id", Operation.In, new[] { 4, 5 });
+            var people = People.Where(filter);
+            Assert.That(people.Count, Is.EqualTo(2));
+            Assert.That(people.Min(p => p.Id), Is.EqualTo(4));
+        }
+
+        [TestCase(TestName = "Builder with wrong number of values when expecting no values at all")]
+        public void BuilderWithWrongNumberOrValuesWhenExpectingNoValuesAtAll()
+        {
+            var filter = new Filter<Person>();
+            Assert.Throws<WrongNumberOfValuesException>(() => filter.By("Name", Operation.IsNull, 1, 2));
+        }
+
+        [TestCase(TestName = "Builder with wrong number of values when expecting just one value")]
+        public void BuilderWithWrongNumberOrValuesWhenExpectingJustOneValue()
+        {
+            var filter = new Filter<Person>();
+            Assert.Throws<WrongNumberOfValuesException>(() => filter.By("Name", Operation.Equals, 1, 2));
+        }
+    }
 }

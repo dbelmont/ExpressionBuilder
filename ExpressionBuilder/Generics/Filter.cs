@@ -26,11 +26,11 @@ namespace ExpressionBuilder.Generics
 		{
 			_statements = new List<IFilterStatement>();
 		}
-
-		public IFilterStatementConnection By<TPropertyType>(string propertyName, Operation operation, TPropertyType value, FilterStatementConnector connector = FilterStatementConnector.And)
+        
+		public IFilterStatementConnection By<TPropertyType>(string propertyName, Operation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), FilterStatementConnector connector = FilterStatementConnector.And)
 		{
 			IFilterStatement statement = null;
-			statement = new FilterStatement<TPropertyType>(propertyName, operation, value, connector);
+			statement = new FilterStatement<TPropertyType>(propertyName, operation, value, value2, connector);
 			_statements.Add(statement);
 			return new FilterStatementConnection<TClass>(this, statement);
 		}	
@@ -42,7 +42,7 @@ namespace ExpressionBuilder.Generics
 		
 		public static implicit operator Func<TClass, bool>(Filter<TClass> filter)
 		{
-			var builder = new FilterBuilder(new BuilderHelper(), new BuilderDefinitions());
+			var builder = new FilterBuilder(new BuilderHelper());
 			return builder.GetExpression<TClass>(filter).Compile();
 		}
 
