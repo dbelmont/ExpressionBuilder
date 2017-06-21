@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using ExpressionBuilder.Builders;
+using ExpressionBuilder.Helpers;
 
 namespace ExpressionBuilder.WinForms.Controls
 {
@@ -39,18 +40,49 @@ namespace ExpressionBuilder.WinForms.Controls
 		{
 			get
 			{
-				var ctrl = Controls["ctrlValue"];
-				var property = _properties[PropertyName];
-				if (property.PropertyType == typeof(string)) return ctrl.Text;
-				if (property.PropertyType == typeof(DateTime)) return (ctrl as DateTimePicker).Value;
-				if (property.PropertyType == typeof(int)) return Convert.ToInt32((ctrl as NumericUpDown).Value);
-				if (property.PropertyType == typeof(bool)) return Boolean.Parse(ctrl.Text);
-				if (property.PropertyType.IsEnum) return Enum.ToObject(property.PropertyType, (ctrl as DomainUpDown).SelectedItem);
-				return null;
+                return GetValue("ctrlValue");
+			}
+		}
+
+		public object Value2
+		{
+			get
+			{
+                return GetValue("ctrlValue2");
 			}
 		}
 		
-		public FilterStatementConnector Conector
+        private object GetValue(string ctrlName)
+        {
+            var ctrl = Controls[ctrlName];
+
+            if (ctrl != null)
+            {
+                var property = _properties[PropertyName];
+                if (property.PropertyType == typeof(string)) return ctrl.Text;
+                if (property.PropertyType == typeof(DateTime)) return (ctrl as DateTimePicker).Value;
+                if (property.PropertyType == typeof(int)) return Convert.ToInt32((ctrl as NumericUpDown).Value);
+                if (property.PropertyType == typeof(bool)) return Boolean.Parse(ctrl.Text);
+                if (property.PropertyType.IsEnum) return Enum.ToObject(property.PropertyType, (ctrl as DomainUpDown).SelectedItem);
+            }
+
+			return null;
+        }
+
+        public override bool ValidateChildren()
+        {
+            var isValid = base.ValidateChildren();
+
+            if (String.IsNullOrWhiteSpace(cbOperations.Text))
+            {
+                MessageBox.Show("Please, select an operation");
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        public FilterStatementConnector Conector
 		{
 			get { return (FilterStatementConnector)Enum.Parse(typeof(FilterStatementConnector), cbConector.Text); }
 		}
@@ -89,55 +121,66 @@ namespace ExpressionBuilder.WinForms.Controls
 		void cbProperties_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Controls.RemoveByKey("ctrlValue");
-			LoadValueControl();
+			Controls.RemoveByKey("ctrlValue2");
 		}
 		
-		void LoadValueControl()
+		void LoadValueControls()
 		{
-			var propertyKey = cbProperties.Text;
-			var info = _properties[propertyKey];
-			Control ctrl = null;
-			if (info.PropertyType.IsEnum || info.PropertyType == typeof(bool))
-			{
-				ctrl = new DomainUpDown();
-				if (info.PropertyType == typeof(bool))
-			    {
-					(ctrl as DomainUpDown).Items.AddRange(new[]{ true, false });
-			    }
-				else
-				{
-					(ctrl as DomainUpDown).Items.AddRange(Enum.GetValues(info.PropertyType));
-				}
-				(ctrl as DomainUpDown).SelectedItem = (ctrl as DomainUpDown).Items[0];
-				(ctrl as DomainUpDown).ReadOnly  =true;
-				
-			}
-			
-			if (info.PropertyType == typeof(string))
-			{
-				ctrl = new TextBox();
-			}
-			
-			if (info.PropertyType == typeof(DateTime))
-			{
-				ctrl = new DateTimePicker();
-			}
-			
-			if (new []{ typeof(int), typeof(double), typeof(float), typeof(decimal) }.Contains(info.PropertyType))
-			{
-				ctrl = new NumericUpDown();
-				(ctrl as NumericUpDown).Value = 0;
-			}
-			
-			if (ctrl == null) throw new Exception("Type not supported");
-			
+            var ctrl = CreateNewControl();
 			ctrl.Name = "ctrlValue";
 			ctrl.Size = new Size(300, 20);
 			ctrl.Location = new Point(400, 6);
-			
 			Controls.Add(ctrl);
+
+            var ctrl2 = CreateNewControl();
+			ctrl2.Name = "ctrlValue2";
+			ctrl2.Size = new Size(300, 20);
+			ctrl2.Location = new Point(705, 6);
+			Controls.Add(ctrl2);
 		}
 		
+        Control CreateNewControl()
+        {
+            var propertyKey = cbProperties.Text;
+            var info = _properties[propertyKey];
+            Control ctrl = null;
+            if (info.PropertyType.IsEnum || info.PropertyType == typeof(bool))
+            {
+                ctrl = new DomainUpDown();
+                if (info.PropertyType == typeof(bool))
+                {
+                    (ctrl as DomainUpDown).Items.AddRange(new[] { true, false });
+                }
+                else
+                {
+                    (ctrl as DomainUpDown).Items.AddRange(Enum.GetValues(info.PropertyType));
+                }
+                (ctrl as DomainUpDown).SelectedItem = (ctrl as DomainUpDown).Items[0];
+                (ctrl as DomainUpDown).ReadOnly = true;
+
+            }
+
+            if (info.PropertyType == typeof(string))
+            {
+                ctrl = new TextBox();
+            }
+
+            if (info.PropertyType == typeof(DateTime))
+            {
+                ctrl = new DateTimePicker();
+            }
+
+            if (new[] { typeof(int), typeof(double), typeof(float), typeof(decimal) }.Contains(info.PropertyType))
+            {
+                ctrl = new NumericUpDown();
+                (ctrl as NumericUpDown).Value = 0;
+            }
+
+            if (ctrl == null) throw new Exception("Type not supported");
+
+            return ctrl;
+        }
+
 		public Dictionary<string, PropertyInfo> LoadProperties(Type type)
 		{
 			var list = new Dictionary<string, PropertyInfo>();
@@ -183,5 +226,37 @@ namespace ExpressionBuilder.WinForms.Controls
 		{
 			OnRemove(sender, e);
 		}
-	}
+
+        private void cbProperties_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            var type = _properties[PropertyName].PropertyType;
+            var supportedOperations = new OperationHelper()
+                                        .GetSupportedOperations(type)
+                                        .Select(o => o.ToString())
+                                        .ToArray();
+            cbOperations.Items.Clear();
+            cbOperations.Items.AddRange(supportedOperations);
+        }
+
+        private void cbOperations_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Controls.RemoveByKey("ctrlValue");
+            Controls.RemoveByKey("ctrlValue2");
+            LoadValueControls();
+
+            var operation = (Operation)Enum.Parse(typeof(Operation), cbOperations.Text);
+            var numberOfValues = new OperationHelper().GetNumberOfValuesAcceptable(operation);
+            
+            switch (numberOfValues)
+            {
+                case 0:
+                    Controls.RemoveByKey("ctrlValue");
+                    Controls.RemoveByKey("ctrlValue2");
+                    break;
+                case 1:
+                    Controls.RemoveByKey("ctrlValue2");
+                    break;
+            }
+        }
+    }
 }

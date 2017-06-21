@@ -16,8 +16,9 @@ namespace ExpressionBuilder.WinForms.Models
 		public PersonGender Gender { get; set; }
 		public BirthData Birth { get; set; }
 		public List<Contact> Contacts { get; private set; }
-		
-		public Person()
+        public Company Employer { get; set; }
+
+        public Person()
 		{
 			Contacts = new List<Contact>();
 			Birth = new BirthData();
@@ -32,7 +33,12 @@ namespace ExpressionBuilder.WinForms.Models
 			{
 				return string.Format("Born at {0} in {1}", Date.ToShortDateString(), Country);
 			}
-
 		}
-	}
+
+        public class Company
+        {
+            public string Name { get; set; }
+            public string Industry { get; set; }
+        }
+    }
 }

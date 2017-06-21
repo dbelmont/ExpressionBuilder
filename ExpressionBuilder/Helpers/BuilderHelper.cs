@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ExpressionBuilder.Interfaces;
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ExpressionBuilder.Builders
+namespace ExpressionBuilder.Helpers
 {
-	public class BuilderHelper
+	public class BuilderHelper : IBuilderHelper
 	{
         public readonly MethodInfo trimMethod = typeof(string).GetMethod("Trim", new Type[0]);
         public readonly MethodInfo toLowerMethod = typeof(string).GetMethod("ToLower", new Type[0]);
@@ -18,15 +19,7 @@ namespace ExpressionBuilder.Builders
         		return GetMemberExpression(subParam, propertyName.Substring(index + 1));
         	}
         	
-        	Expression member = Expression.Property(param, propertyName);
-
-            if (member.Type == typeof(string))
-            {
-                var trimMemberCall = Expression.Call(member, trimMethod);
-                member = Expression.Call(trimMemberCall, toLowerMethod);
-            }
-
-            return member;
+        	return Expression.Property(param, propertyName);
         }
 	}
 }

@@ -19,15 +19,18 @@ namespace ExpressionBuilder.WinForms
 		{
 			get
 			{
-				_people = new List<Person>();
-				_people.Add(new Person { Name = "John Doe", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1979, 2, 28), Country = "USA" } });
-				_people.Add(new Person { Name = "Jane Doe", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1985, 9, 5), Country = "CYM" } });
-				_people.Add(new Person { Name = "Wade Wilson", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1973, 10, 9), Country = "USA" } });
-				_people.Add(new Person { Name = "Jessica Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } });
-				_people.Add(new Person { Name = "Jane Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } });
-				_people.Add(new Person { Name = "Fulano Silva", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1983, 5, 10), Country = "BRA" } });
-				
-				var id = 1;
+                var company = new Person.Company { Name = "Back to the future", Industry = "Time Traveling Agency" };
+
+                _people = new List<Person>();
+                _people.Add(new Person { Name = "John Doe", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1979, 2, 28), Country = "USA" }, Employer = company });
+                _people.Add(new Person { Name = "Jane Doe", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1985, 9, 5), Country = " " } });
+                _people.Add(new Person { Name = "Wade Wilson", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1973, 10, 9), Country = "USA" } });
+                _people.Add(new Person { Name = "Jessica Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } });
+                _people.Add(new Person { Name = "Jane Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } });
+                _people.Add(new Person { Name = "Fulano Silva", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1983, 5, 10), Country = "BRA" }, Employer = company });
+                _people.Add(new Person { Name = "John Hancock", Gender = PersonGender.Male, Employer = company });
+
+                var id = 1;
 				foreach (var person in _people)
 				{
 					person.Id = id++;
@@ -91,7 +94,12 @@ namespace ExpressionBuilder.WinForms
 			foreach (var control in pnFilters.Controls)
 			{
 				var ufilter = (ucFilter)control;
-				filter.By(ufilter.PropertyName, ufilter.Operation, ufilter.Value, ufilter.Conector);
+                if (!ufilter.ValidateChildren())
+                {
+                    break;
+                }
+
+				filter.By(ufilter.PropertyName, ufilter.Operation, ufilter.Value, ufilter.Value2, ufilter.Conector);
 			}
 			
 			grid.DataSource = People.Where(filter).ToList();

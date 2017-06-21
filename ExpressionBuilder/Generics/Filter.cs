@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Xml;
 using System.Xml.Schema;
+using ExpressionBuilder.Helpers;
 
 namespace ExpressionBuilder.Generics
 {
@@ -27,10 +28,14 @@ namespace ExpressionBuilder.Generics
 			_statements = new List<IFilterStatement>();
 		}
         
+		public IFilterStatementConnection By(string propertyName, Operation operation, FilterStatementConnector connector = FilterStatementConnector.And)
+        {
+            return By<string>(propertyName, operation, null, null, connector);
+        }
+
 		public IFilterStatementConnection By<TPropertyType>(string propertyName, Operation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), FilterStatementConnector connector = FilterStatementConnector.And)
 		{
-			IFilterStatement statement = null;
-			statement = new FilterStatement<TPropertyType>(propertyName, operation, value, value2, connector);
+			IFilterStatement statement = new FilterStatement<TPropertyType>(propertyName, operation, value, value2, connector);
 			_statements.Add(statement);
 			return new FilterStatementConnection<TClass>(this, statement);
 		}	

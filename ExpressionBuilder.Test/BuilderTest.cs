@@ -12,42 +12,49 @@ namespace ExpressionBuilder.Test
 	[TestFixture]
 	public class BuilderTest
 	{
-		List<Person> _people;
+		readonly List<Person> _people;
 		
 		public List<Person> People
 		{
 			get
 			{
-				_people = new List<Person>();
-				_people.Add(new Person { Name = "John Doe", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1979, 2, 28), Country = "USA" } });
-				_people.Add(new Person { Name = "Jane Doe", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1985, 9, 5), Country = "CYM" } });
-				_people.Add(new Person { Name = "Wade Wilson", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1973, 10, 9), Country = "USA" } });
-				_people.Add(new Person { Name = "Jessica Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } });
-				_people.Add(new Person { Name = "Jane Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } });
-				_people.Add(new Person { Name = "Fulano Silva", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1983, 5, 10), Country = "BRA" } });
-				
-				var id = 1;
-				foreach (var person in _people)
-				{
-					person.Id = id++;
-
-                    if (id <= 5)
-                    {
-					    var email = person.Name.ToLower().Replace(" ", ".") + "@email.com";
-					    person.Contacts.Add(new Contact{ Type = ContactType.Email, Value = email, Comments = person.Name + "'s email" });
-                    }
-				}
-				
 				return _people;
 			}
 		}
+
+        public BuilderTest()
+        {
+            var company = new Person.Company { Name = "Back to the future", Industry = "Time Traveling Agency" };
+
+            _people = new List<Person>();
+            _people.Add(new Person { Name = "John Doe", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1979, 2, 28), Country = "USA" }, Employer = company });
+            _people.Add(new Person { Name = "Jane Doe", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1985, 9, 5), Country = " " } });
+            _people.Add(new Person { Name = "Wade Wilson", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1973, 10, 9), Country = "USA" } });
+            _people.Add(new Person { Name = "Jessica Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } });
+            _people.Add(new Person { Name = "Jane Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } });
+            _people.Add(new Person { Name = "Fulano Silva", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1983, 5, 10), Country = "BRA" }, Employer = company });
+            _people.Add(new Person { Name = "John Hancock", Gender = PersonGender.Male, Employer = company });
+
+            var id = 1;
+            foreach (var person in _people)
+            {
+                person.Id = id++;
+
+                if (id <= 5)
+                {
+                    var email = person.Name.ToLower().Replace(" ", ".") + "@email.com";
+                    person.Contacts.Add(new Contact { Type = ContactType.Email, Value = email, Comments = person.Name + "'s email" });
+                }
+            }
+        }
 		
 		[TestCase(TestName="Build expression from an empty filter: should return all records")]
         public void BuilderWithEmptyFilter()
         {
         	var filter = new Filter<Person>();
             var people = People.Where(filter);
-            Assert.That(people.Count(), Is.EqualTo(6));
+            var solution = People;
+            Assert.That(people, Is.EquivalentTo(solution));
         }
         
         [TestCase(TestName="Build expression from a filter with simple statements")]
@@ -56,9 +63,21 @@ namespace ExpressionBuilder.Test
         	var filter = new Filter<Person>();
             filter.By("Name", Operation.EndsWith, "Doe").Or.By("Gender", Operation.Equals, PersonGender.Female);
             var people = People.Where(filter);
-            Assert.That(people.Count(), Is.EqualTo(4));
+            var solution = People.Where(p => p.Name.Trim().ToLower().EndsWith("doe") ||
+                                             p.Gender == PersonGender.Female);
+            Assert.That(people, Is.EquivalentTo(solution));
         }
-        
+
+        [TestCase(TestName = "Build expression from a filter casting the value to object")]
+        public void BuilderCastingTheValueToObject()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Id", Operation.GreaterThan, (object)2);
+            var people = People.Where(filter);
+            var solution = People.Where(p => p.Id > 2);
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
+
         [TestCase(TestName="Build expression from a filter with property chain filter statements")]
         public void BuilderWithPropertyChainFilterStatements()
         {
@@ -67,7 +86,10 @@ namespace ExpressionBuilder.Test
         	filter.By("Birth.Date", Operation.LessThanOrEquals, new DateTime(1980, 1, 1), connector: FilterStatementConnector.Or);
         	filter.By("Name", Operation.Contains, "Doe");
             var people = People.Where(filter);
-            Assert.That(people.Count(), Is.EqualTo(5));
+            var solution = People.Where(p => (p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim().ToLower().Equals("usa")) ||
+                                             (p.Birth != null && p.Birth.Date <= new DateTime(1980, 1, 1)) ||
+                                             p.Name.Trim().ToLower().Contains("doe"));
+            Assert.That(people, Is.EquivalentTo(solution));
         }
         
         [TestCase(TestName="Build expression from a filter with property list filter statements")]
@@ -76,7 +98,9 @@ namespace ExpressionBuilder.Test
         	var filter = new Filter<Person>();
         	filter.By("Contacts[Type]", Operation.Equals, ContactType.Email).And.By("Birth.Country", Operation.StartsWith, " usa ");
             var people = People.Where(filter);
-            Assert.That(people.Count(), Is.EqualTo(3));
+            var solution = People.Where(p => p.Contacts.Any(c => c.Type == ContactType.Email) &&
+                                             (p.Birth != null && p.Birth.Country.Trim().ToLower().StartsWith("usa")));
+            Assert.That(people, Is.EquivalentTo(solution));
         }
         
         [TestCase(TestName="Build expression from a filter statement with a list of values")]
@@ -85,7 +109,8 @@ namespace ExpressionBuilder.Test
         	var filter = new Filter<Person>();
         	filter.By("Id", Operation.In, new []{ 1, 2, 4, 5 });
             var people = People.Where(filter);
-            Assert.That(people.Count(), Is.EqualTo(4));
+            var solution = People.Where(p => new[] { 1, 2, 4, 5 }.Contains(p.Id));
+            Assert.That(people, Is.EquivalentTo(solution));
         }
 
         [TestCase(TestName="Builder with a single filter statement using a between operation")]
@@ -94,7 +119,8 @@ namespace ExpressionBuilder.Test
             var filter = new Filter<Person>();
             filter.By("Id", Operation.Between, 2, 4);
             var people = People.Where(filter);
-            Assert.That(people.Count, Is.EqualTo(3));
+            var solution = People.Where(p => p.Id >= 2 && p.Id <= 4);
+            Assert.That(people, Is.EquivalentTo(solution));
         }
 
         [TestCase(TestName="Builder with a single filter statement using a between operation and a simple statement")]
@@ -103,7 +129,9 @@ namespace ExpressionBuilder.Test
             var filter = new Filter<Person>();
             filter.By("Id", Operation.Between, 2, 6).And.By("Birth.Country", Operation.Equals, " usa ");
             var people = People.Where(filter);
-            Assert.That(people.Count, Is.EqualTo(3));
+            var solution = People.Where(p => (p.Id >= 2 && p.Id <= 6) &&
+                                             (p.Birth != null && p.Birth.Country.Trim().ToLower().StartsWith("usa")));
+            Assert.That(people, Is.EquivalentTo(solution));
             Assert.That(people.All(p => p.Birth.Country == "USA"), Is.True);
         }
 
@@ -113,22 +141,94 @@ namespace ExpressionBuilder.Test
             var filter = new Filter<Person>();
             filter.By("Id", Operation.Between, 2, 6).And.By("Id", Operation.In, new[] { 4, 5 });
             var people = People.Where(filter);
-            Assert.That(people.Count, Is.EqualTo(2));
+            var solution = People.Where(p => (p.Id >= 2 && p.Id <= 6) &&
+                                             new[] { 4, 5 }.Contains(p.Id));
+            Assert.That(people, Is.EquivalentTo(solution));
             Assert.That(people.Min(p => p.Id), Is.EqualTo(4));
+        }
+
+        [TestCase(TestName = "Builder using 'IsNull' operator")]
+        public void BuilderUsingIsNullOperation()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Employer", Operation.IsNull);
+            var people = People.Where(filter);
+            var solution = People.Where(p => p.Employer == null);
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Builder using 'IsNotNull' operator")]
+        public void BuilderUsingIsNotNullOperation()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Employer", Operation.IsNotNull);
+            var people = People.Where(filter);
+            var solution = People.Where(p => p.Employer != null);
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Builder using 'IsEmpty' operator")]
+        public void BuilderUsingIsEmptyOperation()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Birth.Country", Operation.IsEmpty, (object)null, (object)null, FilterStatementConnector.And);
+            var people = People.Where(filter);
+            var solution = People.Where(p => p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim() == string.Empty);
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Builder using 'IsNotEmpty' operator")]
+        public void BuilderUsingIsNotEmptyOperation()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Birth.Country", Operation.IsNotEmpty);
+            var people = People.Where(filter);
+            var solution = People.Where(p => p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim() != string.Empty);
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Builder using 'IsNullOrWhiteSpace' operator")]
+        public void BuilderUsingIsNullOrWhiteSpaceOperation()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Birth.Country", Operation.IsNullOrWhiteSpace);
+            var people = People.Where(filter);
+            var solution = People.Where(p => p.Birth != null && string.IsNullOrWhiteSpace(p.Birth.Country));
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Builder using 'IsNotNullNorWhiteSpace' operator")]
+        public void BuilderUsingIsNotNullNorWhiteSpaceOperation()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Birth.Country", Operation.IsNotNullNorWhiteSpace);
+            var people = People.Where(filter);
+            var solution = People.Where(p => p.Birth != null && !string.IsNullOrWhiteSpace(p.Birth.Country));
+            Assert.That(people, Is.EquivalentTo(solution));
         }
 
         [TestCase(TestName = "Builder with wrong number of values when expecting no values at all")]
         public void BuilderWithWrongNumberOrValuesWhenExpectingNoValuesAtAll()
         {
             var filter = new Filter<Person>();
-            Assert.Throws<WrongNumberOfValuesException>(() => filter.By("Name", Operation.IsNull, 1, 2));
+            var ex = Assert.Throws<WrongNumberOfValuesException>(() => filter.By("Id", Operation.IsNull, 1, 2));
+            Assert.That(ex.Message, Does.Match(@"The operation '\w*' admits exactly '\w*' values \(not more neither less than this\)."));
         }
 
         [TestCase(TestName = "Builder with wrong number of values when expecting just one value")]
         public void BuilderWithWrongNumberOrValuesWhenExpectingJustOneValue()
         {
             var filter = new Filter<Person>();
-            Assert.Throws<WrongNumberOfValuesException>(() => filter.By("Name", Operation.Equals, 1, 2));
+            var ex = Assert.Throws<WrongNumberOfValuesException>(() => filter.By("Id", Operation.Equals, 1, 2));
+            Assert.That(ex.Message, Does.Match(@"The operation '\w*' admits exactly '\w*' values \(not more neither less than this\)."));
+        }
+
+        [TestCase(TestName = "Builder with operation not supported by specific type")]
+        public void BuilderWithOperationNotSupportedBySpecificType()
+        {
+            var filter = new Filter<Person>();
+            var ex = Assert.Throws<UnsupportedOperationException>(() => filter.By("Name", Operation.GreaterThan, "John"));
+            Assert.That(ex.Message, Does.Match(@"The type '\w*' does not have support for the operation '\w*'."));
         }
     }
 }

@@ -1,12 +1,13 @@
 ﻿using ExpressionBuilder.Attributes;
 using ExpressionBuilder.Builders;
+using ExpressionBuilder.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ExpressionBuilder.Helpers
 {
-    public class OperationHelper
+    public class OperationHelper : IOperationHelper
     {
         public readonly Dictionary<TypeGroup, List<Type>> TypeGroups;
 
@@ -49,51 +50,19 @@ namespace ExpressionBuilder.Helpers
             {
                 typeName = type.GetElementType().Name;
             }
-
+            
             var typeGroup = TypeGroups.FirstOrDefault(i => i.Value.Any(v => v.Name == typeName)).Key;
             var fieldInfo = typeGroup.GetType().GetField(typeGroup.ToString());
-
-            if (fieldInfo == null)
-            {
-                return new List<Operation>();
-            }
-
             var attrs = fieldInfo.GetCustomAttributes(false);
-            if (attrs == null || !attrs.Any())
-            {
-                return new List<Operation>();
-            }
-
             var attr = attrs.FirstOrDefault(a => a is SupportedOperationsAttribute);
-            if (attr == null)
-            {
-                return new List<Operation>();
-            }
-
             return (attr as SupportedOperationsAttribute).SupportedOperations;
         }
 
         public int GetNumberOfValuesAcceptable(Operation operation)
         {
             var fieldInfo = operation.GetType().GetField(operation.ToString());
-
-            if (fieldInfo == null)
-            {
-                return 0;
-            }
-
             var attrs = fieldInfo.GetCustomAttributes(false);
-            if (attrs == null || !attrs.Any())
-            {
-                return 0;
-            }
-
             var attr = attrs.FirstOrDefault(a => a is NumberOfValuesAttribute);
-            if (attr == null)
-            {
-                return 0;
-            }
-
             return (attr as NumberOfValuesAttribute).NumberOfValues;
         }
     }

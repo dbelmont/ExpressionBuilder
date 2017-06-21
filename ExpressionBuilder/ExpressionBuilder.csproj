@@ -48,7 +48,7 @@
     <Compile Include="Attributes\NumberOfValuesAttribute.cs" />
     <Compile Include="Attributes\SupportedOperationsAttribute.cs" />
     <Compile Include="Builders\FilterBuilder.cs" />
-    <Compile Include="Builders\BuilderHelper.cs" />
+    <Compile Include="Helpers\BuilderHelper.cs" />
     <Compile Include="Builders\Enumerations.cs" />
     <Compile Include="Exceptions\WrongNumberOfValuesException.cs" />
     <Compile Include="Exceptions\UnsupportedOperationException.cs" />
@@ -58,7 +58,9 @@
     <Compile Include="Helpers\OperationHelper.cs" />
     <Compile Include="Interfaces\Generics\IFilter.cs" />
     <Compile Include="Interfaces\Generics\IFilterStatementConnection.cs" />
+    <Compile Include="Interfaces\IBuilderHelper.cs" />
     <Compile Include="Interfaces\IFilterStatement.cs" />
+    <Compile Include="Interfaces\IOperationHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

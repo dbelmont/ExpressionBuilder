@@ -16,14 +16,42 @@ namespace ExpressionBuilder.Test.Models
 		public PersonGender Gender { get; set; }
 		public BirthData Birth { get; set; }
 		public List<Contact> Contacts { get; private set; }
+        public Company Employer { get; set; }
 		
 		public Person()
 		{
 			Contacts = new List<Contact>();
-			Birth = new BirthData();
+            Birth = new BirthData();
 		}
-		
-		public class BirthData
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = GetType().ToString().GetHashCode();
+                hash = (hash * 16777619) ^ Name.GetHashCode();
+                hash = (hash * 16777619) ^ Gender.GetHashCode();
+
+                if (Birth.Date != null)
+                {
+                    hash = (hash * 16777619) ^ Birth.Date.GetHashCode();
+                }
+
+                return hash;
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            return GetHashCode() == obj.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public class BirthData
 		{
 			public DateTime Date { get; set; }
 			public string Country { get; set; }
@@ -34,5 +62,10 @@ namespace ExpressionBuilder.Test.Models
 			}
 
 		}
+
+        public class Company {
+            public string Name { get; set; }
+            public string Industry { get; set; }
+        }
 	}
 }

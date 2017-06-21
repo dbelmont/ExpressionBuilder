@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using ExpressionBuilder.Interfaces;
 using ExpressionBuilder.Interfaces.Generics;
+using ExpressionBuilder.Helpers;
 
 namespace ExpressionBuilder.Builders
 {
@@ -35,7 +36,13 @@ namespace ExpressionBuilder.Builders
                 { Operation.StartsWith, (member, constant, constant2) => Expression.Call(member, startsWithMethod, constant) },
                 { Operation.EndsWith, (member, constant, constant2) => Expression.Call(member, endsWithMethod, constant) },
                 { Operation.Between, (member, constant, constant2) => Between(member, constant, constant2) },
-                { Operation.In, (member, constant, constant2) => Contains(member, constant) }
+                { Operation.In, (member, constant, constant2) => Contains(member, constant) },
+                { Operation.IsNull, (member, constant, constant2) => Expression.Equal(member, Expression.Constant(null)) },
+                { Operation.IsNotNull, (member, constant, constant2) => Expression.NotEqual(member, Expression.Constant(null)) },
+                { Operation.IsEmpty, (member, constant, constant2) => Expression.Equal(member, Expression.Constant(String.Empty)) },
+                { Operation.IsNotEmpty, (member, constant, constant2) => Expression.NotEqual(member, Expression.Constant(String.Empty)) },
+                { Operation.IsNullOrWhiteSpace, (member, constant, constant2) => IsNullOrWhiteSpace(member) },
+                { Operation.IsNotNullNorWhiteSpace, (member, constant, constant2) => IsNotNullNorWhiteSpace(member) }
             };
         }
 		
@@ -88,11 +95,56 @@ namespace ExpressionBuilder.Builders
         
         private Expression GetExpression(ParameterExpression param, IFilterStatement statement, string propertyName = null)
         {
-            Expression member = helper.GetMemberExpression(param, propertyName ?? statement.PropertyName);
+            var memberName = propertyName ?? statement.PropertyName;
+            Expression member = helper.GetMemberExpression(param, memberName);
             Expression constant = GetConstantExpression(member, statement.Value);
             Expression constant2 = GetConstantExpression(member, statement.Value2);
+            
+            Expression resultExpr = GetSafeStringExpression(member, statement.Operation, constant, constant2);
+            resultExpr = GetSafePropertyMember(param, memberName, resultExpr);
 
-            return Expressions[statement.Operation].Invoke(member, constant, constant2);
+            return resultExpr;
+        }
+
+        private Expression GetSafeStringExpression(Expression member, Operation operation, Expression constant, Expression constant2)
+        {
+            if (member.Type != typeof(string))
+            {
+                return Expressions[operation].Invoke(member, constant, constant2);
+            }
+
+            Expression newMember = member;
+
+            if (operation != Operation.IsNullOrWhiteSpace && operation != Operation.IsNotNullNorWhiteSpace)
+            {
+                var trimMemberCall = Expression.Call(member, helper.trimMethod);
+                newMember = Expression.Call(trimMemberCall, helper.toLowerMethod);
+            }
+
+            Expression resultExpr = Expressions[operation].Invoke(newMember, constant, constant2);
+
+            if (member.Type == typeof(string))
+            {
+                if (operation != Operation.IsNullOrWhiteSpace && operation != Operation.IsNotNullNorWhiteSpace)
+                {
+                    Expression memberIsNotNull = Expression.NotEqual(member, Expression.Constant(null));
+                    resultExpr = Expression.AndAlso(memberIsNotNull, resultExpr);
+                }
+            }
+
+            return resultExpr;
+        }
+
+        public Expression GetSafePropertyMember(ParameterExpression param, String memberName, Expression expr)
+        {
+            if (!memberName.Contains("."))
+            {
+                return expr;
+            }
+
+            string parentName = memberName.Substring(0, memberName.IndexOf("."));
+            Expression parentMember = helper.GetMemberExpression(param, parentName);
+            return Expression.AndAlso(Expression.NotEqual(parentMember, Expression.Constant(null)), expr);
         }
 
         private Expression GetConstantExpression(Expression member, object value)
@@ -130,6 +182,26 @@ namespace ExpressionBuilder.Builders
             var right = Expressions[Operation.LessThanOrEquals].Invoke(member, constant2, null);
 
             return CombineExpressions(left, right, FilterStatementConnector.And);
+        }
+
+        private Expression IsNullOrWhiteSpace(Expression member)
+        {
+            Expression exprNull = Expression.Constant(null);
+            var trimMemberCall = Expression.Call(member, helper.trimMethod);
+            Expression exprEmpty = Expression.Constant(string.Empty);
+            return Expression.OrElse(
+                                    Expression.Equal(member, exprNull),
+                                    Expression.Equal(trimMemberCall, exprEmpty));
+        }
+
+        private Expression IsNotNullNorWhiteSpace(Expression member)
+        {
+            Expression exprNull = Expression.Constant(null);
+            var trimMemberCall = Expression.Call(member, helper.trimMethod);
+            Expression exprEmpty = Expression.Constant(string.Empty);
+            return Expression.AndAlso(
+                                    Expression.NotEqual(member, exprNull),
+                                    Expression.NotEqual(trimMemberCall, exprEmpty));
         }
         #endregion
     }

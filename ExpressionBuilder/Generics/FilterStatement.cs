@@ -12,13 +12,13 @@ namespace ExpressionBuilder.Generics
 {
     [Serializable]
     public class FilterStatement<TPropertyType> : IFilterStatement, IXmlSerializable
-	{
+    {
         public FilterStatementConnector Connector { get; set; }
         public string PropertyName { get; set; }
         public Operation Operation { get; set; }
         public object Value { get; set; }
         public object Value2 { get; set; }
-		
+
 		public FilterStatement(string propertyName, Operation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), FilterStatementConnector connector = FilterStatementConnector.And)
 		{
 			PropertyName = propertyName;
@@ -51,6 +51,7 @@ namespace ExpressionBuilder.Generics
         {
             var helper = new OperationHelper();            
             ValidateNumberOfValues(helper);
+            //TODO: Issue regarding the TPropertyType that comes from the UI always as 'Object'
             ValidateSupportedOperations(helper);
         }
 
@@ -68,7 +69,16 @@ namespace ExpressionBuilder.Generics
 
         private void ValidateSupportedOperations(OperationHelper helper)
         {
-            var supportedOperations = helper.GetSupportedOperations(typeof(TPropertyType));
+            List<Operation> supportedOperations = null;
+            if (typeof(TPropertyType) == typeof(object))
+            {
+                //TODO: Does not always work
+                //supportedOperations = helper.GetSupportedOperations(Value.GetType());
+                System.Diagnostics.Debug.WriteLine("WARN: Not able to check if the operation is supported or not.");
+                return;
+            }
+            
+            supportedOperations = helper.GetSupportedOperations(typeof(TPropertyType));
 
             if (!supportedOperations.Contains(Operation))
             {

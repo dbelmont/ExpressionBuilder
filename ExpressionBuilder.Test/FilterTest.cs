@@ -42,12 +42,28 @@ namespace ExpressionBuilder.Test
 			Assert.Throws<ArgumentException>(() => filter.By("Id", Operation.Equals, new []{ 1, 2, 3, 4 }), "Only 'Operacao.Contains' and 'Operacao.In' support arrays as parameters.");
 		}
 		
-		[TestCase(TestName="Should be able to 'read' a filter as a string")]
-		public void FilterToString()
+		[TestCase(TestName="Should be able to 'read' a double-valued filter as a string")]
+		public void DoubleValuedFilterToString()
+		{
+			var filter = new Filter<Person>();
+			filter.By("Id", Operation.Between, 1, 3).Or.By("Birth.Country", Operation.Equals, "USA");
+			Assert.That(filter.ToString(), Is.EqualTo("Id Between 1 And 3 Or Birth.Country Equals USA"));
+		}
+
+		[TestCase(TestName="Should be able to 'read' a single-valued filter as a string")]
+		public void SingleValuedFilterToString()
 		{
 			var filter = new Filter<Person>();
 			filter.By("Name", Operation.Contains, "John").Or.By("Birth.Country", Operation.Equals, "USA");
 			Assert.That(filter.ToString(), Is.EqualTo("Name Contains John Or Birth.Country Equals USA"));
+		}
+
+		[TestCase(TestName="Should be able to 'read' a no-valued filter as a string")]
+		public void NoValuedFilterToString()
+		{
+			var filter = new Filter<Person>();
+			filter.By("Name", Operation.IsNotNull).Or.By("Birth.Country", Operation.Equals, "USA");
+			Assert.That(filter.ToString(), Is.EqualTo("Name IsNotNull Or Birth.Country Equals USA"));
 		}
 	}
 }
