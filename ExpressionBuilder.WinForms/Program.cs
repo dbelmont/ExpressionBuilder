@@ -7,6 +7,9 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Configuration;
+using System.Globalization;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace ExpressionBuilder.WinForms
@@ -24,7 +27,12 @@ namespace ExpressionBuilder.WinForms
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new MainForm());
+
+            CultureInfo culture = new CultureInfo(ConfigurationManager.AppSettings["DefaultCulture"]);
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
+            Application.Run(new MainForm());
 		}
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using ExpressionBuilder.Builders;
 using ExpressionBuilder.Interfaces;
-using ExpressionBuilder.Interfaces.Generics;
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;

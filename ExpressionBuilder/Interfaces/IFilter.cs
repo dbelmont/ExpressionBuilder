@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using ExpressionBuilder.Builders;
-using System.Xml;
 
-namespace ExpressionBuilder.Interfaces.Generics
+namespace ExpressionBuilder.Interfaces
 {
 	/// <summary>
 	/// Defines a filter from which a expression will be built.

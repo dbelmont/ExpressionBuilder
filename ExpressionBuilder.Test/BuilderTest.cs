@@ -157,6 +157,16 @@ namespace ExpressionBuilder.Test
             Assert.That(people, Is.EquivalentTo(solution));
         }
 
+        [TestCase(TestName = "Builder using 'IsNull' operator on an inner property")]
+        public void BuilderUsingIsNullOperationOnAnInnerProperty()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Employer.Name", Operation.IsNull);
+            var people = People.Where(filter);
+            var solution = People.Where(p => p.Employer == null || (p.Employer != null && p.Employer.Name == null));
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
+
         [TestCase(TestName = "Builder using 'IsNotNull' operator")]
         public void BuilderUsingIsNotNullOperation()
         {
@@ -164,6 +174,16 @@ namespace ExpressionBuilder.Test
             filter.By("Employer", Operation.IsNotNull);
             var people = People.Where(filter);
             var solution = People.Where(p => p.Employer != null);
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Builder using 'IsNotNull' operator on an inner property")]
+        public void BuilderUsingIsNotNullOperationOnAnInnerProperty()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Employer.Name", Operation.IsNotNull);
+            var people = People.Where(filter);
+            var solution = People.Where(p => p.Employer != null && p.Employer.Name != null);
             Assert.That(people, Is.EquivalentTo(solution));
         }
 

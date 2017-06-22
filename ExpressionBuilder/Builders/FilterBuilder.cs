@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using ExpressionBuilder.Interfaces;
-using ExpressionBuilder.Interfaces.Generics;
 using ExpressionBuilder.Helpers;
 
 namespace ExpressionBuilder.Builders
@@ -103,6 +102,11 @@ namespace ExpressionBuilder.Builders
             Expression resultExpr = GetSafeStringExpression(member, statement.Operation, constant, constant2);
             resultExpr = GetSafePropertyMember(param, memberName, resultExpr);
 
+            if (statement.Operation == Operation.IsNull && memberName.Contains("."))
+            {
+                resultExpr = Expression.OrElse(CheckIfParentIsNull(param, member, memberName), resultExpr);
+            }
+
             return resultExpr;
         }
 
@@ -121,9 +125,11 @@ namespace ExpressionBuilder.Builders
                 newMember = Expression.Call(trimMemberCall, helper.toLowerMethod);
             }
 
-            Expression resultExpr = Expressions[operation].Invoke(newMember, constant, constant2);
+            Expression resultExpr = operation != Operation.IsNull ?
+                                    Expressions[operation].Invoke(newMember, constant, constant2) :
+                                    Expressions[operation].Invoke(member, constant, constant2);
 
-            if (member.Type == typeof(string))
+            if (member.Type == typeof(string) && operation != Operation.IsNull)
             {
                 if (operation != Operation.IsNullOrWhiteSpace && operation != Operation.IsNotNullNorWhiteSpace)
                 {
@@ -145,6 +151,13 @@ namespace ExpressionBuilder.Builders
             string parentName = memberName.Substring(0, memberName.IndexOf("."));
             Expression parentMember = helper.GetMemberExpression(param, parentName);
             return Expression.AndAlso(Expression.NotEqual(parentMember, Expression.Constant(null)), expr);
+        }
+
+        private Expression CheckIfParentIsNull(Expression param, Expression member, string memberName)
+        {
+            string parentName = memberName.Substring(0, memberName.IndexOf("."));
+            Expression parentMember = helper.GetMemberExpression(param, parentName);
+            return Expression.Equal(parentMember, Expression.Constant(null));
         }
 
         private Expression GetConstantExpression(Expression member, object value)

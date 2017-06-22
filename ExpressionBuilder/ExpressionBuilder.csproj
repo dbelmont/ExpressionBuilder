@@ -56,12 +56,15 @@
     <Compile Include="Generics\Filter.cs" />
     <Compile Include="Generics\FilterStatementConnection.cs" />
     <Compile Include="Helpers\OperationHelper.cs" />
-    <Compile Include="Interfaces\Generics\IFilter.cs" />
-    <Compile Include="Interfaces\Generics\IFilterStatementConnection.cs" />
+    <Compile Include="Interfaces\IFilter.cs" />
+    <Compile Include="Interfaces\IFilterStatementConnection.cs" />
     <Compile Include="Interfaces\IBuilderHelper.cs" />
     <Compile Include="Interfaces\IFilterStatement.cs" />
     <Compile Include="Interfaces\IOperationHelper.cs" />
+    <Compile Include="Interfaces\IPropertyCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Property.cs" />
+    <Compile Include="Resources\PropertyCollection.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

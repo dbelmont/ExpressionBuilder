@@ -99,7 +99,7 @@ namespace ExpressionBuilder.WinForms
                     break;
                 }
 
-				filter.By(ufilter.PropertyName, ufilter.Operation, ufilter.Value, ufilter.Value2, ufilter.Conector);
+				filter.By(ufilter.PropertyId, ufilter.Operation, ufilter.Value, ufilter.Value2, ufilter.Conector);
 			}
 			
 			grid.DataSource = People.Where(filter).ToList();

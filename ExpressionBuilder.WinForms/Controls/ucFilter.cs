@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Windows.Forms;
 using ExpressionBuilder.Builders;
 using ExpressionBuilder.Helpers;
+using ExpressionBuilder.Resources;
+using ExpressionBuilder.Interfaces;
 
 namespace ExpressionBuilder.WinForms.Controls
 {
@@ -17,7 +19,7 @@ namespace ExpressionBuilder.WinForms.Controls
 	public partial class ucFilter : UserControl
 	{
 		string _typeName = "ExpressionBuilder.Models.Person";
-		Dictionary<string, PropertyInfo> _properties = new Dictionary<string, PropertyInfo>();
+        IPropertyCollection _properties;
 		
 		[Category("Data")]
 		public string TypeName
@@ -26,9 +28,9 @@ namespace ExpressionBuilder.WinForms.Controls
 			set { _typeName = value; }
 		}
 		
-		public string PropertyName
+		public string PropertyId
 		{
-			get { return cbProperties.Text; }
+			get { return (cbProperties.SelectedItem as Property).Id; }
 		}
 		
 		public Operation Operation
@@ -58,12 +60,12 @@ namespace ExpressionBuilder.WinForms.Controls
 
             if (ctrl != null)
             {
-                var property = _properties[PropertyName];
-                if (property.PropertyType == typeof(string)) return ctrl.Text;
-                if (property.PropertyType == typeof(DateTime)) return (ctrl as DateTimePicker).Value;
-                if (property.PropertyType == typeof(int)) return Convert.ToInt32((ctrl as NumericUpDown).Value);
-                if (property.PropertyType == typeof(bool)) return Boolean.Parse(ctrl.Text);
-                if (property.PropertyType.IsEnum) return Enum.ToObject(property.PropertyType, (ctrl as DomainUpDown).SelectedItem);
+                var property = _properties[PropertyId];
+                if (property.Info.PropertyType == typeof(string)) return ctrl.Text;
+                if (property.Info.PropertyType == typeof(DateTime)) return (ctrl as DateTimePicker).Value;
+                if (property.Info.PropertyType == typeof(int)) return Convert.ToInt32((ctrl as NumericUpDown).Value);
+                if (property.Info.PropertyType == typeof(bool)) return Boolean.Parse(ctrl.Text);
+                if (property.Info.PropertyType.IsEnum) return Enum.ToObject(property.Info.PropertyType, (ctrl as DomainUpDown).SelectedItem);
             }
 
 			return null;
@@ -113,8 +115,10 @@ namespace ExpressionBuilder.WinForms.Controls
 		public void LoadProperties()
 		{
 			var type = Type.GetType(TypeName, true);
-			_properties = LoadProperties(type);
-			cbProperties.Items.AddRange(_properties.Keys.ToArray());
+			LoadProperties(type);
+            cbProperties.ValueMember = "Id";
+            cbProperties.DisplayMember = "Name";
+			cbProperties.DataSource = _properties;
 			cbProperties.SelectedIndexChanged += cbProperties_SelectedIndexChanged;
 		}
 
@@ -141,8 +145,7 @@ namespace ExpressionBuilder.WinForms.Controls
 		
         Control CreateNewControl()
         {
-            var propertyKey = cbProperties.Text;
-            var info = _properties[propertyKey];
+            var info = _properties[PropertyId].Info;
             Control ctrl = null;
             if (info.PropertyType.IsEnum || info.PropertyType == typeof(bool))
             {
@@ -181,41 +184,11 @@ namespace ExpressionBuilder.WinForms.Controls
             return ctrl;
         }
 
-		public Dictionary<string, PropertyInfo> LoadProperties(Type type)
+		public IPropertyCollection LoadProperties(Type type)
 		{
-			var list = new Dictionary<string, PropertyInfo>();
-			var properties = type.GetProperties();
-			foreach (var property in properties)
-			{
-				if (property.PropertyType.IsValueType || property.PropertyType == typeof(String))
-				{
-					list.Add(property.Name, property);
-					continue;
-				}
-				
-				if (property.PropertyType.IsGenericType && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
-				{
-					var props = LoadProperties(property.PropertyType.GetGenericArguments()[0]);
-					foreach (var info in props)
-					{
-						list.Add(property.Name + "[" + info.Key + "]", info.Value);
-					}
-					continue;
-				}
-				
-				if (!property.PropertyType.IsValueType)
-				{
-					var props = LoadProperties(property.PropertyType);
-					foreach (var info in props)
-					{
-						list.Add(property.Name + "." + info.Key, info.Value);
-					}
-					continue;
-				}
-			}
-			
-			return list;
-		}
+            return _properties = new PropertyCollection(type, Resources.Person.ResourceManager);
+
+        }
 		
 		void BtnAddClick(object sender, EventArgs e)
 		{
@@ -229,7 +202,7 @@ namespace ExpressionBuilder.WinForms.Controls
 
         private void cbProperties_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            var type = _properties[PropertyName].PropertyType;
+            var type = _properties[PropertyId].Info.PropertyType;
             var supportedOperations = new OperationHelper()
                                         .GetSupportedOperations(type)
                                         .Select(o => o.ToString())
