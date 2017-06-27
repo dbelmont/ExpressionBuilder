@@ -25,12 +25,12 @@ namespace ExpressionBuilder.Builders
 
             Expressions = new Dictionary<Operation, Func<Expression, Expression, Expression, Expression>>
             {
-                { Operation.Equals, (member, constant, constant2) => Expression.Equal(member, constant) },
-                { Operation.NotEquals, (member, constant, constant2) => Expression.NotEqual(member, constant) },
+                { Operation.EqualTo, (member, constant, constant2) => Expression.Equal(member, constant) },
+                { Operation.NotEqualTo, (member, constant, constant2) => Expression.NotEqual(member, constant) },
                 { Operation.GreaterThan, (member, constant, constant2) => Expression.GreaterThan(member, constant) },
-                { Operation.GreaterThanOrEquals, (member, constant, constant2) => Expression.GreaterThanOrEqual(member, constant) },
+                { Operation.GreaterThanOrEqualTo, (member, constant, constant2) => Expression.GreaterThanOrEqual(member, constant) },
                 { Operation.LessThan, (member, constant, constant2) => Expression.LessThan(member, constant) },
-                { Operation.LessThanOrEquals, (member, constant, constant2) => Expression.LessThanOrEqual(member, constant) },
+                { Operation.LessThanOrEqualTo, (member, constant, constant2) => Expression.LessThanOrEqual(member, constant) },
                 { Operation.Contains, (member, constant, constant2) => Contains(member, constant) },
                 { Operation.StartsWith, (member, constant, constant2) => Expression.Call(member, startsWithMethod, constant) },
                 { Operation.EndsWith, (member, constant, constant2) => Expression.Call(member, endsWithMethod, constant) },
@@ -191,8 +191,8 @@ namespace ExpressionBuilder.Builders
 
         private Expression Between(Expression member, Expression constant, Expression constant2)
         {
-            var left = Expressions[Operation.GreaterThanOrEquals].Invoke(member, constant, null);
-            var right = Expressions[Operation.LessThanOrEquals].Invoke(member, constant2, null);
+            var left = Expressions[Operation.GreaterThanOrEqualTo].Invoke(member, constant, null);
+            var right = Expressions[Operation.LessThanOrEqualTo].Invoke(member, constant2, null);
 
             return CombineExpressions(left, right, FilterStatementConnector.And);
         }

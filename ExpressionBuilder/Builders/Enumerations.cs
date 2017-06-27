@@ -11,7 +11,7 @@ namespace ExpressionBuilder.Builders
     public enum Operation
     {
         [NumberOfValues(1)]
-        Equals,
+        EqualTo,
 
         [NumberOfValues(1)]
         Contains,
@@ -23,19 +23,19 @@ namespace ExpressionBuilder.Builders
         EndsWith,
 
         [NumberOfValues(1)]
-        NotEquals,
+        NotEqualTo,
 
         [NumberOfValues(1)]
         GreaterThan,
 
         [NumberOfValues(1)]
-        GreaterThanOrEquals,
+        GreaterThanOrEqualTo,
 
         [NumberOfValues(1)]
         LessThan,
 
         [NumberOfValues(1)]
-        LessThanOrEquals,
+        LessThanOrEqualTo,
 
         [NumberOfValues(2)]
         Between,
@@ -64,23 +64,23 @@ namespace ExpressionBuilder.Builders
 
     public enum TypeGroup
     {
-        [SupportedOperations(Operation.Equals, Operation.NotEquals)]
+        [SupportedOperations(Operation.EqualTo, Operation.NotEqualTo)]
         Default,
 
-        [SupportedOperations(Operation.Contains, Operation.EndsWith, Operation.Equals,
+        [SupportedOperations(Operation.Contains, Operation.EndsWith, Operation.EqualTo,
                              Operation.IsEmpty, Operation.IsNotEmpty, Operation.IsNotNull, Operation.IsNotNullNorWhiteSpace,
-                             Operation.IsNull, Operation.IsNullOrWhiteSpace, Operation.NotEquals, Operation.StartsWith)]
+                             Operation.IsNull, Operation.IsNullOrWhiteSpace, Operation.NotEqualTo, Operation.StartsWith)]
         Text,
 
-        [SupportedOperations(Operation.Between, Operation.Equals, Operation.GreaterThan, Operation.GreaterThanOrEquals,
-                             Operation.LessThan, Operation.LessThanOrEquals, Operation.NotEquals)]
+        [SupportedOperations(Operation.Between, Operation.EqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
+                             Operation.LessThan, Operation.LessThanOrEqualTo, Operation.NotEqualTo)]
         Number,
 
-        [SupportedOperations(Operation.Equals, Operation.NotEquals)]
+        [SupportedOperations(Operation.EqualTo, Operation.NotEqualTo)]
         Boolean,
 
-        [SupportedOperations(Operation.Between, Operation.Equals, Operation.GreaterThan, Operation.GreaterThanOrEquals,
-                             Operation.IsNotNull, Operation.IsNull, Operation.LessThan, Operation.LessThanOrEquals, Operation.NotEquals)]
+        [SupportedOperations(Operation.Between, Operation.EqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
+                             Operation.IsNotNull, Operation.IsNull, Operation.LessThan, Operation.LessThanOrEqualTo, Operation.NotEqualTo)]
         Date,
 
         [SupportedOperations(Operation.IsNotNull, Operation.IsNull)]

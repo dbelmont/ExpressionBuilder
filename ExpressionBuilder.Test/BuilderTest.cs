@@ -61,7 +61,7 @@ namespace ExpressionBuilder.Test
         public void BuilderWithSimpleFilterStatements()
         {
         	var filter = new Filter<Person>();
-            filter.By("Name", Operation.EndsWith, "Doe").Or.By("Gender", Operation.Equals, PersonGender.Female);
+            filter.By("Name", Operation.EndsWith, "Doe").Or.By("Gender", Operation.EqualTo, PersonGender.Female);
             var people = People.Where(filter);
             var solution = People.Where(p => p.Name.Trim().ToLower().EndsWith("doe") ||
                                              p.Gender == PersonGender.Female);
@@ -82,8 +82,8 @@ namespace ExpressionBuilder.Test
         public void BuilderWithPropertyChainFilterStatements()
         {
         	var filter = new Filter<Person>();
-        	filter.By("Birth.Country", Operation.Equals, "usa", default(string), FilterStatementConnector.Or);
-        	filter.By("Birth.Date", Operation.LessThanOrEquals, new DateTime(1980, 1, 1), connector: FilterStatementConnector.Or);
+        	filter.By("Birth.Country", Operation.EqualTo, "usa", default(string), FilterStatementConnector.Or);
+        	filter.By("Birth.Date", Operation.LessThanOrEqualTo, new DateTime(1980, 1, 1), connector: FilterStatementConnector.Or);
         	filter.By("Name", Operation.Contains, "Doe");
             var people = People.Where(filter);
             var solution = People.Where(p => (p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim().ToLower().Equals("usa")) ||
@@ -96,7 +96,7 @@ namespace ExpressionBuilder.Test
         public void BuilderWithPropertyListFilterStatements()
         {
         	var filter = new Filter<Person>();
-        	filter.By("Contacts[Type]", Operation.Equals, ContactType.Email).And.By("Birth.Country", Operation.StartsWith, " usa ");
+        	filter.By("Contacts[Type]", Operation.EqualTo, ContactType.Email).And.By("Birth.Country", Operation.StartsWith, " usa ");
             var people = People.Where(filter);
             var solution = People.Where(p => p.Contacts.Any(c => c.Type == ContactType.Email) &&
                                              (p.Birth != null && p.Birth.Country.Trim().ToLower().StartsWith("usa")));
@@ -127,7 +127,7 @@ namespace ExpressionBuilder.Test
         public void BuilderWithBetweenAndSimpleFilterStatements()
         {
             var filter = new Filter<Person>();
-            filter.By("Id", Operation.Between, 2, 6).And.By("Birth.Country", Operation.Equals, " usa ");
+            filter.By("Id", Operation.Between, 2, 6).And.By("Birth.Country", Operation.EqualTo, " usa ");
             var people = People.Where(filter);
             var solution = People.Where(p => (p.Id >= 2 && p.Id <= 6) &&
                                              (p.Birth != null && p.Birth.Country.Trim().ToLower().StartsWith("usa")));
@@ -239,7 +239,7 @@ namespace ExpressionBuilder.Test
         public void BuilderWithWrongNumberOrValuesWhenExpectingJustOneValue()
         {
             var filter = new Filter<Person>();
-            var ex = Assert.Throws<WrongNumberOfValuesException>(() => filter.By("Id", Operation.Equals, 1, 2));
+            var ex = Assert.Throws<WrongNumberOfValuesException>(() => filter.By("Id", Operation.EqualTo, 1, 2));
             Assert.That(ex.Message, Does.Match(@"The operation '\w*' admits exactly '\w*' values \(not more neither less than this\)."));
         }
 

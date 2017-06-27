@@ -35,14 +35,16 @@ namespace ExpressionBuilder.WinForms.Controls
 		
 		public Operation Operation
 		{
-			get { return (Operation)Enum.Parse(typeof(Operation), cbOperations.Text); }
+			get { return (Operation)Enum.Parse(typeof(Operation), (cbOperations.SelectedItem as dynamic).Id); }
 		}
 		
 		public object Value
 		{
 			get
 			{
-                return GetValue("ctrlValue");
+                var numberOfValues = new OperationHelper().GetNumberOfValuesAcceptable(Operation);
+                var defaultValue = _properties[PropertyId].Info.PropertyType.IsValueType ? Activator.CreateInstance(_properties[PropertyId].Info.PropertyType) : null;
+                return numberOfValues > 0 ? GetValue("ctrlValue") : defaultValue;
 			}
 		}
 
@@ -50,7 +52,9 @@ namespace ExpressionBuilder.WinForms.Controls
 		{
 			get
 			{
-                return GetValue("ctrlValue2");
+                var numberOfValues = new OperationHelper().GetNumberOfValuesAcceptable(Operation);
+                var defaultValue = _properties[PropertyId].Info.PropertyType.IsValueType ? Activator.CreateInstance(_properties[PropertyId].Info.PropertyType) : null;
+                return numberOfValues == 2 ? GetValue("ctrlValue2") : defaultValue;
 			}
 		}
 		
@@ -107,8 +111,8 @@ namespace ExpressionBuilder.WinForms.Controls
 		void UcFilterLoad(object sender, EventArgs e)
 		{
 			LoadProperties();
+            LoadOperations();
 			cbProperties.SelectedIndex = 0;
-			cbOperations.SelectedIndex = 0;
 			cbConector.SelectedIndex = 0;
 		}
 		
@@ -122,24 +126,44 @@ namespace ExpressionBuilder.WinForms.Controls
 			cbProperties.SelectedIndexChanged += cbProperties_SelectedIndexChanged;
 		}
 
+        private void LoadOperations()
+        {
+            LoadValueControls();
+
+            var type = _properties[PropertyId].Info.PropertyType;
+            var supportedOperations = new OperationHelper()
+                                        .GetSupportedOperations(type)
+                                        .Select(o => new {
+                                            Id = o.ToString(),
+                                            Name = o.GetDescription(Resources.Operations.ResourceManager)
+                                        })
+                                        .ToArray();
+
+            cbOperations.ValueMember = "Id";
+            cbOperations.DisplayMember = "Name";
+            cbOperations.DataSource = supportedOperations;
+        }
+
 		void cbProperties_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			Controls.RemoveByKey("ctrlValue");
-			Controls.RemoveByKey("ctrlValue2");
-		}
+            LoadOperations();
+        }
 		
 		void LoadValueControls()
 		{
+            Controls.RemoveByKey("ctrlValue");
+            Controls.RemoveByKey("ctrlValue2");
+
             var ctrl = CreateNewControl();
 			ctrl.Name = "ctrlValue";
 			ctrl.Size = new Size(300, 20);
-			ctrl.Location = new Point(400, 6);
+			ctrl.Location = new Point(422, 6);
 			Controls.Add(ctrl);
 
             var ctrl2 = CreateNewControl();
 			ctrl2.Name = "ctrlValue2";
 			ctrl2.Size = new Size(300, 20);
-			ctrl2.Location = new Point(705, 6);
+			ctrl2.Location = new Point(727, 6);
 			Controls.Add(ctrl2);
 		}
 		
@@ -200,35 +224,31 @@ namespace ExpressionBuilder.WinForms.Controls
 			OnRemove(sender, e);
 		}
 
-        private void cbProperties_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
-            var type = _properties[PropertyId].Info.PropertyType;
-            var supportedOperations = new OperationHelper()
-                                        .GetSupportedOperations(type)
-                                        .Select(o => o.ToString())
-                                        .ToArray();
-            cbOperations.Items.Clear();
-            cbOperations.Items.AddRange(supportedOperations);
-        }
-
         private void cbOperations_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Controls.RemoveByKey("ctrlValue");
-            Controls.RemoveByKey("ctrlValue2");
-            LoadValueControls();
+            SetControlVisibility("ctrlValue", true);
+            SetControlVisibility("ctrlValue2", true);
 
-            var operation = (Operation)Enum.Parse(typeof(Operation), cbOperations.Text);
-            var numberOfValues = new OperationHelper().GetNumberOfValuesAcceptable(operation);
-            
+            var numberOfValues = new OperationHelper().GetNumberOfValuesAcceptable(Operation);
             switch (numberOfValues)
             {
                 case 0:
-                    Controls.RemoveByKey("ctrlValue");
-                    Controls.RemoveByKey("ctrlValue2");
+                    SetControlVisibility("ctrlValue", false);
+                    SetControlVisibility("ctrlValue2", false);
                     break;
                 case 1:
-                    Controls.RemoveByKey("ctrlValue2");
+                    SetControlVisibility("ctrlValue2", false);
                     break;
+            }
+        }
+
+        private void SetControlVisibility(string controlName, bool visible)
+        {
+            var ctrl = Controls.Find(controlName, false).FirstOrDefault();
+            
+            if (ctrl != null)
+            {
+                ctrl.Visible = visible;
             }
         }
     }

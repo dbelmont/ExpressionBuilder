@@ -63,6 +63,7 @@
     <Compile Include="Interfaces\IOperationHelper.cs" />
     <Compile Include="Interfaces\IPropertyCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\OperationGlobalizationExtensionMethods.cs" />
     <Compile Include="Resources\Property.cs" />
     <Compile Include="Resources\PropertyCollection.cs" />
   </ItemGroup>

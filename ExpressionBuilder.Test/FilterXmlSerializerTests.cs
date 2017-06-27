@@ -21,7 +21,7 @@ namespace ExpressionBuilder.Test
         public void Setup()
         {
             _filter = new Filter<Person>();
-            _filter.By("Id", Operation.GreaterThanOrEquals, 2).Or.By("Gender", Operation.Equals, PersonGender.Male);
+            _filter.By("Id", Operation.GreaterThanOrEqualTo, 2).Or.By("Gender", Operation.EqualTo, PersonGender.Male);
 
             var sb = new StringBuilder();
             sb.Append("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
@@ -54,7 +54,7 @@ namespace ExpressionBuilder.Test
                 var statement = new FilterStatement<Person>
                 {
                     PropertyName = "Id",
-                    Operation = Operation.GreaterThanOrEquals,
+                    Operation = Operation.GreaterThanOrEqualTo,
                     Value = 2,
                     Connector = FilterStatementConnector.Or
                 };
@@ -85,7 +85,7 @@ namespace ExpressionBuilder.Test
                 var statement = new FilterStatement<Person>
                 {
                     PropertyName = "Gender",
-                    Operation = Operation.Equals,
+                    Operation = Operation.EqualTo,
                     Value = PersonGender.Male,
                     Connector = FilterStatementConnector.And
                 };
@@ -195,7 +195,7 @@ namespace ExpressionBuilder.Test
 
             Assert.That(statement, Is.Not.Null);
             Assert.That(statement.PropertyName, Is.EqualTo("Id"));
-            Assert.That(statement.Operation, Is.EqualTo(Operation.GreaterThanOrEquals));
+            Assert.That(statement.Operation, Is.EqualTo(Operation.GreaterThanOrEqualTo));
             Assert.That(statement.Value, Is.EqualTo(2));
             Assert.That(statement.Connector, Is.EqualTo(FilterStatementConnector.Or));
         }
@@ -220,7 +220,7 @@ namespace ExpressionBuilder.Test
 
             Assert.That(statement, Is.Not.Null);
             Assert.That(statement.PropertyName, Is.EqualTo("Gender"));
-            Assert.That(statement.Operation, Is.EqualTo(Operation.Equals));
+            Assert.That(statement.Operation, Is.EqualTo(Operation.EqualTo));
             Assert.That(statement.Value, Is.EqualTo(PersonGender.Male));
             Assert.That(statement.Connector, Is.EqualTo(FilterStatementConnector.And));
         }

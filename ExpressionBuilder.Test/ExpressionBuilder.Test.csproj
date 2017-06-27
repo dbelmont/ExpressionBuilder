@@ -53,6 +53,16 @@
     <Compile Include="HelperTests.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="Resources\Operations.Designer.cs">
+      <DependentUpon>Operations.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\Operations.pt-BR.Designer.cs">
+      <DependentUpon>Operations.pt-BR.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Resources\Person.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -74,6 +84,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Operations.pt-BR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Operations.pt-BR.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Operations.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Operations.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Person.pt-BR.resx" />
     <EmbeddedResource Include="Resources\Person.resx">
       <Generator>ResXFileCodeGenerator</Generator>
