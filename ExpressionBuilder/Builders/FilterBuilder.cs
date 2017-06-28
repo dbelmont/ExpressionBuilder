@@ -102,7 +102,7 @@ namespace ExpressionBuilder.Builders
             Expression resultExpr = GetSafeStringExpression(member, statement.Operation, constant, constant2);
             resultExpr = GetSafePropertyMember(param, memberName, resultExpr);
 
-            if (statement.Operation == Operation.IsNull && memberName.Contains("."))
+            if ((statement.Operation == Operation.IsNull || statement.Operation == Operation.IsNullOrWhiteSpace) && memberName.Contains("."))
             {
                 resultExpr = Expression.OrElse(CheckIfParentIsNull(param, member, memberName), resultExpr);
             }

@@ -109,7 +109,7 @@ namespace ExpressionBuilder.WinForms.Controls
             this.Controls.Add(this.cbOperations);
             this.Controls.Add(this.cbProperties);
             this.Name = "ucFilter";
-            this.Size = new System.Drawing.Size(956, 29);
+            this.Size = new System.Drawing.Size(868, 27);
             this.Load += new System.EventHandler(this.UcFilterLoad);
             this.ResumeLayout(false);
 

@@ -80,7 +80,7 @@ namespace ExpressionBuilder.Builders
         Boolean,
 
         [SupportedOperations(Operation.Between, Operation.EqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
-                             Operation.IsNotNull, Operation.IsNull, Operation.LessThan, Operation.LessThanOrEqualTo, Operation.NotEqualTo)]
+                             Operation.LessThan, Operation.LessThanOrEqualTo, Operation.NotEqualTo)]
         Date,
 
         [SupportedOperations(Operation.IsNotNull, Operation.IsNull)]

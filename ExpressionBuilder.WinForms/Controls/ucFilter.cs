@@ -43,8 +43,7 @@ namespace ExpressionBuilder.WinForms.Controls
 			get
 			{
                 var numberOfValues = new OperationHelper().GetNumberOfValuesAcceptable(Operation);
-                var defaultValue = _properties[PropertyId].Info.PropertyType.IsValueType ? Activator.CreateInstance(_properties[PropertyId].Info.PropertyType) : null;
-                return numberOfValues > 0 ? GetValue("ctrlValue") : defaultValue;
+                return numberOfValues > 0 ? GetValue("ctrlValue") : null;
 			}
 		}
 
@@ -53,8 +52,7 @@ namespace ExpressionBuilder.WinForms.Controls
 			get
 			{
                 var numberOfValues = new OperationHelper().GetNumberOfValuesAcceptable(Operation);
-                var defaultValue = _properties[PropertyId].Info.PropertyType.IsValueType ? Activator.CreateInstance(_properties[PropertyId].Info.PropertyType) : null;
-                return numberOfValues == 2 ? GetValue("ctrlValue2") : defaultValue;
+                return numberOfValues == 2 ? GetValue("ctrlValue2") : null;
 			}
 		}
 		
@@ -170,34 +168,36 @@ namespace ExpressionBuilder.WinForms.Controls
         Control CreateNewControl()
         {
             var info = _properties[PropertyId].Info;
+            var underlyingNullableType = Nullable.GetUnderlyingType(info.PropertyType);
+            var type = underlyingNullableType ?? info.PropertyType;
             Control ctrl = null;
-            if (info.PropertyType.IsEnum || info.PropertyType == typeof(bool))
+            if (type.IsEnum || type == typeof(bool))
             {
                 ctrl = new DomainUpDown();
-                if (info.PropertyType == typeof(bool))
+                if (type == typeof(bool))
                 {
                     (ctrl as DomainUpDown).Items.AddRange(new[] { true, false });
                 }
                 else
                 {
-                    (ctrl as DomainUpDown).Items.AddRange(Enum.GetValues(info.PropertyType));
+                    (ctrl as DomainUpDown).Items.AddRange(Enum.GetValues(type));
                 }
                 (ctrl as DomainUpDown).SelectedItem = (ctrl as DomainUpDown).Items[0];
                 (ctrl as DomainUpDown).ReadOnly = true;
 
             }
 
-            if (info.PropertyType == typeof(string))
+            if (type == typeof(string))
             {
                 ctrl = new TextBox();
             }
 
-            if (info.PropertyType == typeof(DateTime))
+            if (type == typeof(DateTime))
             {
                 ctrl = new DateTimePicker();
             }
 
-            if (new[] { typeof(int), typeof(double), typeof(float), typeof(decimal) }.Contains(info.PropertyType))
+            if (new[] { typeof(int), typeof(double), typeof(float), typeof(decimal) }.Contains(type))
             {
                 ctrl = new NumericUpDown();
                 (ctrl as NumericUpDown).Value = 0;

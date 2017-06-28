@@ -60,7 +60,7 @@ namespace ExpressionBuilder.Test
         {
             var definitions = new OperationHelper();
             var dateOperations = new List<Operation> { Operation.Between, Operation.EqualTo, Operation.NotEqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
-                                                       Operation.LessThan, Operation.LessThanOrEqualTo, Operation.IsNull, Operation.IsNotNull };
+                                                       Operation.LessThan, Operation.LessThanOrEqualTo };
             var operations = definitions.GetSupportedOperations(typeof(DateTime));
             Assert.That(operations, Is.EquivalentTo(dateOperations));
         }

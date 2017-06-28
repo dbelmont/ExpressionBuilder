@@ -26,12 +26,12 @@ namespace ExpressionBuilder.WinForms.Models
 		
 		public class BirthData
 		{
-			public DateTime Date { get; set; }
+			public DateTime? Date { get; set; }
 			public string Country { get; set; }
 			
 			public override string ToString()
 			{
-				return string.Format("Born at {0} in {1}", Date.ToShortDateString(), Country);
+				return string.Format("Born at {0} in {1}", Date.HasValue ? Date.Value.ToShortDateString() : "?", Country ?? "?");
 			}
 		}
 
@@ -39,6 +39,11 @@ namespace ExpressionBuilder.WinForms.Models
         {
             public string Name { get; set; }
             public string Industry { get; set; }
+
+            public override string ToString()
+            {
+                return string.Format("{0} ({1})", Name, Industry);
+            }
         }
     }
 }

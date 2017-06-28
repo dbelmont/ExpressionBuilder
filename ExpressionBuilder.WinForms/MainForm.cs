@@ -53,7 +53,8 @@ namespace ExpressionBuilder.WinForms
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			AddFilter();
-		}
+            grid.DataSource = People;
+        }
 		
 		protected void AddFilter()
 		{
@@ -65,7 +66,6 @@ namespace ExpressionBuilder.WinForms
 			control.Top = pnFilters.Controls.Count * control.Height;
 			
 			pnFilters.Controls.Add(control);
-			grid.DataSource = People;
 		}
 		
 		void UcFilterOnAdd(object sender, EventArgs e)
