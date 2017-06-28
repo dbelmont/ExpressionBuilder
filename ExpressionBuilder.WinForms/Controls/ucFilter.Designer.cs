@@ -56,25 +56,14 @@ namespace ExpressionBuilder.WinForms.Controls
             this.cbProperties.Name = "cbProperties";
             this.cbProperties.Size = new System.Drawing.Size(164, 21);
             this.cbProperties.TabIndex = 0;
-            this.cbProperties.SelectedIndexChanged += new System.EventHandler(this.cbProperties_SelectedIndexChanged_1);
             // 
             // cbOperations
             // 
             this.cbOperations.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbOperations.FormattingEnabled = true;
-            this.cbOperations.Items.AddRange(new object[] {
-            "Equals",
-            "Contains",
-            "StartsWith",
-            "EndsWith",
-            "NotEquals",
-            "GreaterThan",
-            "GreaterThanOrEquals",
-            "LessThan",
-            "LessThanOrEquals"});
-            this.cbOperations.Location = new System.Drawing.Point(175, 4);
+            this.cbOperations.Location = new System.Drawing.Point(170, 4);
             this.cbOperations.Name = "cbOperations";
-            this.cbOperations.Size = new System.Drawing.Size(121, 21);
+            this.cbOperations.Size = new System.Drawing.Size(145, 21);
             this.cbOperations.TabIndex = 1;
             this.cbOperations.SelectedIndexChanged += new System.EventHandler(this.cbOperations_SelectedIndexChanged);
             // 
@@ -85,16 +74,16 @@ namespace ExpressionBuilder.WinForms.Controls
             this.cbConector.Items.AddRange(new object[] {
             "And",
             "Or"});
-            this.cbConector.Location = new System.Drawing.Point(759, 4);
+            this.cbConector.Location = new System.Drawing.Point(775, 4);
             this.cbConector.Name = "cbConector";
-            this.cbConector.Size = new System.Drawing.Size(121, 21);
+            this.cbConector.Size = new System.Drawing.Size(40, 21);
             this.cbConector.TabIndex = 3;
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(887, 4);
+            this.btnAdd.Location = new System.Drawing.Point(815, 4);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(29, 21);
+            this.btnAdd.Size = new System.Drawing.Size(25, 19);
             this.btnAdd.TabIndex = 4;
             this.btnAdd.Text = "+";
             this.btnAdd.UseVisualStyleBackColor = true;
@@ -102,9 +91,9 @@ namespace ExpressionBuilder.WinForms.Controls
             // 
             // btnRemove
             // 
-            this.btnRemove.Location = new System.Drawing.Point(922, 4);
+            this.btnRemove.Location = new System.Drawing.Point(840, 4);
             this.btnRemove.Name = "btnRemove";
-            this.btnRemove.Size = new System.Drawing.Size(29, 21);
+            this.btnRemove.Size = new System.Drawing.Size(25, 19);
             this.btnRemove.TabIndex = 5;
             this.btnRemove.Text = "-";
             this.btnRemove.UseVisualStyleBackColor = true;
@@ -120,7 +109,7 @@ namespace ExpressionBuilder.WinForms.Controls
             this.Controls.Add(this.cbOperations);
             this.Controls.Add(this.cbProperties);
             this.Name = "ucFilter";
-            this.Size = new System.Drawing.Size(956, 29);
+            this.Size = new System.Drawing.Size(868, 27);
             this.Load += new System.EventHandler(this.UcFilterLoad);
             this.ResumeLayout(false);
 

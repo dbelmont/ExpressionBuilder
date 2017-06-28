@@ -24,8 +24,8 @@ namespace ExpressionBuilder.Test
         public void SupportedOperationsForNumbers(Type numberType)
         {
             var definitions = new OperationHelper();
-            var numberOperations = new List<Operation> { Operation.Equals, Operation.NotEquals, Operation.GreaterThan, Operation.GreaterThanOrEquals,
-                                                         Operation.LessThan, Operation.LessThanOrEquals, Operation.Between };
+            var numberOperations = new List<Operation> { Operation.EqualTo, Operation.NotEqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
+                                                         Operation.LessThan, Operation.LessThanOrEqualTo, Operation.Between };
 
             if (numberType.IsArray)
             {
@@ -42,7 +42,7 @@ namespace ExpressionBuilder.Test
         public void SupportedOperationsForText(Type textType)
         {
             var definitions = new OperationHelper();
-            var textOperations = new List<Operation> { Operation.Equals, Operation.Contains, Operation.EndsWith, Operation.NotEquals, Operation.StartsWith,
+            var textOperations = new List<Operation> { Operation.EqualTo, Operation.Contains, Operation.EndsWith, Operation.NotEqualTo, Operation.StartsWith,
                                                        Operation.IsEmpty, Operation.IsNotEmpty, Operation.IsNotNull, Operation.IsNotNullNorWhiteSpace, Operation.IsNull,
                                                        Operation.IsNullOrWhiteSpace };
 
@@ -59,8 +59,8 @@ namespace ExpressionBuilder.Test
         public void SupportedOperationsForDates()
         {
             var definitions = new OperationHelper();
-            var dateOperations = new List<Operation> { Operation.Between, Operation.Equals, Operation.NotEquals, Operation.GreaterThan, Operation.GreaterThanOrEquals,
-                                                       Operation.LessThan, Operation.LessThanOrEquals, Operation.IsNull, Operation.IsNotNull };
+            var dateOperations = new List<Operation> { Operation.Between, Operation.EqualTo, Operation.NotEqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
+                                                       Operation.LessThan, Operation.LessThanOrEqualTo };
             var operations = definitions.GetSupportedOperations(typeof(DateTime));
             Assert.That(operations, Is.EquivalentTo(dateOperations));
         }
@@ -69,7 +69,7 @@ namespace ExpressionBuilder.Test
         public void SupportedOperationsForBool()
         {
             var definitions = new OperationHelper();
-            var booleanOperations = new List<Operation> { Operation.Equals, Operation.NotEquals };
+            var booleanOperations = new List<Operation> { Operation.EqualTo, Operation.NotEqualTo };
             var operations = definitions.GetSupportedOperations(typeof(bool));
             Assert.That(operations, Is.EquivalentTo(booleanOperations));
         }
@@ -79,8 +79,8 @@ namespace ExpressionBuilder.Test
         {
             var definitions = new OperationHelper();
             var nullableOperations = new List<Operation> { Operation.IsNotNull, Operation.IsNull };
-            var numberOperations = new List<Operation> { Operation.Equals, Operation.NotEquals, Operation.GreaterThan, Operation.GreaterThanOrEquals,
-                                                         Operation.LessThan, Operation.LessThanOrEquals, Operation.Between };
+            var numberOperations = new List<Operation> { Operation.EqualTo, Operation.NotEqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
+                                                         Operation.LessThan, Operation.LessThanOrEqualTo, Operation.Between };
             nullableOperations.AddRange(numberOperations);
             var operations = definitions.GetSupportedOperations(typeof(int?));
             Assert.That(operations, Is.EquivalentTo(nullableOperations));

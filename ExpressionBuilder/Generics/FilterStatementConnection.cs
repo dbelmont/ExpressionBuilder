@@ -1,7 +1,6 @@
 ﻿using System;
 using ExpressionBuilder.Builders;
 using ExpressionBuilder.Interfaces;
-using ExpressionBuilder.Interfaces.Generics;
 
 namespace ExpressionBuilder.Generics
 {

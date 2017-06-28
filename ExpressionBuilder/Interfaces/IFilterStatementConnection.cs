@@ -1,4 +1,4 @@
-﻿namespace ExpressionBuilder.Interfaces.Generics
+﻿namespace ExpressionBuilder.Interfaces
 {
 	public interface IFilterStatementConnection
 	{
