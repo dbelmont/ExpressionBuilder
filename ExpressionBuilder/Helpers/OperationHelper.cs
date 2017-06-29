@@ -1,5 +1,5 @@
 ﻿using ExpressionBuilder.Attributes;
-using ExpressionBuilder.Builders;
+using ExpressionBuilder.Common;
 using ExpressionBuilder.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -7,10 +7,16 @@ using System.Linq;
 
 namespace ExpressionBuilder.Helpers
 {
+    /// <summary>
+    /// Useful methods regarding <seealso cref="Operation"></seealso>.
+    /// </summary>
     public class OperationHelper : IOperationHelper
     {
-        public readonly Dictionary<TypeGroup, List<Type>> TypeGroups;
+        readonly Dictionary<TypeGroup, List<Type>> TypeGroups;
 
+        /// <summary>
+        /// Instantiates a new OperationHelper.
+        /// </summary>
         public OperationHelper()
         {
             TypeGroups = new Dictionary<TypeGroup, List<Type>>
@@ -23,7 +29,12 @@ namespace ExpressionBuilder.Helpers
             };
         }
 
-        public List<Operation> GetSupportedOperations(Type type)
+        /// <summary>
+        /// Retrieves a list of <see cref="Operation"></see> supported by a type.
+        /// </summary>
+        /// <param name="type">Type for which supported operations should be retrieved.</param>
+        /// <returns></returns>
+        public List<Operation> SupportedOperations(Type type)
         {
             var supportedOperations = ExtractSupportedOperationsFromAttribute(type);
             
@@ -36,7 +47,7 @@ namespace ExpressionBuilder.Helpers
             var underlyingNullableType = Nullable.GetUnderlyingType(type);
             if(underlyingNullableType != null)
             {
-                var underlyingNullableTypeOperations = GetSupportedOperations(underlyingNullableType);
+                var underlyingNullableTypeOperations = SupportedOperations(underlyingNullableType);
                 supportedOperations.AddRange(underlyingNullableTypeOperations);
             }
 
@@ -58,7 +69,12 @@ namespace ExpressionBuilder.Helpers
             return (attr as SupportedOperationsAttribute).SupportedOperations;
         }
 
-        public int GetNumberOfValuesAcceptable(Operation operation)
+        /// <summary>
+        /// Retrieves the exactly number of values acceptable by a specific operation.
+        /// </summary>
+        /// <param name="operation"><see cref="Operation"></see> for which the number of values acceptable should be verified.</param>
+        /// <returns></returns>
+        public int NumberOfValuesAcceptable(Operation operation)
         {
             var fieldInfo = operation.GetType().GetField(operation.ToString());
             var attrs = fieldInfo.GetCustomAttributes(false);

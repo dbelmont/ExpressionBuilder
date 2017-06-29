@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace ExpressionBuilder.Helpers
 {
-	public class BuilderHelper : IBuilderHelper
+	internal class BuilderHelper : IBuilderHelper
 	{
         public readonly MethodInfo trimMethod = typeof(string).GetMethod("Trim", new Type[0]);
         public readonly MethodInfo toLowerMethod = typeof(string).GetMethod("ToLower", new Type[0]);

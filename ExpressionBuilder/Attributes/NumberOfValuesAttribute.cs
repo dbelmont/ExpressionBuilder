@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ExpressionBuilder.Attributes
 {
-    public class NumberOfValuesAttribute : Attribute
+    internal class NumberOfValuesAttribute : Attribute
     {
         [Range(0, 2, ErrorMessage = "Operations may only have from none to two values.")]
         [DefaultValue(1)]

@@ -1,15 +1,27 @@
-﻿using ExpressionBuilder.Builders;
+﻿using ExpressionBuilder.Common;
 using ExpressionBuilder.Helpers;
 using System;
 
 namespace ExpressionBuilder.Exceptions
 {
+    /// <summary>
+    /// Represents an attempt to use an operation providing the wrong number of values.
+    /// </summary>
     public class WrongNumberOfValuesException : Exception
     {
+        /// <summary>
+        /// Gets the <see cref="Operation" /> attempted to be used.
+        /// </summary>
         public Operation Operation { get; private set; }
 
+        /// <summary>
+        /// Gets the number of values acceptable by this <see cref="Operation" />.
+        /// </summary>
         public int NumberOfValuesAcceptable { get; private set; }
 
+        /// <summary>
+        /// Gets a message that describes the current exception.
+        /// </summary>
         public override string Message
         {
             get
@@ -18,10 +30,14 @@ namespace ExpressionBuilder.Exceptions
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WrongNumberOfValuesException" /> class.
+        /// </summary>
+        /// <param name="operation">Operation used.</param>
         public WrongNumberOfValuesException(Operation operation) : base()
         {
             Operation = operation;
-            NumberOfValuesAcceptable = new OperationHelper().GetNumberOfValuesAcceptable(operation);
+            NumberOfValuesAcceptable = new OperationHelper().NumberOfValuesAcceptable(operation);
         }
     }
 }

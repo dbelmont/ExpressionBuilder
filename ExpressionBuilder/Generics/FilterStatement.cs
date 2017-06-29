@@ -4,24 +4,50 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Xml;
 using System.Xml.Schema;
-using ExpressionBuilder.Builders;
+using ExpressionBuilder.Common;
 using ExpressionBuilder.Helpers;
 using ExpressionBuilder.Exceptions;
 
 namespace ExpressionBuilder.Generics
 {
+    /// <summary>
+	/// Defines how a property should be filtered.
+	/// </summary>
     [Serializable]
-    public class FilterStatement<TPropertyType> : IFilterStatement, IXmlSerializable
+    public class FilterStatement<TPropertyType> : IFilterStatement
     {
+        /// <summary>
+		/// Establishes how this filter statement will connect to the next one. 
+		/// </summary>
         public FilterStatementConnector Connector { get; set; }
-        public string PropertyName { get; set; }
+        /// <summary>
+		/// Property identifier conventionalized by for the Expression Builder.
+		/// </summary>
+        public string PropertyId { get; set; }
+        /// <summary>
+		/// Express the interaction between the property and the constant value defined in this filter statement.
+		/// </summary>
         public Operation Operation { get; set; }
+        /// <summary>
+		/// Constant value that will interact with the property defined in this filter statement.
+		/// </summary>
         public object Value { get; set; }
+        /// <summary>
+        /// Constant value that will interact with the property defined in this filter statement when the operation demands a second value to compare to.
+        /// </summary>
         public object Value2 { get; set; }
-
-		public FilterStatement(string propertyName, Operation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), FilterStatementConnector connector = FilterStatementConnector.And)
+        
+        /// <summary>
+        /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
+        /// </summary>
+        /// <param name="propertyId"></param>
+        /// <param name="operation"></param>
+        /// <param name="value"></param>
+        /// <param name="value2"></param>
+        /// <param name="connector"></param>
+		public FilterStatement(string propertyId, Operation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), FilterStatementConnector connector = FilterStatementConnector.And)
 		{
-			PropertyName = propertyName;
+			PropertyId = propertyId;
 			Connector = connector;
 			Operation = operation;
 			if (typeof(TPropertyType).IsArray)
@@ -41,12 +67,15 @@ namespace ExpressionBuilder.Generics
 
             Validate();
 		}
-		
-        public FilterStatement()
-        {
 
-        }
+        /// <summary>
+        /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
+        /// </summary>
+        public FilterStatement() { }
 
+        /// <summary>
+        /// Validates the FilterStatement regarding the number of provided values and supported operations.
+        /// </summary>
         public void Validate()
         {
             var helper = new OperationHelper();            
@@ -57,7 +86,7 @@ namespace ExpressionBuilder.Generics
 
         private void ValidateNumberOfValues(OperationHelper helper)
         {
-            var numberOfValues = helper.GetNumberOfValuesAcceptable(Operation);
+            var numberOfValues = helper.NumberOfValuesAcceptable(Operation);
             var failsForSingleValue = numberOfValues == 1 && Value2 != null && !Value2.Equals(default(TPropertyType));
             var failsForNoValueAtAll = numberOfValues == 0 && Value != null && Value2 != null && (!Value.Equals(default(TPropertyType)) || !Value2.Equals(default(TPropertyType)));
 
@@ -78,7 +107,7 @@ namespace ExpressionBuilder.Generics
                 return;
             }
             
-            supportedOperations = helper.GetSupportedOperations(typeof(TPropertyType));
+            supportedOperations = helper.SupportedOperations(typeof(TPropertyType));
 
             if (!supportedOperations.Contains(Operation))
             {
@@ -86,30 +115,42 @@ namespace ExpressionBuilder.Generics
             }
         }
 
+        /// <summary>
+        /// String representation of <see cref="FilterStatement{TPropertyType}" />.
+        /// </summary>
+        /// <returns></returns>
 		public override string ToString()
         {
             var operationHelper = new OperationHelper();
 
-            switch (operationHelper.GetNumberOfValuesAcceptable(Operation))
+            switch (operationHelper.NumberOfValuesAcceptable(Operation))
             {
                 case 0:
-                    return string.Format("{0} {1}", PropertyName, Operation);
+                    return string.Format("{0} {1}", PropertyId, Operation);
                 case 2:
-                    return string.Format("{0} {1} {2} And {3}", PropertyName, Operation, Value, Value2);
+                    return string.Format("{0} {1} {2} And {3}", PropertyId, Operation, Value, Value2);
                 default:
-                    return string.Format("{0} {1} {2}", PropertyName, Operation, Value);
+                    return string.Format("{0} {1} {2}", PropertyId, Operation, Value);
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public XmlSchema GetSchema()
         {
             return null;
         }
 
+        /// <summary>
+        ///  Generates an object from its XML representation.
+        /// </summary>
+        /// <param name="reader">The System.Xml.XmlReader stream from which the object is deserialized.</param>
         public void ReadXml(XmlReader reader)
         {
             reader.Read();
-            PropertyName = reader.ReadElementContentAsString();
+            PropertyId = reader.ReadElementContentAsString();
             Operation = (Operation)Enum.Parse(typeof(Operation), reader.ReadElementContentAsString());
             if (typeof(TPropertyType).IsEnum)
             {
@@ -123,12 +164,16 @@ namespace ExpressionBuilder.Generics
             Connector = (FilterStatementConnector)Enum.Parse(typeof(FilterStatementConnector), reader.ReadElementContentAsString());
         }
 
+        /// <summary>
+        /// Converts an object into its XML representation.
+        /// </summary>
+        /// <param name="writer">The System.Xml.XmlWriter stream to which the object is serialized.</param>
         public void WriteXml(XmlWriter writer)
         {
             var type = Value.GetType();
             var serializer = new XmlSerializer(type);
             writer.WriteAttributeString("Type", type.AssemblyQualifiedName);
-            writer.WriteElementString("PropertyName", PropertyName);
+            writer.WriteElementString("PropertyId", PropertyId);
             writer.WriteElementString("Operation", Operation.ToString("d"));
             writer.WriteElementString("Value", Value.ToString());
             writer.WriteElementString("Connector", Connector.ToString("d"));

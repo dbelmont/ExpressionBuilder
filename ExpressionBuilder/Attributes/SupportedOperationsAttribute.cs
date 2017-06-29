@@ -1,10 +1,10 @@
-﻿using ExpressionBuilder.Builders;
+﻿using ExpressionBuilder.Common;
 using System;
 using System.Collections.Generic;
 
 namespace ExpressionBuilder.Attributes
 {
-    public class SupportedOperationsAttribute : Attribute
+    internal class SupportedOperationsAttribute : Attribute
     {
         public List<Operation> SupportedOperations { get; private set; }
 
