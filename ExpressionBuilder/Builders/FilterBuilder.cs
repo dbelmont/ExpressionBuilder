@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using ExpressionBuilder.Common;
 using ExpressionBuilder.Interfaces;
 using ExpressionBuilder.Helpers;
 
 namespace ExpressionBuilder.Builders
 {
-	public class FilterBuilder
+	internal class FilterBuilder
 	{
         readonly BuilderHelper helper;
         
@@ -19,7 +20,7 @@ namespace ExpressionBuilder.Builders
 
         public readonly Dictionary<Operation, Func<Expression, Expression, Expression, Expression>> Expressions;
 
-        public FilterBuilder(BuilderHelper helper)
+        internal FilterBuilder(BuilderHelper helper)
 		{
             this.helper = helper;
 
@@ -69,7 +70,7 @@ namespace ExpressionBuilder.Builders
 		
         private bool IsList(IFilterStatement statement)
         {
-            return statement.PropertyName.Contains("[") && statement.PropertyName.Contains("]");
+            return statement.PropertyId.Contains("[") && statement.PropertyId.Contains("]");
         }
 
         private Expression CombineExpressions(Expression expr1, Expression expr2, FilterStatementConnector connector)
@@ -79,8 +80,8 @@ namespace ExpressionBuilder.Builders
 
         private Expression ProcessListStatement(ParameterExpression param, IFilterStatement statement)
         {
-            var basePropertyName = statement.PropertyName.Substring(0, statement.PropertyName.IndexOf("["));
-            var propertyName = statement.PropertyName.Replace(basePropertyName, "").Replace("[", "").Replace("]", "");
+            var basePropertyName = statement.PropertyId.Substring(0, statement.PropertyId.IndexOf("["));
+            var propertyName = statement.PropertyId.Replace(basePropertyName, "").Replace("[", "").Replace("]", "");
 
             var type = param.Type.GetProperty(basePropertyName).PropertyType.GetGenericArguments()[0];
             ParameterExpression listItemParam = Expression.Parameter(type, "i");
@@ -94,7 +95,7 @@ namespace ExpressionBuilder.Builders
         
         private Expression GetExpression(ParameterExpression param, IFilterStatement statement, string propertyName = null)
         {
-            var memberName = propertyName ?? statement.PropertyName;
+            var memberName = propertyName ?? statement.PropertyId;
             Expression member = helper.GetMemberExpression(param, memberName);
             Expression constant = GetConstantExpression(member, statement.Value);
             Expression constant2 = GetConstantExpression(member, statement.Value2);

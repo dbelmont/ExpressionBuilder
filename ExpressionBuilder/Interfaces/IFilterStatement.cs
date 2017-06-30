@@ -1,20 +1,21 @@
-﻿using ExpressionBuilder.Builders;
+﻿using ExpressionBuilder.Common;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder.Interfaces
 {
 	/// <summary>
 	/// Defines how a property should be filtered.
 	/// </summary>
-	public interface IFilterStatement
-	{
+	public interface IFilterStatement : IXmlSerializable
+    {
 		/// <summary>
 		/// Establishes how this filter statement will connect to the next one. 
 		/// </summary>
 		FilterStatementConnector Connector { get; set; }
-		/// <summary>
-		/// Name of the property (or property chain).
-		/// </summary>
-		string PropertyName { get; set; }
+        /// <summary>
+        /// Property identifier conventionalized by for the Expression Builder.
+        /// </summary>
+        string PropertyId { get; set; }
 		/// <summary>
 		/// Express the interaction between the property and the constant value defined in this filter statement.
 		/// </summary>
@@ -27,5 +28,10 @@ namespace ExpressionBuilder.Interfaces
         /// Constant value that will interact with the property defined in this filter statement when the operation demands a second value to compare to.
         /// </summary>
         object Value2 { get; set; }
+
+        /// <summary>
+        /// Validates the FilterStatement regarding the number of provided values and supported operations.
+        /// </summary>
+        void Validate();
     }
 }

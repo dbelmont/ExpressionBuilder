@@ -2,7 +2,7 @@
 
 namespace ExpressionBuilder.Interfaces
 {
-    public interface IBuilderHelper
+    internal interface IBuilderHelper
     {
         Expression GetMemberExpression(Expression param, string propertyName);
     }

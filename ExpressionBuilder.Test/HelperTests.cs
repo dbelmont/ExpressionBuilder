@@ -1,4 +1,4 @@
-﻿using ExpressionBuilder.Builders;
+﻿using ExpressionBuilder.Common;
 using ExpressionBuilder.Helpers;
 using NUnit.Framework;
 using System;
@@ -32,7 +32,7 @@ namespace ExpressionBuilder.Test
                 numberOperations.Add(Operation.In);
             }
 
-            var operations = definitions.GetSupportedOperations(numberType);
+            var operations = definitions.SupportedOperations(numberType);
             Assert.That(operations, Is.EquivalentTo(numberOperations));
         }
 
@@ -51,7 +51,7 @@ namespace ExpressionBuilder.Test
                 textOperations.Add(Operation.In);
             }
 
-            var operations = definitions.GetSupportedOperations(textType);
+            var operations = definitions.SupportedOperations(textType);
             Assert.That(operations, Is.EquivalentTo(textOperations));
         }
         
@@ -61,7 +61,7 @@ namespace ExpressionBuilder.Test
             var definitions = new OperationHelper();
             var dateOperations = new List<Operation> { Operation.Between, Operation.EqualTo, Operation.NotEqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
                                                        Operation.LessThan, Operation.LessThanOrEqualTo };
-            var operations = definitions.GetSupportedOperations(typeof(DateTime));
+            var operations = definitions.SupportedOperations(typeof(DateTime));
             Assert.That(operations, Is.EquivalentTo(dateOperations));
         }
         
@@ -70,7 +70,7 @@ namespace ExpressionBuilder.Test
         {
             var definitions = new OperationHelper();
             var booleanOperations = new List<Operation> { Operation.EqualTo, Operation.NotEqualTo };
-            var operations = definitions.GetSupportedOperations(typeof(bool));
+            var operations = definitions.SupportedOperations(typeof(bool));
             Assert.That(operations, Is.EquivalentTo(booleanOperations));
         }
 
@@ -82,7 +82,7 @@ namespace ExpressionBuilder.Test
             var numberOperations = new List<Operation> { Operation.EqualTo, Operation.NotEqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
                                                          Operation.LessThan, Operation.LessThanOrEqualTo, Operation.Between };
             nullableOperations.AddRange(numberOperations);
-            var operations = definitions.GetSupportedOperations(typeof(int?));
+            var operations = definitions.SupportedOperations(typeof(int?));
             Assert.That(operations, Is.EquivalentTo(nullableOperations));
         }
     }

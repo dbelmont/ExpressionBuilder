@@ -30,6 +30,9 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <DocumentationFile>bin\Release\ExpressionBuilder.xml</DocumentationFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -48,8 +51,8 @@
     <Compile Include="Attributes\NumberOfValuesAttribute.cs" />
     <Compile Include="Attributes\SupportedOperationsAttribute.cs" />
     <Compile Include="Builders\FilterBuilder.cs" />
+    <Compile Include="Common\Enumerations.cs" />
     <Compile Include="Helpers\BuilderHelper.cs" />
-    <Compile Include="Builders\Enumerations.cs" />
     <Compile Include="Exceptions\WrongNumberOfValuesException.cs" />
     <Compile Include="Exceptions\UnsupportedOperationException.cs" />
     <Compile Include="Generics\FilterStatement.cs" />
@@ -67,6 +70,8 @@
     <Compile Include="Resources\Property.cs" />
     <Compile Include="Resources\PropertyCollection.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="package.nuspec" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

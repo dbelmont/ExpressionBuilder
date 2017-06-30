@@ -58,7 +58,7 @@ namespace ExpressionBuilder.WinForms
 		
 		protected void AddFilter()
 		{
-			var control = new ucFilter();
+			var control = new UcFilter();
 			control.TypeName = "ExpressionBuilder.WinForms.Models.Person";
 			control.OnAdd += UcFilterOnAdd;
 			control.OnRemove += UcFilterOnRemove;
@@ -93,7 +93,7 @@ namespace ExpressionBuilder.WinForms
 			var filter = new Filter<Person>();
 			foreach (var control in pnFilters.Controls)
 			{
-				var ufilter = (ucFilter)control;
+				var ufilter = (UcFilter)control;
                 if (!ufilter.ValidateChildren())
                 {
                     break;

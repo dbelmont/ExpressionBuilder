@@ -1,5 +1,8 @@
 ﻿namespace ExpressionBuilder.Interfaces
 {
+    /// <summary>
+    /// Connects to FilterStatement together.
+    /// </summary>
 	public interface IFilterStatementConnection
 	{
 		/// <summary>

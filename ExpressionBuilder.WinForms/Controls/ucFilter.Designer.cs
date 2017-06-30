@@ -8,7 +8,7 @@
  */
 namespace ExpressionBuilder.WinForms.Controls
 {
-	partial class ucFilter
+	partial class UcFilter
 	{
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.

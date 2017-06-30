@@ -7,38 +7,69 @@ using System.Linq;
 
 namespace ExpressionBuilder.Resources
 {
+    /// <summary>
+    /// Collection of <see cref="Property" />.
+    /// </summary>
     public class PropertyCollection : IPropertyCollection
     {
+        /// <summary>
+        /// Type from which the properties are loaded.
+        /// </summary>
         public Type Type { get; private set; }
 
+        /// <summary>
+        /// ResourceManager which the properties descriptions should be gotten from.
+        /// </summary>
         public ResourceManager ResourceManager { get; private set; }
-
-        public List<Property> Properties { get; private set; }
-
-        public bool IsReadOnly => true;
-
-        public bool IsFixedSize => false;
-
+        
+        private List<Property> Properties { get; set; }
+        
+        /// <summary>
+        /// Gets the number of <see cref="Property" /> contained in the <see cref="PropertyCollection" />.
+        /// </summary>
         public int Count => Properties.Count();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object SyncRoot => throw new NotImplementedException();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsSynchronized => throw new NotImplementedException();
-
-        public object this[int index] { get => Properties[index]; set => throw new NotImplementedException(); }
-
+        
+        /// <summary>
+        /// Retrieves a property based on its Id.
+        /// </summary>
+        /// <param name="propertyId">Property conventionalized <see cref="Property.Id" />.</param>
+        /// <returns></returns>
         public Property this[string propertyId] => Properties.FirstOrDefault(p => p.Id.Equals(propertyId));
 
+        /// <summary>
+        /// Instantiates a new <see cref="PropertyCollection" />.
+        /// </summary>
+        /// <param name="type"></param>
         public PropertyCollection(Type type)
         {
             Type = type;
         }
 
+        /// <summary>
+        /// Instantiates a new <see cref="PropertyCollection" />.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="resourceManager"></param>
         public PropertyCollection(Type type, ResourceManager resourceManager) : this(type)
         {
             LoadProperties(resourceManager);
         }
 
+        /// <summary>
+        /// Loads the properties names from the specified ResourceManager.
+        /// </summary>
+        /// <param name="resourceManager"></param>
+        /// <returns></returns>
         public List<Property> LoadProperties(ResourceManager resourceManager)
         {
             ResourceManager = resourceManager;
@@ -52,7 +83,7 @@ namespace ExpressionBuilder.Resources
             return Properties = properties;
         }
 
-        public string GetPropertyResourceName(string propertyConventionName)
+        private string GetPropertyResourceName(string propertyConventionName)
         {
             return propertyConventionName
                                         .Replace("[", "_")
@@ -96,49 +127,38 @@ namespace ExpressionBuilder.Resources
             return list;
         }
 
-        public int Add(object value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Contains(object value)
-        {
-            return Properties.Contains(value);
-        }
-
-        public void Clear()
-        {
-            throw new NotImplementedException();
-        }
-
-        public int IndexOf(object value)
-        {
-            return Properties.IndexOf((Property)value);
-        }
-
-        public void Insert(int index, object value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Remove(object value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveAt(int index)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        /// Copies the elements of the <see cref="PropertyCollection" /> to an System.Array,
+        /// starting at a particular System.Array index.
+        /// </summary>
+        /// <param name="array">
+        /// The one-dimensional System.Array that is the destination of the elements copied
+        /// from System.Collections.ICollection. The System.Array must have zero-based indexing.
+        /// </param>
+        /// <param name="index">The zero-based index in array at which copying begins.</param>
         public void CopyTo(Array array, int index)
         {
             Properties.CopyTo((Property[])array, index);
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator GetEnumerator()
         {
             return Properties.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Converts the collection into a list.
+        /// </summary>
+        /// <returns></returns>
+        public IList<Property> ToList()
+        {
+            Property[] properties = new Property[Properties.Count];
+            CopyTo(properties, 0);
+            return properties;
         }
     }
 }

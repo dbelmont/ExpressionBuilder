@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ExpressionBuilder.Generics;
-using ExpressionBuilder.Builders;
+using ExpressionBuilder.Common;
 using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
 using ExpressionBuilder.Exceptions;
@@ -26,15 +26,16 @@ namespace ExpressionBuilder.Test
         {
             var company = new Person.Company { Name = "Back to the future", Industry = "Time Traveling Agency" };
 
-            _people = new List<Person>();
-            _people.Add(new Person { Name = "John Doe", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1979, 2, 28), Country = "USA" }, Employer = company });
-            _people.Add(new Person { Name = "Jane Doe", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1985, 9, 5), Country = " " } });
-            _people.Add(new Person { Name = "Wade Wilson", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1973, 10, 9), Country = "USA" } });
-            _people.Add(new Person { Name = "Jessica Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } });
-            _people.Add(new Person { Name = "Jane Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } });
-            _people.Add(new Person { Name = "Fulano Silva", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1983, 5, 10), Country = "BRA" }, Employer = company });
-            _people.Add(new Person { Name = "John Hancock", Gender = PersonGender.Male, Employer = company });
-
+            _people = new List<Person>
+            {
+                new Person { Name = "John Doe", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1979, 2, 28), Country = "USA" }, Employer = company },
+                new Person { Name = "Jane Doe", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1985, 9, 5), Country = " " } },
+                new Person { Name = "Wade Wilson", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1973, 10, 9), Country = "USA" } },
+                new Person { Name = "Jessica Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } },
+                new Person { Name = "Jane Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } },
+                new Person { Name = "Fulano Silva", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1983, 5, 10), Country = "BRA" }, Employer = company },
+                new Person { Name = "John Hancock", Gender = PersonGender.Male, Employer = company }
+            };
             var id = 1;
             foreach (var person in _people)
             {

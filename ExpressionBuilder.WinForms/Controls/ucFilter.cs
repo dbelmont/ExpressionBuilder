@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
-using ExpressionBuilder.Builders;
+using ExpressionBuilder.Common;
 using ExpressionBuilder.Helpers;
 using ExpressionBuilder.Resources;
 using ExpressionBuilder.Interfaces;
@@ -14,9 +11,9 @@ using ExpressionBuilder.Interfaces;
 namespace ExpressionBuilder.WinForms.Controls
 {
 	/// <summary>
-	/// Description of ucFilter.
+	/// Description of UcFilter.
 	/// </summary>
-	public partial class ucFilter : UserControl
+	public partial class UcFilter : UserControl
 	{
 		string _typeName = "ExpressionBuilder.Models.Person";
         IPropertyCollection _properties;
@@ -42,7 +39,7 @@ namespace ExpressionBuilder.WinForms.Controls
 		{
 			get
 			{
-                var numberOfValues = new OperationHelper().GetNumberOfValuesAcceptable(Operation);
+                var numberOfValues = new OperationHelper().NumberOfValuesAcceptable(Operation);
                 return numberOfValues > 0 ? GetValue("ctrlValue") : null;
 			}
 		}
@@ -51,7 +48,7 @@ namespace ExpressionBuilder.WinForms.Controls
 		{
 			get
 			{
-                var numberOfValues = new OperationHelper().GetNumberOfValuesAcceptable(Operation);
+                var numberOfValues = new OperationHelper().NumberOfValuesAcceptable(Operation);
                 return numberOfValues == 2 ? GetValue("ctrlValue2") : null;
 			}
 		}
@@ -91,7 +88,7 @@ namespace ExpressionBuilder.WinForms.Controls
 			get { return (FilterStatementConnector)Enum.Parse(typeof(FilterStatementConnector), cbConector.Text); }
 		}
 		
-		public ucFilter()
+		public UcFilter()
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -120,7 +117,7 @@ namespace ExpressionBuilder.WinForms.Controls
 			LoadProperties(type);
             cbProperties.ValueMember = "Id";
             cbProperties.DisplayMember = "Name";
-			cbProperties.DataSource = _properties;
+			cbProperties.DataSource = _properties.ToList();
 			cbProperties.SelectedIndexChanged += cbProperties_SelectedIndexChanged;
 		}
 
@@ -130,7 +127,7 @@ namespace ExpressionBuilder.WinForms.Controls
 
             var type = _properties[PropertyId].Info.PropertyType;
             var supportedOperations = new OperationHelper()
-                                        .GetSupportedOperations(type)
+                                        .SupportedOperations(type)
                                         .Select(o => new {
                                             Id = o.ToString(),
                                             Name = o.GetDescription(Resources.Operations.ResourceManager)
@@ -229,7 +226,7 @@ namespace ExpressionBuilder.WinForms.Controls
             SetControlVisibility("ctrlValue", true);
             SetControlVisibility("ctrlValue2", true);
 
-            var numberOfValues = new OperationHelper().GetNumberOfValuesAcceptable(Operation);
+            var numberOfValues = new OperationHelper().NumberOfValuesAcceptable(Operation);
             switch (numberOfValues)
             {
                 case 0:
