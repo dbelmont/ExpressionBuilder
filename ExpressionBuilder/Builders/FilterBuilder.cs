@@ -95,12 +95,20 @@ namespace ExpressionBuilder.Builders
         
         private Expression GetExpression(ParameterExpression param, IFilterStatement statement, string propertyName = null)
         {
+            Expression resultExpr = null;
             var memberName = propertyName ?? statement.PropertyId;
             Expression member = helper.GetMemberExpression(param, memberName);
             Expression constant = GetConstantExpression(member, statement.Value);
             Expression constant2 = GetConstantExpression(member, statement.Value2);
-            
-            Expression resultExpr = GetSafeStringExpression(member, statement.Operation, constant, constant2);
+
+            if (Nullable.GetUnderlyingType(member.Type) != null && statement.Value != null)
+            {
+                resultExpr = Expression.Property(member, "HasValue");
+                member = Expression.Property(member, "Value");
+            }
+
+            var safeStringExpression = GetSafeStringExpression(member, statement.Operation, constant, constant2);
+            resultExpr = resultExpr != null ? Expression.AndAlso(resultExpr, safeStringExpression) : safeStringExpression;
             resultExpr = GetSafePropertyMember(param, memberName, resultExpr);
 
             if ((statement.Operation == Operation.IsNull || statement.Operation == Operation.IsNullOrWhiteSpace) && memberName.Contains("."))
