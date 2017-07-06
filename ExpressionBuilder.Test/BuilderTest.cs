@@ -251,5 +251,17 @@ namespace ExpressionBuilder.Test
             var ex = Assert.Throws<UnsupportedOperationException>(() => filter.By("Name", Operation.GreaterThan, "John"));
             Assert.That(ex.Message, Does.Match(@"The type '\w*' does not have support for the operation '\w*'."));
         }
+
+        [TestCase(TestName = "Builder working with nullable values")]
+        public void BuilderWithNullableValues()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Birth.Date", Operation.IsNotNull)
+                  .Or.By("Birth.Date", Operation.GreaterThan, new DateTime(1980, 1, 1));
+            var people = People.Where(filter);
+            var solution = People.Where(p => (p.Birth != null && p.Birth.Date != null)
+                                            || (p.Birth != null && p.Birth.Date.HasValue && p.Birth.Date > new DateTime(1980, 1, 1)));
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
     }
 }

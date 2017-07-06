@@ -49,9 +49,6 @@ namespace ExpressionBuilder.WinForms
 			//
 			InitializeComponent();
 			
-			//
-			// TODO: Add constructor code after the InitializeComponent() call.
-			//
 			AddFilter();
             grid.DataSource = People;
         }

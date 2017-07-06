@@ -18,8 +18,8 @@ namespace ExpressionBuilder.Helpers
         		var subParam = Expression.Property(param, propertyName.Substring(0, index));
         		return GetMemberExpression(subParam, propertyName.Substring(index + 1));
         	}
-        	
-        	return Expression.Property(param, propertyName);
+            
+            return Expression.Property(param, propertyName);
         }
 	}
 }

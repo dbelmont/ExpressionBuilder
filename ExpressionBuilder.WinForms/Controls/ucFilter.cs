@@ -60,11 +60,12 @@ namespace ExpressionBuilder.WinForms.Controls
             if (ctrl != null)
             {
                 var property = _properties[PropertyId];
-                if (property.Info.PropertyType == typeof(string)) return ctrl.Text;
-                if (property.Info.PropertyType == typeof(DateTime)) return (ctrl as DateTimePicker).Value;
-                if (property.Info.PropertyType == typeof(int)) return Convert.ToInt32((ctrl as NumericUpDown).Value);
-                if (property.Info.PropertyType == typeof(bool)) return Boolean.Parse(ctrl.Text);
-                if (property.Info.PropertyType.IsEnum) return Enum.ToObject(property.Info.PropertyType, (ctrl as DomainUpDown).SelectedItem);
+                var type = Nullable.GetUnderlyingType(property.Info.PropertyType) ?? property.Info.PropertyType;
+                if (type == typeof(string)) return ctrl.Text;
+                if (type == typeof(DateTime)) return (ctrl as DateTimePicker).Value;
+                if (type == typeof(int)) return Convert.ToInt32((ctrl as NumericUpDown).Value);
+                if (type == typeof(bool)) return Boolean.Parse(ctrl.Text);
+                if (type.IsEnum) return Enum.ToObject(property.Info.PropertyType, (ctrl as DomainUpDown).SelectedItem);
             }
 
 			return null;
@@ -94,10 +95,6 @@ namespace ExpressionBuilder.WinForms.Controls
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			InitializeComponent();
-			
-			//
-			// TODO: Add constructor code after the InitializeComponent() call.
-			//
 		}
 		
 		public event EventHandler OnAdd;
