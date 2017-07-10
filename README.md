@@ -46,7 +46,7 @@ public class Contact
 ```
 ...and we have to build the code behind a form like this one to filter a list of Person objects:
 
-![FormUI](docs\BuildLinqExpressionsDynacallyFormUI.png)
+![FormUI](docs/BuildLinqExpressionsDynacallyFormUI.png)
 
 Now, what about being able to do it in a way like this:
 ```
