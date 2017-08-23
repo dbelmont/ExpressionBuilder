@@ -15,5 +15,6 @@
   <files>
     <file src="bin\$configuration$\$id$.dll" target="lib\net45" />
     <file src="bin\$configuration$\$id$.xml" target="lib\net45" />
+    <file src="readme.md" target="" />
   </files>
 </package>

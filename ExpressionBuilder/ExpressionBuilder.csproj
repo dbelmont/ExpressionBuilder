@@ -39,6 +39,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -52,6 +53,7 @@
     <Compile Include="Attributes\SupportedOperationsAttribute.cs" />
     <Compile Include="Builders\FilterBuilder.cs" />
     <Compile Include="Common\Enumerations.cs" />
+    <Compile Include="Configuration\ExpressionBuilderConfig.cs" />
     <Compile Include="Helpers\BuilderHelper.cs" />
     <Compile Include="Exceptions\WrongNumberOfValuesException.cs" />
     <Compile Include="Exceptions\UnsupportedOperationException.cs" />
@@ -71,7 +73,10 @@
     <Compile Include="Resources\PropertyCollection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="package.nuspec" />
+    <None Include="package.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="readme.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
