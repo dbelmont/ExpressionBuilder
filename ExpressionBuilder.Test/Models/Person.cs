@@ -55,6 +55,13 @@ namespace ExpressionBuilder.Test.Models
 		{
 			public DateTime? Date { get; set; }
 			public string Country { get; set; }
+            public DateTimeOffset? DateOffset
+            {
+                get
+                {
+                    return Date.HasValue ? new DateTimeOffset?(Date.Value) : new DateTimeOffset?();
+                }
+            }
 			
 			public override string ToString()
 			{

@@ -14,15 +14,15 @@ namespace ExpressionBuilder.Test
     {
         private readonly List<string> propertyIds = new List<string>
         {
-            "Id", "Name", "Gender", "Birth.Date", "Birth.Country", "Contacts[Type]", "Contacts[Value]", "Contacts[Comments]", "Employer.Name", "Employer.Industry"
+            "Id", "Name", "Gender", "Birth.Date", "Birth.DateOffset", "Birth.Country", "Contacts[Type]", "Contacts[Value]", "Contacts[Comments]", "Employer.Name", "Employer.Industry"
         };
         private readonly List<string> propertyNames = new List<string>
         {
-            "Id", "Name", "Gender", "Date of Birth", "Country of Birth", "Contact's Type", "Contact's Value", "Contact's Comments", "Employer's Name", "Employer's Industry"
+            "Id", "Name", "Gender", "Date of Birth", "DateOffset", "Country of Birth", "Contact's Type", "Contact's Value", "Contact's Comments", "Employer's Name", "Employer's Industry"
         };
         private readonly List<string> propertyNamesptBr = new List<string>
         {
-            "Id", "Nome", "Sexo", "Data de nascimento", "País de origem", "Tipo de contato", "Valor do contato", "Comentários do contato", "Nome do empregador", "Indústria do empregador"
+            "Id", "Nome", "Sexo", "Data de nascimento", "DateOffset", "País de origem", "Tipo de contato", "Valor do contato", "Comentários do contato", "Nome do empregador", "Indústria do empregador"
         };
 
         [TestCase("", TestName= "Loading properties' info")]

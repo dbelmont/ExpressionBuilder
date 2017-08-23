@@ -1,17 +1,5 @@
 # Expression Builder
-In short words, this library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters. That can be used to help to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.  If you would like more details on how it works, please, check out the article [Build Lambda Expression Dynamically](https://www.codeproject.com/Articles/1079028/Build-Lambda-Expressions-Dynamically).
-
-## Features:
-* Ability to reference properties by their names
-* Ability to reference properties from a property
-* Ability to reference properties from list items
-* Built-in null-checks
-* Built-in XML serialization
-* Globalization support
-
-Would this help you in anyway? Well, if your answer is 'yes', you just made my day a bit better. :smile:
-
-Please, feel free to leave comments and to place issues if you find errors or realize there is any missing feature.
+In short words, this library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables creation, storage and transmission of those filters. What could be used to from helping rendering WebApi requests parameters into expressions, to creating advanced search screens with the capability to save and re-run those filters.  If you would like more details on how it works, please, check out the article [Build Lambda Expression Dinamically](https://www.codeproject.com/Articles/1079028/Build-Lambda-Expressions-Dynamically).
 
 # How to use it
 Let us imagine we have classes like this...
@@ -56,11 +44,8 @@ public class Contact
     public string Comments { get; set; }
 }
 ```
-...and we have to build the code behind a form like this one to filter a list of Person objects:
 
-![FormUI](docs/BuildLinqExpressionsDynacallyFormUI.png)
-
-Now, what about being able to do it in a way like this:
+Now, what about being able query a list of `Person` in a way like this:
 ```CSharp
 var filter = new Filter<Person>();
 filter.By("Id", Operation.Between, 2, 4,  FilterStatementConnector.And);
@@ -155,16 +140,8 @@ While compiling the filter into a lambda expression, the expression builder will
 ## Globalization support
 You just need to perform some easy steps to add globalization support to the UI:
 1. Add a resource file to the project, naming it after the type you'll create your filter to (e.g. `Person.resx`);
-2. Add one entry for each property you'd like to globalize following the conventions (previously mentioned), but replacing the dots (`.`) and the brackets (`[`, `]`) by underscores (`_`):  
-`Person.resx`  
-![Person.resx](docs\Person.resx.png)  
-`Person.pt-BR.resx`  
-![Person.pt-BR.resx](docs\Person.pt-BR.resx.png)
-3. You can globalize the operations on a similar way as well by adding a resources file named `Operations.resx`:  
-`Operations.resx`  
-![Operations.resx](docs\Operations.resx.png)  
-`Operations.pt-BR.resx`  
-![Operations.pt-BR.resx](docs\Operations.pt-BR.resx.png)
+2. Add one entry for each property you'd like to globalize following the conventions (previously mentioned), but replacing the dots (`.`) and the brackets (`[`, `]`) by underscores (`_`);
+3. You can globalize the operations on a similar way as well by adding a resources file named `Operations.resx`;
 4. For the properties, you'll instantiate a `PropertyCollection` : `new PropertyCollection(typeof(Person), Resources.Person.ResourceManager)`. That will give you a collection of objects with three members:
   * `Id`: The conventionalised property identifier (previously mentioned)
   * `Name`: The resources file matching value for the property id

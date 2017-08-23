@@ -142,27 +142,48 @@ namespace ExpressionBuilder.Common
         In
 	}
     
-    internal enum TypeGroup
+    /// <summary>
+    /// Groups types into simple groups and map the supported operations to each group.
+    /// </summary>
+    public enum TypeGroup
     {
+        /// <summary>
+        /// Default type group, only supports EqualTo and NotEqualTo.
+        /// </summary>
         [SupportedOperations(Operation.EqualTo, Operation.NotEqualTo)]
         Default,
 
+        /// <summary>
+        /// Supports all text related operations.
+        /// </summary>
         [SupportedOperations(Operation.Contains, Operation.EndsWith, Operation.EqualTo,
                              Operation.IsEmpty, Operation.IsNotEmpty, Operation.IsNotNull, Operation.IsNotNullNorWhiteSpace,
                              Operation.IsNull, Operation.IsNullOrWhiteSpace, Operation.NotEqualTo, Operation.StartsWith)]
         Text,
 
+        /// <summary>
+        /// Supports all numeric related operations.
+        /// </summary>
         [SupportedOperations(Operation.Between, Operation.EqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
                              Operation.LessThan, Operation.LessThanOrEqualTo, Operation.NotEqualTo)]
         Number,
 
+        /// <summary>
+        /// Supports boolean related operations.
+        /// </summary>
         [SupportedOperations(Operation.EqualTo, Operation.NotEqualTo)]
         Boolean,
 
+        /// <summary>
+        /// Supports all date related operations.
+        /// </summary>
         [SupportedOperations(Operation.Between, Operation.EqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
                              Operation.LessThan, Operation.LessThanOrEqualTo, Operation.NotEqualTo)]
         Date,
 
+        /// <summary>
+        /// Supports nullable related operations.
+        /// </summary>
         [SupportedOperations(Operation.IsNotNull, Operation.IsNull)]
         Nullable
     }
