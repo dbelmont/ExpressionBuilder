@@ -1,13 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionBuilder.Test", "ExpressionBuilder.Test\ExpressionBuilder.Test.csproj", "{7A9F0112-5A67-467D-9983-5069DF3DC5E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionBuilder.WinForms", "ExpressionBuilder.WinForms\ExpressionBuilder.WinForms.csproj", "{5706B594-1D5D-43EC-BFE3-BC6B971C448D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionBuilder", "ExpressionBuilder\ExpressionBuilder.csproj", "{70BF550D-5943-4162-8FAB-0BBA743A3D93}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{30259745-0EF7-44C1-A46C-FDF51AE5F6D5}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +35,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B6CD9D57-ABE4-485C-86AB-F550BA3F0F57}
 	EndGlobalSection
 EndGlobal

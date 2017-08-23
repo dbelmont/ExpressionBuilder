@@ -80,7 +80,6 @@ namespace ExpressionBuilder.Generics
         {
             var helper = new OperationHelper();            
             ValidateNumberOfValues(helper);
-            //TODO: Issue regarding the TPropertyType that comes from the UI always as 'Object'
             ValidateSupportedOperations(helper);
         }
 
@@ -101,7 +100,7 @@ namespace ExpressionBuilder.Generics
             List<Operation> supportedOperations = null;
             if (typeof(TPropertyType) == typeof(object))
             {
-                //TODO: Does not always work
+                //TODO: Issue regarding the TPropertyType that comes from the UI always as 'Object'
                 //supportedOperations = helper.GetSupportedOperations(Value.GetType());
                 System.Diagnostics.Debug.WriteLine("WARN: Not able to check if the operation is supported or not.");
                 return;

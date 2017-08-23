@@ -263,5 +263,16 @@ namespace ExpressionBuilder.Test
                                             || (p.Birth != null && p.Birth.Date.HasValue && p.Birth.Date > new DateTime(1980, 1, 1)));
             Assert.That(people, Is.EquivalentTo(solution));
         }
+
+        [Test]
+        public void BuilderUsingCustomSupportedType()
+        {
+            var dateOffset = new DateTimeOffset(new DateTime(1980, 1, 1));
+            var filter = new Filter<Person>();
+            filter.By("Birth.DateOffset", Operation.GreaterThan, dateOffset);
+            var people = People.Where(filter);
+            var solution = People.Where(p => (p.Birth != null && p.Birth.DateOffset.HasValue && p.Birth.DateOffset > dateOffset));
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
     }
 }
