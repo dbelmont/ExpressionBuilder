@@ -157,14 +157,14 @@ You just need to perform some easy steps to add globalization support to the UI:
 1. Add a resource file to the project, naming it after the type you'll create your filter to (e.g. `Person.resx`);
 2. Add one entry for each property you'd like to globalize following the conventions (previously mentioned), but replacing the dots (`.`) and the brackets (`[`, `]`) by underscores (`_`):  
 `Person.resx`  
-![Person.resx](docs/Person.resx.png)  
+![Person.resx](docs/Person.resx.PNG)  
 `Person.pt-BR.resx`  
-![Person.pt-BR.resx](docs/Person.pt-BR.resx.png)
+![Person.pt-BR.resx](docs/Person.pt-BR.resx.PNG)
 3. You can globalize the operations on a similar way as well by adding a resources file named `Operations.resx`:  
 `Operations.resx`  
-![Operations.resx](docs/Operations.resx.png)  
+![Operations.resx](docs/Operations.resx.PNG)  
 `Operations.pt-BR.resx`  
-![Operations.pt-BR.resx](docs/Operations.pt-BR.resx.png)
+![Operations.pt-BR.resx](docs/Operations.pt-BR.resx.PNG)
 4. For the properties, you'll instantiate a `PropertyCollection` : `new PropertyCollection(typeof(Person), Resources.Person.ResourceManager)`. That will give you a collection of objects with three members:
   * `Id`: The conventionalised property identifier (previously mentioned)
   * `Name`: The resources file matching value for the property id
