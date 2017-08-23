@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>$id$</id>
-    <title>$id$</title>
+    <id>Lambda$id$</id>
+    <title>Lambda$id$</title>
     <version>$version$</version>
     <authors>David Belmont</authors>
     <owners>David Belmont</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A library to enable your application to let users build their own filters to query lists (or even databases) through LINQ.</description>
+    <summary>This library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters.</summary>
+    <description>Useful to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.</description>
     <copyright>Belmont © 2017</copyright>
     <tags>Expression Builder LINQ</tags>
     <iconUrl>https://raw.githubusercontent.com/dbelmont/ExpressionBuilder/master/expb.ico</iconUrl>
