@@ -139,8 +139,15 @@ namespace ExpressionBuilder.Common
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
         [NumberOfValues(1)]
-        In
-	}
+        In,
+
+        /// <summary>
+        /// Targets an object in which the property's value does not contain part of the provided value.
+        /// </summary>
+        /// <remarks>Accepts one value.</remarks>
+        [NumberOfValues(1)]
+        DoesNotContain
+    }
     
     /// <summary>
     /// Groups types into simple groups and map the supported operations to each group.
@@ -156,7 +163,7 @@ namespace ExpressionBuilder.Common
         /// <summary>
         /// Supports all text related operations.
         /// </summary>
-        [SupportedOperations(Operation.Contains, Operation.EndsWith, Operation.EqualTo,
+        [SupportedOperations(Operation.Contains, Operation.DoesNotContain, Operation.EndsWith, Operation.EqualTo,
                              Operation.IsEmpty, Operation.IsNotEmpty, Operation.IsNotNull, Operation.IsNotNullNorWhiteSpace,
                              Operation.IsNull, Operation.IsNullOrWhiteSpace, Operation.NotEqualTo, Operation.StartsWith)]
         Text,

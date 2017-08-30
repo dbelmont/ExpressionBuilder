@@ -42,7 +42,8 @@ namespace ExpressionBuilder.Builders
                 { Operation.IsEmpty, (member, constant, constant2) => Expression.Equal(member, Expression.Constant(String.Empty)) },
                 { Operation.IsNotEmpty, (member, constant, constant2) => Expression.NotEqual(member, Expression.Constant(String.Empty)) },
                 { Operation.IsNullOrWhiteSpace, (member, constant, constant2) => IsNullOrWhiteSpace(member) },
-                { Operation.IsNotNullNorWhiteSpace, (member, constant, constant2) => IsNotNullNorWhiteSpace(member) }
+                { Operation.IsNotNullNorWhiteSpace, (member, constant, constant2) => IsNotNullNorWhiteSpace(member) },
+                { Operation.DoesNotContain, (member, constant, constant2) => Expression.Not(Contains(member, constant)) }
             };
         }
 		

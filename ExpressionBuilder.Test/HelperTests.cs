@@ -42,7 +42,7 @@ namespace ExpressionBuilder.Test
         public void SupportedOperationsForText(Type textType)
         {
             var definitions = new OperationHelper();
-            var textOperations = new List<Operation> { Operation.EqualTo, Operation.Contains, Operation.EndsWith, Operation.NotEqualTo, Operation.StartsWith,
+            var textOperations = new List<Operation> { Operation.EqualTo, Operation.Contains, Operation.DoesNotContain, Operation.EndsWith, Operation.NotEqualTo, Operation.StartsWith,
                                                        Operation.IsEmpty, Operation.IsNotEmpty, Operation.IsNotNull, Operation.IsNotNullNorWhiteSpace, Operation.IsNull,
                                                        Operation.IsNullOrWhiteSpace };
 
