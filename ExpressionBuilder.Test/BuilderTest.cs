@@ -264,7 +264,7 @@ namespace ExpressionBuilder.Test
             Assert.That(people, Is.EquivalentTo(solution));
         }
 
-        [Test]
+        [TestCase(TestName = "Builder working with custom supported type")]
         public void BuilderUsingCustomSupportedType()
         {
             var dateOffset = new DateTimeOffset(new DateTime(1980, 1, 1));
@@ -273,6 +273,25 @@ namespace ExpressionBuilder.Test
             var people = People.Where(filter);
             var solution = People.Where(p => (p.Birth != null && p.Birth.DateOffset.HasValue && p.Birth.DateOffset > dateOffset));
             Assert.That(people, Is.EquivalentTo(solution));
+        }
+
+        private IQueryable<Person> GetPeople()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Employer.Name", Operation.IsNotNull);
+            return People.AsQueryable().Where(filter);
+        }
+
+        [TestCase(TestName = "Builder using IQueryable")]
+        public void BuilderUsingIQueryable()
+        {
+            var people = GetPeople();
+            Assert.That(people, Is.InstanceOf<IQueryable<Person>>());
+
+            var solution = People.AsQueryable().Where(p => p.Employer != null && p.Employer.Name != null).OrderByDescending(p => p.Name).Take(1);
+            var person = (people as IQueryable<Person>).OrderByDescending(p => p.Name).Take(1);
+            Assert.That(person.Count(), Is.EqualTo(1));
+            Assert.That(person, Is.EquivalentTo(solution));
         }
     }
 }

@@ -87,6 +87,16 @@ namespace ExpressionBuilder.Generics
 		}
 
         /// <summary>
+        /// Implicitly converts a <see cref="Filter{TClass}" /> into a <see cref="System.Linq.Expressions.Expression{Func{TClass, TResult}}" />.
+        /// </summary>
+        /// <param name="filter"></param>
+        public static implicit operator System.Linq.Expressions.Expression<Func<TClass, bool>>(Filter<TClass> filter)
+        {
+            var builder = new FilterBuilder(new BuilderHelper());
+			return builder.GetExpression<TClass>(filter);
+        }
+
+        /// <summary>
         /// String representation of <see cref="Filter{TClass}" />.
         /// </summary>
         /// <returns></returns>
