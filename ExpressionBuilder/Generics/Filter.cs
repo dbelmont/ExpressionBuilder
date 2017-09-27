@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using ExpressionBuilder.Helpers;
+using System.Linq;
 
 namespace ExpressionBuilder.Generics
 {
@@ -17,26 +18,44 @@ namespace ExpressionBuilder.Generics
     [Serializable]
     public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
 	{
-		private List<IFilterStatement> _statements;
+		private List<List<IFilterStatement>> _statements;
         
+        public IFilter Group
+        {
+            get
+            {
+                StartGroup();
+                return this;
+            }
+        }
+
         /// <summary>
-        /// List of <see cref="IFilterStatement" /> that will be combined and built into a LINQ expression.
+        /// List of <see cref="IFilterStatement" /> groups that will be combined and built into a LINQ expression.
         /// </summary>
-        public IEnumerable<IFilterStatement> Statements
-		{
-			get
-			{
-				return _statements.ToArray();
-			}
-		}
+        public IEnumerable<IEnumerable<IFilterStatement>> Statements
+        {
+            get
+            {
+                return _statements.ToArray();
+            }
+        }
 		
+        private List<IFilterStatement> CurrentStatementGroup
+        {
+            get
+            {
+                return _statements.Last();
+            }
+        }
+
         /// <summary>
         /// Instantiates a new <see cref="Filter{TClass}" />
         /// </summary>
 		public Filter()
 		{
-			_statements = new List<IFilterStatement>();
-		}
+			_statements = new List<List<IFilterStatement>>();
+            _statements.Add(new List<IFilterStatement>());
+        }
 
         /// <summary>
         /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
@@ -64,9 +83,20 @@ namespace ExpressionBuilder.Generics
 		public IFilterStatementConnection By<TPropertyType>(string propertyId, Operation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), FilterStatementConnector connector = FilterStatementConnector.And)
 		{
 			IFilterStatement statement = new FilterStatement<TPropertyType>(propertyId, operation, value, value2, connector);
-			_statements.Add(statement);
+            CurrentStatementGroup.Add(statement);
 			return new FilterStatementConnection<TClass>(this, statement);
 		}
+
+        /// <summary>
+        /// Starts a new group denoting that every subsequent filter statement should be grouped together (as if using a parenthesis).
+        /// </summary>
+        public void StartGroup()
+        {
+            if (CurrentStatementGroup.Any())
+            {
+                _statements.Add(new List<IFilterStatement>());
+            }
+        }
 
         /// <summary>
         /// Removes all <see cref="FilterStatement{TPropertyType}" />, leaving the <see cref="Filter{TClass}" /> empty.
@@ -74,7 +104,8 @@ namespace ExpressionBuilder.Generics
         public void Clear()
 		{
 			_statements.Clear();
-		}
+            _statements.Add(new List<IFilterStatement>());
+        }
 
         /// <summary>
         /// Implicitly converts a <see cref="Filter{TClass}" /> into a <see cref="Func{TClass, TResult}" />.
@@ -102,16 +133,26 @@ namespace ExpressionBuilder.Generics
         /// <returns></returns>
         public override string ToString()
 		{
-			var result = "";
+			var result = new System.Text.StringBuilder();
 			FilterStatementConnector lastConector = FilterStatementConnector.And;
-			foreach (var statement in _statements)
-			{
-				if (!string.IsNullOrWhiteSpace(result)) result += " " + lastConector + " ";
-				result += statement.ToString();
-				lastConector = statement.Connector;
-			}
+
+            foreach (var statementGroup in _statements)
+            {
+                if (_statements.Count() > 1) result.Append("(");
+
+                var groupResult = new System.Text.StringBuilder();
+                foreach (var statement in statementGroup)
+                {
+                    if (groupResult.Length > 0) groupResult.Append(" " + lastConector + " ");
+                    groupResult.Append(statement.ToString());
+                    lastConector = statement.Connector;
+                }
+
+                result.Append(groupResult.ToString().Trim());
+                if (_statements.Count() > 1) result.Append(")");
+            }
 			
-			return result.Trim();
+			return result.ToString();
 		}
 
         /// <summary>
@@ -131,13 +172,18 @@ namespace ExpressionBuilder.Generics
         {
             while (reader.Read())
             {
+                if (reader.Name.Equals("StatementsGroup") && reader.IsStartElement())
+                {
+                    StartGroup();
+                }
+
                 if (reader.Name.StartsWith("FilterStatementOf"))
                 {
                     var type = reader.GetAttribute("Type");
                     var filterType = typeof(FilterStatement<>).MakeGenericType(Type.GetType(type));
                     var serializer = new XmlSerializer(filterType);
                     var statement = (IFilterStatement)serializer.Deserialize(reader);
-                    _statements.Add(statement);
+                    CurrentStatementGroup.Add(statement);
                 }
             }
         }
@@ -150,10 +196,15 @@ namespace ExpressionBuilder.Generics
         {
             writer.WriteAttributeString("Type", typeof(TClass).AssemblyQualifiedName);
             writer.WriteStartElement("Statements");
-            foreach (var statement in _statements)
+            foreach (var statementsGroup in _statements)
             {
-                var serializer = new XmlSerializer(statement.GetType());
-                serializer.Serialize(writer, statement);
+                writer.WriteStartElement("StatementsGroup");
+                foreach (var statement in statementsGroup)
+                {
+                    var serializer = new XmlSerializer(statement.GetType());
+                    serializer.Serialize(writer, statement);
+                }
+                writer.WriteEndElement();
             }
 
             writer.WriteEndElement();

@@ -53,6 +53,7 @@
     <Compile Include="HelperTests.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="OperationTests.cs" />
     <Compile Include="Resources\Operations.Designer.cs">
       <DependentUpon>Operations.resx</DependentUpon>
       <AutoGen>True</AutoGen>

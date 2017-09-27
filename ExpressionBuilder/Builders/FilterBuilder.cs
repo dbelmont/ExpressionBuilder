@@ -52,7 +52,24 @@ namespace ExpressionBuilder.Builders
             var param = Expression.Parameter(typeof(T), "x");
             Expression expression = null;
             var connector = FilterStatementConnector.And;
-            foreach (var statement in filter.Statements)
+            foreach (var statementGroup in filter.Statements)
+            {
+                var statementGroupConnector = FilterStatementConnector.And;
+                Expression partialExpr = GetPartialExpression(param, ref statementGroupConnector, statementGroup);
+
+                expression = expression == null ? partialExpr : CombineExpressions(expression, partialExpr, connector);
+                connector = statementGroupConnector;
+            }
+
+            expression = expression ?? Expression.Constant(true);
+
+            return Expression.Lambda<Func<T, bool>>(expression, param);
+        }
+
+        private Expression GetPartialExpression(ParameterExpression param, ref FilterStatementConnector connector, IEnumerable<IFilterStatement> statementGroup)
+        {
+            Expression expression = null;
+            foreach (var statement in statementGroup)
             {
                 Expression expr = null;
                 if (IsList(statement))
@@ -64,11 +81,9 @@ namespace ExpressionBuilder.Builders
                 connector = statement.Connector;
             }
 
-            expression = expression ?? Expression.Constant(true);
-
-            return Expression.Lambda<Func<T, bool>>(expression, param);
+            return expression;
         }
-		
+
         private bool IsList(IFilterStatement statement)
         {
             return statement.PropertyId.Contains("[") && statement.PropertyId.Contains("]");

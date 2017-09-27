@@ -28,12 +28,12 @@ namespace ExpressionBuilder.Test
 
             _people = new List<Person>
             {
-                new Person { Name = "John Doe", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1979, 2, 28), Country = "USA" }, Employer = company },
-                new Person { Name = "Jane Doe", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1985, 9, 5), Country = " " } },
-                new Person { Name = "Wade Wilson", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1973, 10, 9), Country = "USA" } },
-                new Person { Name = "Jessica Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } },
-                new Person { Name = "Jane Jones", Gender = PersonGender.Female, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } },
-                new Person { Name = "Fulano Silva", Gender = PersonGender.Male, Birth = new Person.BirthData { Date = new DateTime(1983, 5, 10), Country = "BRA" }, Employer = company },
+                new Person { Name = "John Doe", Gender = PersonGender.Male, Salary=4565, Birth = new Person.BirthData { Date = new DateTime(1979, 2, 28), Country = "USA" }, Employer = company },
+                new Person { Name = "Jane Doe", Gender = PersonGender.Female, Salary=4973, Birth = new Person.BirthData { Date = new DateTime(1985, 9, 5), Country = " " } },
+                new Person { Name = "Wade Wilson", Gender = PersonGender.Male, Salary=3579, Birth = new Person.BirthData { Date = new DateTime(1973, 10, 9), Country = "USA" } },
+                new Person { Name = "Jessica Jones", Gender = PersonGender.Female, Salary=5000, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "USA" } },
+                new Person { Name = "Jane Jones", Gender = PersonGender.Female, Salary=3500, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "AUS" } },
+                new Person { Name = "Fulano Silva", Gender = PersonGender.Male, Salary=3322, Birth = new Person.BirthData { Date = new DateTime(1983, 5, 10), Country = "BRA" }, Employer = company },
                 new Person { Name = "John Hancock", Gender = PersonGender.Male, Employer = company }
             };
             var id = 1;
@@ -292,6 +292,51 @@ namespace ExpressionBuilder.Test
             var person = (people as IQueryable<Person>).OrderByDescending(p => p.Name).Take(1);
             Assert.That(person.Count(), Is.EqualTo(1));
             Assert.That(person, Is.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Builder using complex expressions (fluent interface)", Category = "ComplexExpressions")]
+        public void BuilderUsingComplexExpressionsFluentInterface()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Birth.Country", Operation.EqualTo, "USA").And.By("Name", Operation.DoesNotContain, "doe")
+                .Or
+                .Group.By("Name", Operation.EndsWith, "Doe").And.By("Birth.Country", Operation.IsNullOrWhiteSpace);
+            var people = People.Where(filter);
+            var solution = People.Where(p => ((p.Birth != null && p.Birth.Country == "USA") && !p.Name.Contains("Doe"))
+                                || (p.Name.EndsWith("Doe") && (p.Birth != null && string.IsNullOrWhiteSpace(p.Birth.Country))));
+
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Builder using complex expressions", Category = "ComplexExpressions")]
+        public void BuilderUsingComplexExpressions()
+        {
+            var filter = new Filter<Person>();
+            filter.StartGroup();
+            filter.By("Birth.Country", Operation.EqualTo, "USA", default(string), FilterStatementConnector.And);
+            filter.By("Name", Operation.DoesNotContain, "doe", default(string), FilterStatementConnector.Or);
+            filter.StartGroup();
+            filter.By("Name", Operation.EndsWith, "Doe", default(string), FilterStatementConnector.And);
+            filter.By("Birth.Country", Operation.IsNullOrWhiteSpace, default(string), default(string), FilterStatementConnector.And);
+            var people = People.Where(filter);
+            var solution = People.Where(p => ((p.Birth != null && p.Birth.Country == "USA") && !p.Name.Contains("Doe"))
+                                || (p.Name.EndsWith("Doe") && (p.Birth != null && string.IsNullOrWhiteSpace(p.Birth.Country))));
+
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Builder not using complex expressions (different results)", Category = "ComplexExpressions")]
+	    public void BuilderNotUsingComplexExpressions()
+	    {
+	        var filter = new Filter<Person>();
+	        filter.By("Salary", Operation.GreaterThanOrEqualTo, 4000D).And.By("Salary", Operation.LessThanOrEqualTo, 5000D)
+	            .And
+                .By("Birth.Country", Operation.EqualTo, "USA").Or.By("Birth.Country", Operation.EqualTo, "AUS");
+	        var people = People.Where(filter);
+	        var solution = People.Where(p => ((p.Birth != null && p.Birth.Country == "USA") || (p.Birth != null && p.Birth.Country == "AUS"))
+	                                         && (p.Salary >= 4000 && p.Salary <= 5000));
+
+	        Assert.That(people, Is.Not.EquivalentTo(solution));
         }
     }
 }
