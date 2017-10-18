@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using ExpressionBuilder.Helpers;
+using System.Linq.Expressions;
 
 namespace ExpressionBuilder.Generics
 {
@@ -86,11 +87,21 @@ namespace ExpressionBuilder.Generics
 			return builder.GetExpression<TClass>(filter).Compile();
 		}
 
-        /// <summary>
-        /// String representation of <see cref="Filter{TClass}" />.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+      /// <summary>
+      /// Implicitly converts a <see cref="Filter{TClass}" /> into a <see cref="Expression{Func{TClass, TResult}}" />.
+      /// </summary>
+      /// <param name="filter"></param>
+      public static implicit operator Expression<Func<TClass, bool>>(Filter<TClass> filter)
+      {
+         var builder = new FilterBuilder(new BuilderHelper());
+         return builder.GetExpression<TClass>(filter);
+      }
+
+      /// <summary>
+      /// String representation of <see cref="Filter{TClass}" />.
+      /// </summary>
+      /// <returns></returns>
+      public override string ToString()
 		{
 			var result = "";
 			FilterStatementConnector lastConector = FilterStatementConnector.And;
