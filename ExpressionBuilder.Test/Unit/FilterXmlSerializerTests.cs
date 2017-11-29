@@ -1,15 +1,15 @@
-﻿using ExpressionBuilder.Common;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
+using ExpressionBuilder.Common;
 using ExpressionBuilder.Generics;
 using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
-using System.Xml;
-using System.Xml.Serialization;
-using System.IO;
-using System.Text;
-using System.Linq;
-using System;
 
-namespace ExpressionBuilder.Test
+namespace ExpressionBuilder.Test.Unit
 {
     [TestFixture]
     public class FilterXmlSerializerTests

@@ -1,10 +1,10 @@
-﻿using ExpressionBuilder.Common;
+﻿using System;
+using System.Collections.Generic;
+using ExpressionBuilder.Common;
 using ExpressionBuilder.Helpers;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 
-namespace ExpressionBuilder.Test
+namespace ExpressionBuilder.Test.Unit
 {
     [TestFixture]
     public class HelperTests

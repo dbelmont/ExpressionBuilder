@@ -5,7 +5,7 @@ using ExpressionBuilder.Generics;
 using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
 
-namespace ExpressionBuilder.Test
+namespace ExpressionBuilder.Test.Unit
 {
 	[TestFixture]
 	public class FilterTest

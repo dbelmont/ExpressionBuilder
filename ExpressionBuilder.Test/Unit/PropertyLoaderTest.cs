@@ -1,13 +1,13 @@
-﻿using ExpressionBuilder.Interfaces;
-using ExpressionBuilder.Resources;
-using ExpressionBuilder.Test.Models;
-using NUnit.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using ExpressionBuilder.Interfaces;
+using ExpressionBuilder.Resources;
+using ExpressionBuilder.Test.Models;
+using NUnit.Framework;
 
-namespace ExpressionBuilder.Test
+namespace ExpressionBuilder.Test.Unit
 {
     [TestFixture]
     public class PropertyLoaderTest

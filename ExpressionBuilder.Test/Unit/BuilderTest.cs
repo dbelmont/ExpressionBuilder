@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ExpressionBuilder.Generics;
 using ExpressionBuilder.Common;
+using ExpressionBuilder.Exceptions;
+using ExpressionBuilder.Generics;
 using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
-using ExpressionBuilder.Exceptions;
 
-namespace ExpressionBuilder.Test
+namespace ExpressionBuilder.Test.Unit
 {
 	[TestFixture]
 	public class BuilderTest
