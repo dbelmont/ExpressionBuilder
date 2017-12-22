@@ -1,10 +1,10 @@
-﻿using ExpressionBuilder.Common;
+﻿using System;
+using System.Collections.Generic;
+using ExpressionBuilder.Common;
 using ExpressionBuilder.Helpers;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 
-namespace ExpressionBuilder.Test
+namespace ExpressionBuilder.Test.Unit
 {
     [TestFixture]
     public class HelperTests
@@ -42,7 +42,7 @@ namespace ExpressionBuilder.Test
         public void SupportedOperationsForText(Type textType)
         {
             var definitions = new OperationHelper();
-            var textOperations = new List<Operation> { Operation.EqualTo, Operation.Contains, Operation.EndsWith, Operation.NotEqualTo, Operation.StartsWith,
+            var textOperations = new List<Operation> { Operation.EqualTo, Operation.Contains, Operation.DoesNotContain, Operation.EndsWith, Operation.NotEqualTo, Operation.StartsWith,
                                                        Operation.IsEmpty, Operation.IsNotEmpty, Operation.IsNotNull, Operation.IsNotNullNorWhiteSpace, Operation.IsNull,
                                                        Operation.IsNullOrWhiteSpace };
 
