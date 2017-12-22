@@ -119,8 +119,8 @@ namespace ExpressionBuilder.Builders
 
             if (Nullable.GetUnderlyingType(member.Type) != null && statement.Value != null)
             {
-                resultExpr = Expression.Property(member, "HasValue");
-                member = Expression.Property(member, "Value");
+                resultExpr = Expression.PropertyOrField(member, "HasValue");
+                member = Expression.PropertyOrField(member, "Value");
             }
 
             var safeStringExpression = GetSafeStringExpression(member, statement.Operation, constant, constant2);
