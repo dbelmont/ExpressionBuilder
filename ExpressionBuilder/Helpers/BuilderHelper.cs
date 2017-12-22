@@ -15,11 +15,11 @@ namespace ExpressionBuilder.Helpers
         	if (propertyName.Contains("."))
         	{
         		int index = propertyName.IndexOf(".");
-        		var subParam = Expression.Property(param, propertyName.Substring(0, index));
+        		var subParam = Expression.PropertyOrField(param, propertyName.Substring(0, index));
         		return GetMemberExpression(subParam, propertyName.Substring(index + 1));
         	}
             
-            return Expression.Property(param, propertyName);
+            return Expression.PropertyOrField(param, propertyName);
         }
 	}
 }
