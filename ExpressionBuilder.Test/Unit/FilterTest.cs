@@ -5,7 +5,7 @@ using ExpressionBuilder.Generics;
 using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
 
-namespace ExpressionBuilder.Test
+namespace ExpressionBuilder.Test.Unit
 {
 	[TestFixture]
 	public class FilterTest
@@ -15,24 +15,25 @@ namespace ExpressionBuilder.Test
 		{
 			var filter = new Filter<Person>();
 			filter.By("Name", Operation.Contains, "John");
-			Assert.That(filter.Statements.Count(), Is.EqualTo(1));
-			Assert.That(filter.Statements.First().PropertyId, Is.EqualTo("Name"));
-			Assert.That(filter.Statements.First().Operation, Is.EqualTo(Operation.Contains));
-			Assert.That(filter.Statements.First().Value, Is.EqualTo("John"));
-			Assert.That(filter.Statements.First().Connector, Is.EqualTo(FilterStatementConnector.And));
+			Assert.That(filter.Statements.Last().Count(), Is.EqualTo(1));
+			Assert.That(filter.Statements.Last().First().PropertyId, Is.EqualTo("Name"));
+			Assert.That(filter.Statements.Last().First().Operation, Is.EqualTo(Operation.Contains));
+			Assert.That(filter.Statements.Last().First().Value, Is.EqualTo("John"));
+			Assert.That(filter.Statements.Last().First().Connector, Is.EqualTo(FilterStatementConnector.And));
 		}
 		
 		[TestCase(TestName="Should be able to remove all statements of a filter")]
 		public void FilterShouldRemoveStatement()
 		{
 			var filter = new Filter<Person>();
-			Assert.That(filter.Statements.Count(), Is.EqualTo(0));
+			Assert.That(filter.Statements.Count(), Is.EqualTo(1));
+			Assert.That(filter.Statements.Last().Count(), Is.EqualTo(0));
 			
 			filter.By("Name", Operation.Contains, "John").Or.By("Birth.Country", Operation.EqualTo, "USA");
-			Assert.That(filter.Statements.Count(), Is.EqualTo(2));
+			Assert.That(filter.Statements.Last().Count(), Is.EqualTo(2));
 			
 			filter.Clear();
-			Assert.That(filter.Statements.Count(), Is.EqualTo(0));
+			Assert.That(filter.Statements.Last().Count(), Is.EqualTo(0));
 		}
 		
 		[TestCase(TestName="Only the 'Contains' and the 'In' operations should support arrays as parameters")]
@@ -65,5 +66,15 @@ namespace ExpressionBuilder.Test
 			filter.By("Name", Operation.IsNotNull).Or.By("Birth.Country", Operation.EqualTo, "USA");
 			Assert.That(filter.ToString(), Is.EqualTo("Name IsNotNull Or Birth.Country EqualTo USA"));
 		}
-	}
+
+        [TestCase(TestName = "Should not start group if previous one is empty", Category = "ComplexExpressions")]
+        public void ShouldNotStartGroupIfPreviousOneIsEmpty()
+        {
+            var filter = new Filter<Person>();
+            filter.StartGroup();
+            filter.StartGroup();
+            filter.StartGroup();
+            Assert.That(filter.Statements.Count(), Is.EqualTo(1));
+        }
+    }
 }

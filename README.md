@@ -9,6 +9,11 @@ In short words, this library basically provides you with a simple way to create 
 * Built-in XML serialization
 * Globalization support
 
+## New on version 1.1.2:
+* New operation added: DoesNotContain
+* [Support for complex expressions](/ExpressionBuilder/issues/10) (those that group up statements within parenthesis)
+* Added tests using LINQ to SQL (along with a [bug fix regarding the library usage with LINQ to SQL](/ExpressionBuilder/issues/12))
+
 Would this help you in anyway? Well, if your answer is 'yes', you just made my day a bit better. :smile:
 
 Please, feel free to leave comments and to place issues if you find errors or realize there is any missing feature.
@@ -101,6 +106,7 @@ The operations are grouped together into logical type groups to simplify the ass
   * NotEqualTo
 * Text
   * Contains
+  * DoesNotContain
   * EndsWith
   * EqualTo
   * IsEmpty
@@ -173,6 +179,33 @@ You just need to perform some easy steps to add globalization support to the UI:
 
 #### Note on globalization
 Any property or operation not mentioned at the resources files will be replaced by its conventionalised property identifier.
+
+## Complex expressions
+Complex expressions are handled basically by grouping up filter statements, like in the example below:
+```CSharp
+var filter = new Filter<Products>();
+filter.By("SupplierID", Operation.EqualTo, 1);
+filter.StartGroup();
+filter.By("CategoryID", Operation.EqualTo, 1, connector: FilterStatementConnector.Or);
+filter.By("CategoryID", Operation.EqualTo, 2);
+var people = db.Products.Where(filter);
+
+//or using the fluent interface...
+
+var filter = new Filter<Products>();
+filter.By("SupplierID", Operation.EqualTo, 1)
+   .And
+   .Group.By("CategoryID", Operation.EqualTo, 1).Or.By("CategoryID", Operation.EqualTo, 2);
+var people = db.Products.Where(filter);
+```
+
+That would produce an expression like this:
+```CSharp
+db.Products
+  .Where(p => p.SupplierID == 1 && (p.CategoryID == 1 || p.CategoryID == 2));
+```
+
+Every time you start a group that means all further statements will by at the same "parenthesis". You don't need to close any group as you would do with parenthesis, just start a new group whenever you need the subsequent statements to be "inside a parenthesis".
 
 # License
 Copyright 2017 David Belmont

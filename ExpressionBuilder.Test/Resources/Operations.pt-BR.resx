@@ -123,6 +123,9 @@
   <data name="Contains" xml:space="preserve">
     <value>contem</value>
   </data>
+  <data name="DoesNotContain" xml:space="preserve">
+    <value>não contem</value>
+  </data>
   <data name="EndsWith" xml:space="preserve">
     <value>termina com</value>
   </data>

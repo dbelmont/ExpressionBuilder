@@ -17,6 +17,7 @@ namespace ExpressionBuilder.Test.Models
 		public BirthData Birth { get; set; }
 		public List<Contact> Contacts { get; private set; }
         public Company Employer { get; set; }
+        public double Salary { get; set; }
 		
 		public Person()
 		{
@@ -62,10 +63,20 @@ namespace ExpressionBuilder.Test.Models
                     return Date.HasValue ? new DateTimeOffset?(Date.Value) : new DateTimeOffset?();
                 }
             }
-			
+		    public int Age
+		    {
+		        get
+		        {
+		            if (!Date.HasValue) return 0;
+
+		            var timeSpan = DateTime.Now - Date.Value;
+                    return (int)(timeSpan.Days / 365.2425);
+		        }
+		    }
+
 			public override string ToString()
 			{
-				return string.Format("Born at {0} in {1}", Date.Value.ToShortDateString(), Country);
+				return string.Format("Born at {0} in {1} ({2} yo)", Date.Value.ToShortDateString(), Country, Age);
 			}
 
 		}

@@ -1,15 +1,15 @@
-﻿using ExpressionBuilder.Common;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
+using ExpressionBuilder.Common;
 using ExpressionBuilder.Generics;
 using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
-using System.Xml;
-using System.Xml.Serialization;
-using System.IO;
-using System.Text;
-using System.Linq;
-using System;
 
-namespace ExpressionBuilder.Test
+namespace ExpressionBuilder.Test.Unit
 {
     [TestFixture]
     public class FilterXmlSerializerTests
@@ -27,6 +27,7 @@ namespace ExpressionBuilder.Test
             sb.Append("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
             sb.Append("<FilterOfPerson Type=\"ExpressionBuilder.Test.Models.Person, ExpressionBuilder.Test, Version=1.0.6330.24179, Culture=neutral, PublicKeyToken=null\">");
             sb.Append("  <Statements>");
+            sb.Append("  <StatementsGroup>");
             sb.Append("    <FilterStatementOfInt32 Type=\"System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\">");
             sb.Append("      <PropertyId>Id</PropertyId>");
             sb.Append("      <Operation>6</Operation>");
@@ -39,6 +40,7 @@ namespace ExpressionBuilder.Test
             sb.Append("      <Value>Male</Value>");
             sb.Append("      <Connector>0</Connector>");
             sb.Append("    </FilterStatementOfPersonGender>");
+            sb.Append("  </StatementsGroup>");
             sb.Append("  </Statements>");
             sb.Append("</FilterOfPerson>");
             _filterXml = sb.ToString();
@@ -161,7 +163,8 @@ namespace ExpressionBuilder.Test
             Assert.That(root.GetAttribute("Type"), Does.StartWith("ExpressionBuilder.Test.Models.Person"));
             Assert.That(root.ChildNodes.Count, Is.EqualTo(1));
             Assert.That(root.FirstChild.Name, Is.EqualTo("Statements"));
-            Assert.That(root.FirstChild.ChildNodes.Count, Is.EqualTo(2));
+            Assert.That(root.FirstChild.ChildNodes.Count, Is.EqualTo(1));
+            Assert.That(root.FirstChild.FirstChild.ChildNodes.Count, Is.EqualTo(2));
         }
 
         [TestCase(TestName = "Deserialize XML into Filter object")]
@@ -175,7 +178,8 @@ namespace ExpressionBuilder.Test
             }
 
             Assert.That(filter, Is.Not.Null);
-            Assert.That(filter.Statements.Count(), Is.EqualTo(2));
+            Assert.That(filter.Statements.Count(), Is.EqualTo(1));
+            Assert.That(filter.Statements.SelectMany(s => s).Count(), Is.EqualTo(2));
         }
 
         [TestCase(TestName = "Deserialize XML into FilterStatement object with numeric value")]
