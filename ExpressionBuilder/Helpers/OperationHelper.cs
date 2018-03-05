@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Runtime.Caching;
 
 namespace ExpressionBuilder.Helpers
 {
@@ -14,7 +15,29 @@ namespace ExpressionBuilder.Helpers
     /// </summary>
     public class OperationHelper : IOperationHelper
     {
-        readonly Dictionary<TypeGroup, HashSet<Type>> TypeGroups;
+        private readonly Dictionary<TypeGroup, HashSet<Type>> TypeGroups;
+
+        public List<IOperation> Operations
+        {
+            get
+            {
+                var cache = new MemoryCache("ExpressionBuilder");
+                var operationsCache = cache["Operations"];
+                if (operationsCache == null)
+                {
+                    var @interface = typeof(IOperation);
+                    operationsCache = AppDomain.CurrentDomain.GetAssemblies()
+                        .SelectMany(s => s.GetTypes())
+                        .Where(p => @interface.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract)
+                        .Select(t => (IOperation)Activator.CreateInstance(t))
+                        .ToList();
+
+                    cache.Add("Operations", operationsCache, DateTimeOffset.Now.AddHours(2));
+                }
+
+                return (List<IOperation>)operationsCache;
+            }
+        }
 
         /// <summary>
         /// Instantiates a new OperationHelper.
@@ -27,7 +50,7 @@ namespace ExpressionBuilder.Helpers
                 { TypeGroup.Number, new HashSet<Type> { typeof(int), typeof(uint), typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(long), typeof(ulong), typeof(Single), typeof(double), typeof(decimal) } },
                 { TypeGroup.Boolean, new HashSet<Type> { typeof(bool) } },
                 { TypeGroup.Date, new HashSet<Type> { typeof(DateTime) } },
-                { TypeGroup.Nullable, new HashSet<Type> { typeof(Nullable<>) } }
+                { TypeGroup.Nullable, new HashSet<Type> { typeof(Nullable<>), typeof(string) } }
             };
         }
 
@@ -38,22 +61,32 @@ namespace ExpressionBuilder.Helpers
         /// <returns></returns>
         public List<Operation> SupportedOperations(Type type)
         {
-            var supportedOperations = ExtractSupportedOperationsFromAttribute(type);
-            
+            GetCustomSupportedTypes();
+            var supportedOperations = GetSupportedOperations(type);
+            return supportedOperations.Select(o => (Operation)Enum.Parse(typeof(Operation), o.Name)).ToList();
+        }
+
+        private HashSet<IOperation> GetSupportedOperations(Type type)
+        {
+            var underlyingNullableType = Nullable.GetUnderlyingType(type);
+            var typeName = (underlyingNullableType ?? type).Name;
+
+            var supportedOperations = new List<IOperation>();
             if (type.IsArray)
             {
-                //The 'In' operation is supported by all types, as long as it's an array...
-                supportedOperations.Add(Operation.In);
+                typeName = type.GetElementType().Name;
+                supportedOperations.AddRange(Operations.Where(o => o.SupportsLists));
             }
 
-            var underlyingNullableType = Nullable.GetUnderlyingType(type);
-            if(underlyingNullableType != null)
+            var typeGroup = TypeGroups.FirstOrDefault(i => i.Value.Any(v => v.Name == typeName)).Key;
+            supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(typeGroup) && !o.SupportsLists));
+
+            if (underlyingNullableType != null)
             {
-                var underlyingNullableTypeOperations = SupportedOperations(underlyingNullableType);
-                supportedOperations.AddRange(underlyingNullableTypeOperations);
+                supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(TypeGroup.Nullable)));
             }
 
-            return supportedOperations;
+            return new HashSet<IOperation>(supportedOperations);
         }
 
         private void GetCustomSupportedTypes()
@@ -72,22 +105,6 @@ namespace ExpressionBuilder.Helpers
                     TypeGroups[supportedType.TypeGroup].Add(type);
                 }
             }
-        }
-
-        private List<Operation> ExtractSupportedOperationsFromAttribute(Type type)
-        {
-            var typeName = type.Name;
-            if (type.IsArray)
-            {
-                typeName = type.GetElementType().Name;
-            }
-
-            GetCustomSupportedTypes();
-            var typeGroup = TypeGroups.FirstOrDefault(i => i.Value.Any(v => v.Name == typeName)).Key;
-            var fieldInfo = typeGroup.GetType().GetField(typeGroup.ToString());
-            var attrs = fieldInfo.GetCustomAttributes(false);
-            var attr = attrs.FirstOrDefault(a => a is SupportedOperationsAttribute);
-            return (attr as SupportedOperationsAttribute).SupportedOperations;
         }
 
         /// <summary>

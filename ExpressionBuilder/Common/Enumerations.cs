@@ -1,4 +1,5 @@
-﻿using ExpressionBuilder.Attributes;
+﻿using System;
+using ExpressionBuilder.Attributes;
 
 namespace ExpressionBuilder.Common
 {
@@ -11,6 +12,7 @@ namespace ExpressionBuilder.Common
         /// Determines that both the current AND the next filter statement needs to be satisfied.
         /// </summary>
         And,
+
         /// <summary>
         /// Determines that the current OR the next filter statement needs to be satisfied.
         /// </summary>
@@ -148,50 +150,41 @@ namespace ExpressionBuilder.Common
         [NumberOfValues(1)]
         DoesNotContain
     }
-    
+
     /// <summary>
     /// Groups types into simple groups and map the supported operations to each group.
     /// </summary>
+    [Flags]
     public enum TypeGroup
     {
         /// <summary>
         /// Default type group, only supports EqualTo and NotEqualTo.
         /// </summary>
-        [SupportedOperations(Operation.EqualTo, Operation.NotEqualTo)]
-        Default,
+        Default = 0,
 
         /// <summary>
         /// Supports all text related operations.
         /// </summary>
-        [SupportedOperations(Operation.Contains, Operation.DoesNotContain, Operation.EndsWith, Operation.EqualTo,
-                             Operation.IsEmpty, Operation.IsNotEmpty, Operation.IsNotNull, Operation.IsNotNullNorWhiteSpace,
-                             Operation.IsNull, Operation.IsNullOrWhiteSpace, Operation.NotEqualTo, Operation.StartsWith)]
-        Text,
+        Text = 1,
 
         /// <summary>
         /// Supports all numeric related operations.
         /// </summary>
-        [SupportedOperations(Operation.Between, Operation.EqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
-                             Operation.LessThan, Operation.LessThanOrEqualTo, Operation.NotEqualTo)]
-        Number,
+        Number = 2,
 
         /// <summary>
         /// Supports boolean related operations.
         /// </summary>
-        [SupportedOperations(Operation.EqualTo, Operation.NotEqualTo)]
-        Boolean,
+        Boolean = 4,
 
         /// <summary>
         /// Supports all date related operations.
         /// </summary>
-        [SupportedOperations(Operation.Between, Operation.EqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
-                             Operation.LessThan, Operation.LessThanOrEqualTo, Operation.NotEqualTo)]
-        Date,
+        Date = 8,
 
         /// <summary>
         /// Supports nullable related operations.
         /// </summary>
-        [SupportedOperations(Operation.IsNotNull, Operation.IsNull)]
-        Nullable
+        Nullable = 16
     }
 }

@@ -113,7 +113,7 @@ namespace ExpressionBuilder.Builders
         {
             Expression resultExpr = null;
             var memberName = propertyName ?? statement.PropertyId;
-            Expression member = helper.GetMemberExpression(param, memberName);
+            MemberExpression member = helper.GetMemberExpression(param, memberName);
             Expression constant = GetConstantExpression(member, statement.Value);
             Expression constant2 = GetConstantExpression(member, statement.Value2);
 
@@ -135,31 +135,24 @@ namespace ExpressionBuilder.Builders
             return resultExpr;
         }
 
-        private Expression GetSafeStringExpression(Expression member, Operation operation, Expression constant, Expression constant2)
+        private Expression GetSafeStringExpression(MemberExpression member, Operation operation, Expression constant, Expression constant2)
         {
-            if (member.Type != typeof(string))
+            Expression resultExpr = Expressions[operation].Invoke(member, constant, constant2);
+            if (member.Type == typeof(string))
             {
-                return Expressions[operation].Invoke(member, constant, constant2);
-            }
-
-            Expression newMember = member;
-
-            if (operation != Operation.IsNullOrWhiteSpace && operation != Operation.IsNotNullNorWhiteSpace)
-            {
-                var trimMemberCall = Expression.Call(member, helper.trimMethod);
-                newMember = Expression.Call(trimMemberCall, helper.toLowerMethod);
-            }
-
-            Expression resultExpr = operation != Operation.IsNull ?
-                                    Expressions[operation].Invoke(newMember, constant, constant2) :
-                                    Expressions[operation].Invoke(member, constant, constant2);
-
-            if (member.Type == typeof(string) && operation != Operation.IsNull)
-            {
+                Expression newMember = member;
                 if (operation != Operation.IsNullOrWhiteSpace && operation != Operation.IsNotNullNorWhiteSpace)
                 {
-                    Expression memberIsNotNull = Expression.NotEqual(member, Expression.Constant(null));
-                    resultExpr = Expression.AndAlso(memberIsNotNull, resultExpr);
+                    newMember = member.TrimToLower();
+                }
+
+                if (operation != Operation.IsNull)
+                {
+                    resultExpr = Expressions[operation].Invoke(newMember, constant, constant2);
+                    if (operation != Operation.IsNullOrWhiteSpace && operation != Operation.IsNotNullNorWhiteSpace)
+                    {
+                        resultExpr = resultExpr.AddNullCheck(member);
+                    }
                 }
             }
 
