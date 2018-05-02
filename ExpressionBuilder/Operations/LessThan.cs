@@ -1,12 +1,12 @@
-﻿using System.Linq.Expressions;
-using ExpressionBuilder.Common;
+﻿using ExpressionBuilder.Common;
+using System.Linq.Expressions;
 
 namespace ExpressionBuilder.Operations
 {
     /// <summary>
     /// Operation representing an "less than" comparison.
     /// </summary>
-    public class LessThan : Operation
+    public class LessThan : OperationBase
     {
         /// <inheritdoc />
         public LessThan()

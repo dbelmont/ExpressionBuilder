@@ -1,13 +1,12 @@
-﻿using System;
+﻿using ExpressionBuilder.Common;
 using System.Linq.Expressions;
-using ExpressionBuilder.Common;
 
 namespace ExpressionBuilder.Operations
 {
     /// <summary>
     /// Operation representing an "greater than or equal" comparison.
     /// </summary>
-    public class GreaterThanOrEqualTo : Operation
+    public class GreaterThanOrEqualTo : OperationBase
     {
         /// <inheritdoc />
         public GreaterThanOrEqualTo()

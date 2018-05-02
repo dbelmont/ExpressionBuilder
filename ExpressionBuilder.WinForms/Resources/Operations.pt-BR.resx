@@ -168,4 +168,7 @@
   <data name="StartsWith" xml:space="preserve">
     <value>começa com</value>
   </data>
+  <data name="ThisDay" xml:space="preserve">
+    <value>no dia de hoje</value>
+  </data>
 </root>

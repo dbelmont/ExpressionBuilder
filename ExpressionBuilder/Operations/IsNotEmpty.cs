@@ -1,16 +1,16 @@
-﻿using System.Linq.Expressions;
-using ExpressionBuilder.Common;
+﻿using ExpressionBuilder.Common;
+using System.Linq.Expressions;
 
 namespace ExpressionBuilder.Operations
 {
     /// <summary>
     /// Operation representing a check for a non-empty string.
     /// </summary>
-    public class IsNotEmpty : Operation
+    public class IsNotEmpty : OperationBase
     {
         /// <inheritdoc />
         public IsNotEmpty()
-            : base("IsNotEmpty", 1, TypeGroup.Text) { }
+            : base("IsNotEmpty", 0, TypeGroup.Text) { }
 
         /// <inheritdoc />
         public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)

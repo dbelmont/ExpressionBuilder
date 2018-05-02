@@ -1,15 +1,14 @@
-﻿using System;
+﻿using ExpressionBuilder.Common;
+using System;
 using System.Collections;
 using System.Linq.Expressions;
-using System.Linq;
-using ExpressionBuilder.Common;
 
 namespace ExpressionBuilder.Operations
 {
     /// <summary>
     /// Operation representing a list "Contains" method call.
     /// </summary>
-    public class In : Operation
+    public class In : OperationBase
     {
         /// <inheritdoc />
         public In()

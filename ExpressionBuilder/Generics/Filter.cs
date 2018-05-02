@@ -17,9 +17,9 @@ namespace ExpressionBuilder.Generics
     /// <typeparam name="TClass"></typeparam>
     [Serializable]
     public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
-	{
-		private List<List<IFilterStatement>> _statements;
-        
+    {
+        private List<List<IFilterStatement>> _statements;
+
         public IFilter Group
         {
             get
@@ -39,7 +39,7 @@ namespace ExpressionBuilder.Generics
                 return _statements.ToArray();
             }
         }
-		
+
         private List<IFilterStatement> CurrentStatementGroup
         {
             get
@@ -52,20 +52,20 @@ namespace ExpressionBuilder.Generics
         /// Instantiates a new <see cref="Filter{TClass}" />
         /// </summary>
 		public Filter()
-		{
-			_statements = new List<List<IFilterStatement>>();
+        {
+            _statements = new List<List<IFilterStatement>>();
             _statements.Add(new List<IFilterStatement>());
         }
 
         /// <summary>
         /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
-        /// (To be used by <see cref="Operation" /> that need no values)
+        /// (To be used by <see cref="IOperation" /> that need no values)
         /// </summary>
         /// <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
-        /// <param name="operation"></param>
+        /// <param name="operation">Operation to be used.</param>
         /// <param name="connector"></param>
         /// <returns></returns>
-        public IFilterStatementConnection By(string propertyId, Operation operation, FilterStatementConnector connector = FilterStatementConnector.And)
+        public IFilterStatementConnection By(string propertyId, IOperation operation, Connector connector = Connector.And)
         {
             return By<string>(propertyId, operation, null, null, connector);
         }
@@ -75,17 +75,17 @@ namespace ExpressionBuilder.Generics
         /// </summary>
         /// <typeparam name="TPropertyType"></typeparam>
         /// <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
-        /// <param name="operation"></param>
+        /// <param name="operation">Operation to be used.</param>
         /// <param name="value"></param>
         /// <param name="value2"></param>
         /// <param name="connector"></param>
         /// <returns></returns>
-		public IFilterStatementConnection By<TPropertyType>(string propertyId, Operation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), FilterStatementConnector connector = FilterStatementConnector.And)
-		{
-			IFilterStatement statement = new FilterStatement<TPropertyType>(propertyId, operation, value, value2, connector);
+		public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), Connector connector = Connector.And)
+        {
+            IFilterStatement statement = new FilterStatement<TPropertyType>(propertyId, operation, value, value2, connector);
             CurrentStatementGroup.Add(statement);
-			return new FilterStatementConnection<TClass>(this, statement);
-		}
+            return new FilterStatementConnection<TClass>(this, statement);
+        }
 
         /// <summary>
         /// Starts a new group denoting that every subsequent filter statement should be grouped together (as if using a parenthesis).
@@ -102,8 +102,8 @@ namespace ExpressionBuilder.Generics
         /// Removes all <see cref="FilterStatement{TPropertyType}" />, leaving the <see cref="Filter{TClass}" /> empty.
         /// </summary>
         public void Clear()
-		{
-			_statements.Clear();
+        {
+            _statements.Clear();
             _statements.Add(new List<IFilterStatement>());
         }
 
@@ -112,10 +112,10 @@ namespace ExpressionBuilder.Generics
         /// </summary>
         /// <param name="filter"></param>
         public static implicit operator Func<TClass, bool>(Filter<TClass> filter)
-		{
-			var builder = new FilterBuilder(new BuilderHelper());
-			return builder.GetExpression<TClass>(filter).Compile();
-		}
+        {
+            var builder = new FilterBuilder(new BuilderHelper(), new OperationHelper());
+            return builder.GetExpression<TClass>(filter).Compile();
+        }
 
         /// <summary>
         /// Implicitly converts a <see cref="Filter{TClass}" /> into a <see cref="System.Linq.Expressions.Expression{Func{TClass, TResult}}" />.
@@ -123,8 +123,8 @@ namespace ExpressionBuilder.Generics
         /// <param name="filter"></param>
         public static implicit operator System.Linq.Expressions.Expression<Func<TClass, bool>>(Filter<TClass> filter)
         {
-            var builder = new FilterBuilder(new BuilderHelper());
-			return builder.GetExpression<TClass>(filter);
+            var builder = new FilterBuilder(new BuilderHelper(), new OperationHelper());
+            return builder.GetExpression<TClass>(filter);
         }
 
         /// <summary>
@@ -132,9 +132,9 @@ namespace ExpressionBuilder.Generics
         /// </summary>
         /// <returns></returns>
         public override string ToString()
-		{
-			var result = new System.Text.StringBuilder();
-			FilterStatementConnector lastConector = FilterStatementConnector.And;
+        {
+            var result = new System.Text.StringBuilder();
+            Connector lastConector = Connector.And;
 
             foreach (var statementGroup in _statements)
             {
@@ -151,12 +151,12 @@ namespace ExpressionBuilder.Generics
                 result.Append(groupResult.ToString().Trim());
                 if (_statements.Count() > 1) result.Append(")");
             }
-			
-			return result.ToString();
-		}
+
+            return result.ToString();
+        }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public XmlSchema GetSchema()

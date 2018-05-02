@@ -6,12 +6,24 @@
     <version>$version$</version>
     <authors>David Belmont</authors>
     <owners>David Belmont</owners>
+    <iconUrl>https://raw.githubusercontent.com/dbelmont/ExpressionBuilder/master/ExpressionBuilder/ExpressionBuilder.png</iconUrl>
+    <projectUrl>https://github.com/dbelmont/ExpressionBuilder</projectUrl>
+    <licenseUrl>https://github.com/dbelmont/ExpressionBuilder/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <summary>This library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters.</summary>
-    <description>Useful to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.</description>
-    <copyright>Belmont © 2017</copyright>
-    <tags>Expression Builder LINQ</tags>
-    <iconUrl>https://raw.githubusercontent.com/dbelmont/ExpressionBuilder/master/expb.ico</iconUrl>
+    <summary>
+      This library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters.
+    </summary>
+    <description>
+      Useful to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.
+    </description>
+    <releaseNotes>
+      Main changes in this version:
+      • Custom operations: create your own operations or overwrite the behaviour of the default operations
+      • Enum renaming: The "FilterStatementConnector" enum has changed to just "Connector"
+      • Other minor improvements
+    </releaseNotes>
+    <copyright>David Belmont © 2018</copyright>
+    <tags>LINQ Lambda Expression Builder LINQ Database Queryable</tags>
   </metadata>
   <files>
     <file src="bin\$configuration$\$id$.dll" target="lib\net45" />

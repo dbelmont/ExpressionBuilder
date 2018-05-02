@@ -6,8 +6,8 @@ namespace ExpressionBuilder.Common
 {
     public static class CommonExtensionMethods
     {
-        public static readonly MethodInfo trimMethod = typeof(string).GetMethod("Trim", new Type[0]);
-        public static readonly MethodInfo toLowerMethod = typeof(string).GetMethod("ToLower", new Type[0]);
+        private static readonly MethodInfo trimMethod = typeof(string).GetMethod("Trim", new Type[0]);
+        private static readonly MethodInfo toLowerMethod = typeof(string).GetMethod("ToLower", new Type[0]);
 
         /// <summary>
         /// Applies the string Trim and ToLower methods to an ExpressionMember.
@@ -17,6 +17,17 @@ namespace ExpressionBuilder.Common
         public static Expression TrimToLower(this MemberExpression member)
         {
             var trimMemberCall = Expression.Call(member, trimMethod);
+            return Expression.Call(trimMemberCall, toLowerMethod);
+        }
+
+        /// <summary>
+        /// Applies the string Trim and ToLower methods to an ExpressionMember.
+        /// </summary>
+        /// <param name="constant">Constant to which to methods will be applied.</param>
+        /// <returns></returns>
+        public static Expression TrimToLower(this ConstantExpression constant)
+        {
+            var trimMemberCall = Expression.Call(constant, trimMethod);
             return Expression.Call(trimMemberCall, toLowerMethod);
         }
 

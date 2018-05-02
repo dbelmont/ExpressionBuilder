@@ -1,16 +1,15 @@
-﻿using System.Collections;
+﻿using ExpressionBuilder.Common;
 using System.Linq.Expressions;
 using System.Reflection;
-using ExpressionBuilder.Common;
 
 namespace ExpressionBuilder.Operations
 {
     /// <summary>
     /// Operation that checks for the non-existence of a substring within another string.
     /// </summary>
-    public class DoesNotContain : Operation
+    public class DoesNotContain : OperationBase
     {
-        readonly MethodInfo stringContainsMethod = typeof(string).GetMethod("Contains");
+        private readonly MethodInfo stringContainsMethod = typeof(string).GetMethod("Contains");
 
         /// <inheritdoc />
         public DoesNotContain()
@@ -19,7 +18,9 @@ namespace ExpressionBuilder.Operations
         /// <inheritdoc />
         public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)
         {
-            return Expression.Not(Expression.Call(member.TrimToLower(), stringContainsMethod, constant1))
+            Expression constant = constant1.TrimToLower();
+
+            return Expression.Not(Expression.Call(member.TrimToLower(), stringContainsMethod, constant))
                    .AddNullCheck(member);
         }
     }

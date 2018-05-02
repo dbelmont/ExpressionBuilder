@@ -10,7 +10,7 @@ namespace ExpressionBuilder.Interfaces
     public interface IOperation
     {
         /// <summary>
-        /// The operations name (works as a identifier as well).
+        /// The operations name (works as an identifier as well).
         /// </summary>
         string Name { get; }
 
@@ -28,7 +28,7 @@ namespace ExpressionBuilder.Interfaces
         /// <summary>
         /// Determines if the operation is active (default is true).
         /// </summary>
-        bool Active { get; }
+        bool Active { get; set; }
 
         /// <summary>
         /// Determines if the operations supports lists.
@@ -44,11 +44,11 @@ namespace ExpressionBuilder.Interfaces
         /// Returns the expression generated through this operation.
         /// </summary>
         /// <param name="member">Member access expression</param>
-        /// <param name="constant1">Constant expression representing the operation's first value.</param>
-        /// <param name="constant2">Constant expression representing the operation's second value.</param>
+        /// <param name="constant1">The operation's first constant value.</param>
+        /// <param name="constant2">The operation's second constant value.</param>
         /// <returns></returns>
         Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2);
-        
+
         /// <summary>
         /// Returns a string representation of the operation.
         /// </summary>

@@ -1,13 +1,12 @@
-﻿using System;
+﻿using ExpressionBuilder.Common;
 using System.Linq.Expressions;
-using ExpressionBuilder.Common;
 
 namespace ExpressionBuilder.Operations
 {
     /// <summary>
     /// Operation representing an equality comparison.
     /// </summary>
-    public class EqualTo : Operation
+    public class EqualTo : OperationBase
     {
         /// <inheritdoc />
         public EqualTo()
@@ -16,13 +15,17 @@ namespace ExpressionBuilder.Operations
         /// <inheritdoc />
         public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)
         {
+            Expression constant = constant1;
+
             if (member.Type == typeof(string))
             {
-                return Expression.Equal(member.TrimToLower(), constant1)
+                constant = constant1.TrimToLower();
+
+                return Expression.Equal(member.TrimToLower(), constant)
                        .AddNullCheck(member);
             }
 
-            return Expression.Equal(member, constant1);
+            return Expression.Equal(member, constant);
         }
     }
 }

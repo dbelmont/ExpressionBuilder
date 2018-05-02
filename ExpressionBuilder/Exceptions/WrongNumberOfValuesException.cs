@@ -1,5 +1,5 @@
-﻿using ExpressionBuilder.Common;
-using ExpressionBuilder.Helpers;
+﻿using ExpressionBuilder.Helpers;
+using ExpressionBuilder.Interfaces;
 using System;
 
 namespace ExpressionBuilder.Exceptions
@@ -12,12 +12,7 @@ namespace ExpressionBuilder.Exceptions
         /// <summary>
         /// Gets the <see cref="Operation" /> attempted to be used.
         /// </summary>
-        public Operation Operation { get; private set; }
-
-        /// <summary>
-        /// Gets the number of values acceptable by this <see cref="Operation" />.
-        /// </summary>
-        public int NumberOfValuesAcceptable { get; private set; }
+        public IOperation Operation { get; private set; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -26,7 +21,7 @@ namespace ExpressionBuilder.Exceptions
         {
             get
             {
-                return string.Format("The operation '{0}' admits exactly '{1}' values (not more neither less than this).", Operation, NumberOfValuesAcceptable);
+                return string.Format("The operation '{0}' admits exactly '{1}' values (not more neither less than this).", Operation.Name, Operation.NumberOfValues);
             }
         }
 
@@ -34,10 +29,9 @@ namespace ExpressionBuilder.Exceptions
         /// Initializes a new instance of the <see cref="WrongNumberOfValuesException" /> class.
         /// </summary>
         /// <param name="operation">Operation used.</param>
-        public WrongNumberOfValuesException(Operation operation) : base()
+        public WrongNumberOfValuesException(IOperation operation) : base()
         {
             Operation = operation;
-            NumberOfValuesAcceptable = new OperationHelper().NumberOfValuesAcceptable(operation);
         }
     }
 }

@@ -4,7 +4,7 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-#endregion
+#endregion Using directives
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
@@ -28,5 +28,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can use the default the Revision and
 // Build Numbers by using the '*' as shown below:
-[assembly: AssemblyVersion("1.1.2.*")]
-[assembly: AssemblyInformationalVersion("1.1.2")]
+[assembly: AssemblyVersion("2.0.1.*")]
+[assembly: AssemblyInformationalVersion("2.0.1")]

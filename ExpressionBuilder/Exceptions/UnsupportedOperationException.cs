@@ -1,4 +1,4 @@
-﻿using ExpressionBuilder.Common;
+﻿using ExpressionBuilder.Interfaces;
 using System;
 
 namespace ExpressionBuilder.Exceptions
@@ -11,7 +11,7 @@ namespace ExpressionBuilder.Exceptions
         /// <summary>
         /// Gets the <see cref="Operation" /> attempted to be used.
         /// </summary>
-        public Operation Operation { get; private set; }
+        public IOperation Operation { get; private set; }
 
         /// <summary>
         /// Gets name of the type.
@@ -34,7 +34,7 @@ namespace ExpressionBuilder.Exceptions
         /// </summary>
         /// <param name="operation">Operation used.</param>
         /// <param name="typeName">Name of the type</param>
-        public UnsupportedOperationException(Operation operation, String typeName) : base()
+        public UnsupportedOperationException(IOperation operation, String typeName) : base()
         {
             Operation = operation;
             TypeName = typeName;
