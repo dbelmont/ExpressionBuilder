@@ -1,4 +1,5 @@
-﻿using ExpressionBuilder.Common;
+﻿using System;
+using ExpressionBuilder.Common;
 using ExpressionBuilder.Interfaces;
 using System.Linq.Expressions;
 
@@ -7,7 +8,7 @@ namespace ExpressionBuilder.Operations
     /// <summary>
     /// Base class for operations.
     /// </summary>
-    public abstract class OperationBase : IOperation
+    public abstract class OperationBase : IOperation, IEquatable<IOperation>
     {
         /// <inheritdoc />
         public string Name { get; }
@@ -52,24 +53,27 @@ namespace ExpressionBuilder.Operations
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return Name.GetHashCode();
+            return (Name != null ? Name.GetHashCode() : 0);
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (obj.GetType() != this.GetType())
-            {
-                return false;
-            }
-
-            return obj.GetHashCode() == this.GetHashCode();
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((OperationBase)obj);
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
             return Name.Trim();
+        }
+
+        public bool Equals(IOperation other)
+        {
+            return string.Equals(Name, other.Name);
         }
     }
 }

@@ -45,14 +45,14 @@ namespace ExpressionBuilder.Test.Unit.Operations
             //Testing the operation execution
             var lambda = Expression.Lambda<Func<Person, bool>>(expression, param);
             var people = TestData.People.Where(lambda.Compile());
-            var solutionMethod = (Func<Person, bool>)GetType().GetMethod(propertyName).Invoke(this, new object[] { value });
+            var solutionMethod = (Func<Person, bool>)GetType().GetMethod(propertyName).Invoke(this, new[] { value });
             var solution = TestData.People.Where(solutionMethod);
             Assert.That(people, Is.EquivalentTo(solution));
         }
 
         public Func<Person, bool> Name(string value)
         {
-            return x => x.Name.Trim().ToLower() != value.ToString().Trim().ToLower();
+            return x => x.Name.Trim().ToLower() != value.Trim().ToLower();
         }
 
         public Func<Person, bool> Salary(double value)

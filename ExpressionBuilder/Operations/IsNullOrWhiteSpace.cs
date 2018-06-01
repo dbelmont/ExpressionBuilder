@@ -1,7 +1,5 @@
 ﻿using ExpressionBuilder.Common;
-using System;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace ExpressionBuilder.Operations
 {
@@ -10,8 +8,6 @@ namespace ExpressionBuilder.Operations
     /// </summary>
     public class IsNullOrWhiteSpace : OperationBase
     {
-        public readonly MethodInfo trimMethod = typeof(string).GetMethod("Trim", new Type[0]);
-
         /// <inheritdoc />
         public IsNullOrWhiteSpace()
             : base("IsNullOrWhiteSpace", 0, TypeGroup.Text, expectNullValues: true) { }

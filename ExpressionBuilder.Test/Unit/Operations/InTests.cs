@@ -67,7 +67,7 @@ namespace ExpressionBuilder.Test.Unit.Operations
         [TestCase(TestName = "'In' operation - Get expression (Failure: non generic list constant)")]
         public void GetExpressionWithNonGenericListConstant_Failure()
         {
-            var value = new System.Collections.ArrayList() { "USA", "UAS" };
+            var value = new System.Collections.ArrayList { "USA", "UAS" };
             var operation = new ExpressionBuilder.Operations.In();
             var param = Expression.Parameter(typeof(Person), "x");
             var parent = Expression.Property(param, "Birth");

@@ -1,5 +1,4 @@
-﻿using ExpressionBuilder.Helpers;
-using ExpressionBuilder.Interfaces;
+﻿using ExpressionBuilder.Interfaces;
 using System;
 
 namespace ExpressionBuilder.Exceptions
@@ -29,7 +28,7 @@ namespace ExpressionBuilder.Exceptions
         /// Initializes a new instance of the <see cref="WrongNumberOfValuesException" /> class.
         /// </summary>
         /// <param name="operation">Operation used.</param>
-        public WrongNumberOfValuesException(IOperation operation) : base()
+        public WrongNumberOfValuesException(IOperation operation)
         {
             Operation = operation;
         }

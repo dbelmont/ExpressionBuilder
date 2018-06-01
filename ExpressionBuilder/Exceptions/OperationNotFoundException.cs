@@ -10,7 +10,7 @@ namespace ExpressionBuilder.Exceptions
         /// <summary>
         /// Name of the operation that was intended to be instantiated.
         /// </summary>
-        public string OperationName { get; private set; }
+        public string OperationName { get; }
 
         /// <inheritdoc />
         public override string Message
@@ -25,7 +25,7 @@ namespace ExpressionBuilder.Exceptions
         /// Initializes a new instance of the <see cref="OperationNotFoundException" /> class.
         /// </summary>
         /// <param name="operationName">Name of the operation that was intended to be instantiated.</param>
-        public OperationNotFoundException(string operationName) : base()
+        public OperationNotFoundException(string operationName)
         {
             OperationName = operationName;
         }

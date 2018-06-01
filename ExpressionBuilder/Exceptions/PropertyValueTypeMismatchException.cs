@@ -39,7 +39,7 @@ namespace ExpressionBuilder.Exceptions
         /// <param name="memberName">Property or field name.</param>
         /// <param name="memberType">Property or field type.</param>
         /// <param name="constantType">Type of the constant which value tried to be attributed to the property or field.</param>
-        public PropertyValueTypeMismatchException(string memberName, string memberType, string constantType) : base()
+        public PropertyValueTypeMismatchException(string memberName, string memberType, string constantType)
         {
             MemberName = memberName;
             MemberType = memberType;
