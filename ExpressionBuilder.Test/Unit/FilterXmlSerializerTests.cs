@@ -6,6 +6,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using ExpressionBuilder.Common;
 using ExpressionBuilder.Generics;
+using ExpressionBuilder.Helpers;
+using ExpressionBuilder.Operations;
 using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
 
@@ -14,8 +16,8 @@ namespace ExpressionBuilder.Test.Unit
     [TestFixture]
     public class FilterXmlSerializerTests
     {
-        Filter<Person> _filter;
-        string _filterXml;
+        private Filter<Person> _filter;
+        private string _filterXml;
 
         [OneTimeSetUp]
         public void Setup()
@@ -30,13 +32,13 @@ namespace ExpressionBuilder.Test.Unit
             sb.Append("  <StatementsGroup>");
             sb.Append("    <FilterStatementOfInt32 Type=\"System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\">");
             sb.Append("      <PropertyId>Id</PropertyId>");
-            sb.Append("      <Operation>6</Operation>");
+            sb.Append("      <Operation>GreaterThanOrEqualTo</Operation>");
             sb.Append("      <Value>2</Value>");
             sb.Append("      <Connector>1</Connector>");
             sb.Append("    </FilterStatementOfInt32>");
             sb.Append("    <FilterStatementOfPersonGender Type=\"ExpressionBuilder.Test.Models.PersonGender, ExpressionBuilder.Test, Version=1.0.6330.24179, Culture=neutral, PublicKeyToken=null\">");
             sb.Append("      <PropertyId>Gender</PropertyId>");
-            sb.Append("      <Operation>0</Operation>");
+            sb.Append("      <Operation>EqualTo</Operation>");
             sb.Append("      <Value>Male</Value>");
             sb.Append("      <Connector>0</Connector>");
             sb.Append("    </FilterStatementOfPersonGender>");
@@ -59,7 +61,7 @@ namespace ExpressionBuilder.Test.Unit
                     Operation.GreaterThanOrEqualTo,
                     2,
                     0,
-                    FilterStatementConnector.Or
+                    Connector.Or
                 );
                 serializer.Serialize(writer, statement);
                 writer.Flush();
@@ -73,7 +75,7 @@ namespace ExpressionBuilder.Test.Unit
             var root = xmlDoc.DocumentElement;
             Assert.That(root.Attributes["Type"].Value, Does.StartWith("System.Int32"));
             Assert.That(root.SelectSingleNode("PropertyId").InnerText, Is.EqualTo("Id"));
-            Assert.That(root.SelectSingleNode("Operation").InnerText, Is.EqualTo("6"));
+            Assert.That(root.SelectSingleNode("Operation").InnerText, Is.EqualTo("GreaterThanOrEqualTo"));
             Assert.That(root.SelectSingleNode("Value").InnerText, Is.EqualTo("2"));
             Assert.That(root.SelectSingleNode("Connector").InnerText, Is.EqualTo("1"));
         }
@@ -91,7 +93,7 @@ namespace ExpressionBuilder.Test.Unit
                     Operation.EqualTo,
                     PersonGender.Male,
                     default(PersonGender),
-                    FilterStatementConnector.And
+                    Connector.And
                 );
                 serializer.Serialize(writer, statement);
                 writer.Flush();
@@ -105,7 +107,7 @@ namespace ExpressionBuilder.Test.Unit
             var root = xmlDoc.DocumentElement;
             Assert.That(root.Attributes["Type"].Value, Does.StartWith("ExpressionBuilder.Test.Models.PersonGender"));
             Assert.That(root.SelectSingleNode("PropertyId").InnerText, Is.EqualTo("Gender"));
-            Assert.That(root.SelectSingleNode("Operation").InnerText, Is.EqualTo("0"));
+            Assert.That(root.SelectSingleNode("Operation").InnerText, Is.EqualTo("EqualTo"));
             Assert.That(root.SelectSingleNode("Value").InnerText, Is.EqualTo("Male"));
             Assert.That(root.SelectSingleNode("Connector").InnerText, Is.EqualTo("0"));
         }
@@ -123,7 +125,7 @@ namespace ExpressionBuilder.Test.Unit
                     Operation.GreaterThan,
                     new DateTime(1980, 1, 1),
                     default(DateTime),
-                    FilterStatementConnector.And
+                    Connector.And
                 );
                 serializer.Serialize(writer, statement);
                 writer.Flush();
@@ -137,8 +139,9 @@ namespace ExpressionBuilder.Test.Unit
             var root = xmlDoc.DocumentElement;
             Assert.That(root.Attributes["Type"].Value, Does.StartWith("System.DateTime"));
             Assert.That(root.SelectSingleNode("PropertyId").InnerText, Is.EqualTo("Birth.Date"));
-            Assert.That(root.SelectSingleNode("Operation").InnerText, Is.EqualTo("5"));
-            Assert.That(root.SelectSingleNode("Value").InnerText, Does.StartWith("01/01/1980"));
+            Assert.That(root.SelectSingleNode("Operation").InnerText, Is.EqualTo("GreaterThan"));
+            var value = DateTime.Parse(root.SelectSingleNode("Value").InnerText);
+            Assert.That(value, Is.EqualTo(new DateTime(1980, 1, 1)).Within(0).Days);
             Assert.That(root.SelectSingleNode("Connector").InnerText, Is.EqualTo("0"));
         }
 
@@ -188,7 +191,7 @@ namespace ExpressionBuilder.Test.Unit
             var sb = new StringBuilder();
             sb.Append("    <FilterStatementOfInt32 Type=\"System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\">");
             sb.Append("      <PropertyId>Id</PropertyId>");
-            sb.Append("      <Operation>6</Operation>");
+            sb.Append("      <Operation>GreaterThanOrEqualTo</Operation>");
             sb.Append("      <Value>2</Value>");
             sb.Append("      <Connector>1</Connector>");
             sb.Append("    </FilterStatementOfInt32>");
@@ -204,7 +207,7 @@ namespace ExpressionBuilder.Test.Unit
             Assert.That(statement.PropertyId, Is.EqualTo("Id"));
             Assert.That(statement.Operation, Is.EqualTo(Operation.GreaterThanOrEqualTo));
             Assert.That(statement.Value, Is.EqualTo(2));
-            Assert.That(statement.Connector, Is.EqualTo(FilterStatementConnector.Or));
+            Assert.That(statement.Connector, Is.EqualTo(Connector.Or));
         }
 
         [TestCase(TestName = "Deserialize XML into FilterStatement object with enum value")]
@@ -213,7 +216,7 @@ namespace ExpressionBuilder.Test.Unit
             var sb = new StringBuilder();
             sb.Append("    <FilterStatementOfPersonGender Type=\"ExpressionBuilder.Test.Models.PersonGender, ExpressionBuilder.Test, Version=1.0.6330.24179, Culture=neutral, PublicKeyToken=null\">");
             sb.Append("      <PropertyId>Gender</PropertyId>");
-            sb.Append("      <Operation>0</Operation>");
+            sb.Append("      <Operation>EqualTo</Operation>");
             sb.Append("      <Value>Male</Value>");
             sb.Append("      <Connector>0</Connector>");
             sb.Append("    </FilterStatementOfPersonGender>");
@@ -229,7 +232,7 @@ namespace ExpressionBuilder.Test.Unit
             Assert.That(statement.PropertyId, Is.EqualTo("Gender"));
             Assert.That(statement.Operation, Is.EqualTo(Operation.EqualTo));
             Assert.That(statement.Value, Is.EqualTo(PersonGender.Male));
-            Assert.That(statement.Connector, Is.EqualTo(FilterStatementConnector.And));
+            Assert.That(statement.Connector, Is.EqualTo(Connector.And));
         }
 
         [Test]
@@ -248,7 +251,7 @@ namespace ExpressionBuilder.Test.Unit
                 Operation.EqualTo,
                 PersonGender.Male,
                 default(PersonGender),
-                FilterStatementConnector.And
+                Connector.And
             );
             Assert.That(statement.GetSchema(), Is.Null);
         }

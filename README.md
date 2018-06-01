@@ -1,22 +1,57 @@
-# Expression Builder
+# <img src="ExpressionBuilder\ExpressionBuilder.png" width="36" style="position: relative; top: 5px">Expression Builder
 In short words, this library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters. That can be used to help to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.  If you would like more details on how it works, please, check out the article [Build Lambda Expression Dynamically](https://www.codeproject.com/Articles/1079028/Build-Lambda-Expressions-Dynamically).
 
-## Features:
+![buildStatus](https://dbelmont.visualstudio.com/_apis/public/build/definitions/514190c1-40ad-46f3-b8d7-428acd1a108c/2/badge) ![Codacy Badge](https://api.codacy.com/project/badge/Grade/dc3b91e17b554d0183f4b504bb3c50d1)
+
+* [Features](#features)
+  * [New on version 2](#new-on-version-2)
+* [How to use it](#how-to-use-it)
+  * [Convetions](#conventions)
+  * [Supported types/operations](#supported-typesoperations)
+  * [Globalization support](#globalization-support)
+  * [Complex expressions](#complex-expressions)
+  * [Custom operations](#custom-operations)
+* [License](#license)
+
+
+# Features:
 * Ability to reference properties by their names
 * Ability to reference properties from a property
 * Ability to reference properties from list items
 * Built-in null-checks
 * Built-in XML serialization
 * Globalization support
+* Support for complex expressions (those that group up statements within parenthesis)
+* Ability to create your own custom operations
+
+Would this help you in anyway? Well, if your answer is 'yes', you just made my day a bit better. :smile:
+
+Please, feel free to leave comments and to place issues if you find errors or realize there is any missing feature.
+
+## New on version 2:
+* [Custom operations](#custom-operations): create your own operations or overwrite the behaviour of the default operations
+* Full support to [Properties and Fields](/ExpressionBuilder/issues/14)
+* Enum renaming: **FilterStatementConnector** has changed to just **Connector**
+* Other minor improvements
+
+### Upgrading to version 2:
+Below are a few notes on things you must take into account when upgrading from version 1 to version 2:
+* The `Operation` enum was substituted by a class. So, you'll need to add a reference to the new namespace in order to use it: `using ExpressionBuilder.Operations;`
+* Obtaining operations by their names:
+<br />Before: `(Operation)Enum.Parse(typeof(Operation), "EqualTo")`
+<br />Now: `Operation.GetByName("EqualTo")`
+* Getting the number of values expected by an operation:
+<br />Before: `new OperationHelper().NumberOfValuesAcceptable(Operation.EqualTo)`
+<br />Now: `Operation.EqualTo.NumberOfValues`
+* Connecting filter statements:
+<br />Before: `FilterStatementConnector.And`
+<br />Now: `Connector.And`
 
 ## New on version 1.1.2:
 * New operation added: DoesNotContain
 * [Support for complex expressions](/ExpressionBuilder/issues/10) (those that group up statements within parenthesis)
 * Added tests using LINQ to SQL (along with a [bug fix regarding the library usage with LINQ to SQL](/ExpressionBuilder/issues/12))
 
-Would this help you in anyway? Well, if your answer is 'yes', you just made my day a bit better. :smile:
-
-Please, feel free to leave comments and to place issues if you find errors or realize there is any missing feature.
 
 # How to use it
 Let us imagine we have classes like this...
@@ -68,9 +103,9 @@ public class Contact
 Now, what about being able to do it in a way like this:
 ```CSharp
 var filter = new Filter<Person>();
-filter.By("Id", Operation.Between, 2, 4,  FilterStatementConnector.And);
-filter.By("Contacts[Value]", Operation.EndsWith, "@email.com", default(string), FilterStatementConnector.And);
-filter.By("Birth.Country", Operation.IsNotNull, default(string), default(string),  FilterStatementConnector.Or);
+filter.By("Id", Operation.Between, 2, 4,  Connector.And);
+filter.By("Contacts[Value]", Operation.EndsWith, "@email.com", default(string), Connector.And);
+filter.By("Birth.Country", Operation.IsNotNull, default(string), default(string),  Connector.Or);
 filter.By("Name", Operation.Contains, " John");
 var people = People.Where(filter);
 
@@ -186,7 +221,7 @@ Complex expressions are handled basically by grouping up filter statements, like
 var filter = new Filter<Products>();
 filter.By("SupplierID", Operation.EqualTo, 1);
 filter.StartGroup();
-filter.By("CategoryID", Operation.EqualTo, 1, connector: FilterStatementConnector.Or);
+filter.By("CategoryID", Operation.EqualTo, 1, Connector.Or);
 filter.By("CategoryID", Operation.EqualTo, 2);
 var people = db.Products.Where(filter);
 
@@ -207,8 +242,81 @@ db.Products
 
 Every time you start a group that means all further statements will by at the same "parenthesis". You don't need to close any group as you would do with parenthesis, just start a new group whenever you need the subsequent statements to be "inside a parenthesis".
 
+## Custom operations
+This is a breakthrough feature that enables you to create your own operations, or even overwrite the behaviour of the existing default operations. For example, let us say that you would like to have an operation to be applied on dates that would filter based on today's day and month (to know whose birthday is today, or to see which bills are due today). To do that, you would need to go through just two simple steps:
+
+1. Create your custom operation. An operation to do what was proposed on the previous example would look like this:
+```CSharp
+public class ThisDay : IOperation
+    {
+        // Your operation's name
+        public string Name { get { return "ThisDay"; } }
+
+        // TypeGroup(s) to which it applies
+        public TypeGroup TypeGroup { get { return TypeGroup.Date; } }
+
+        // Number of values demanded by your operation
+        public int NumberOfValues { get { return 0; } }
+
+        public bool Active { get; set; }
+
+        // Flag to specify if your operation accepts lists as values
+        public bool SupportsLists { get { return false; } }
+
+        // Flag to specify if your operation supports null on its values
+        public bool ExpectNullValues { get { return false; } }
+
+        public ThisDay()
+        {
+            Active = true;
+        }
+
+        // This is where your operation's behaviour lives
+        // In this example, we are checking if the property's day and month are the same as today's day and month
+        public Expression GetExpression(MemberExpression member, ConstantExpression value1, ConstantExpression value2)
+        {
+            var today = DateTime.Today;
+            var constantDay = Expression.Constant(today.Day);
+            var constantMonth = Expression.Constant(today.Month);
+
+            // Supporting nullable dates
+            if (Nullable.GetUnderlyingType(member.Type) != null)
+            {
+                var memberValue = Expression.Property(member, "Value");
+                var dayMemberValue = Expression.Property(memberValue, "Day");
+                var monthMemberValue = Expression.Property(memberValue, "Month");
+                return Expression.AndAlso(
+                    Expression.Equal(dayMemberValue, constantDay),
+                    Expression.Equal(monthMemberValue, constantMonth)
+                    )
+                    .AddNullCheck(member);
+            }
+
+            var dayMember = Expression.Property(member, "Day");
+            var monthMember = Expression.Property(member, "Month");
+            // e.g.: x => x.DateProperty.Day == 21 && x.DateProperty.Month == 3
+            return Expression.AndAlso(
+                Expression.Equal(dayMember, constantDay),
+                Expression.Equal(monthMember, constantMonth)
+                );
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+    }
+```
+
+2. Load your custom operation into the operations list for the Expression Builder. This should be done ONLY ONCE, and before you first ever try to use your custom operation.
+```CSharp
+ExpressionBuilder.Operations.Operation.LoadOperations(new List<IOperation> { new ThisDay(), new EqualTo() }, true);
+```
+
+You can see this custom operation in action by running the WinForms example project. And if you have any hard time creating your custom operations, please refer to my article [Build Lambda Expression Dynamically](https://www.codeproject.com/Articles/1079028/Build-Lambda-Expressions-Dynamically) for some insights on the subject.
+
 # License
-Copyright 2017 David Belmont
+Copyright 2018 David Belmont
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -219,5 +327,3 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
-Icon by [Alina Oleynik](https://thenounproject.com/dorxela), Ukraine

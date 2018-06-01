@@ -1,18 +1,19 @@
-﻿using System;
-using System.Linq;
-using DbContext;
+﻿using DbContext;
 using ExpressionBuilder.Common;
 using ExpressionBuilder.Generics;
+using ExpressionBuilder.Operations;
 using NUnit.Framework;
+using System;
+using System.Linq;
 
 namespace ExpressionBuilder.Test.Database
 {
     [TestFixture(Category = "Database")]
     public class BuilderTest
     {
-        readonly DbDataContext db = new DbDataContext();
+        private readonly DbDataContext db = new DbDataContext();
 
-        [TestCase(TestName="Filter without statements")]
+        [TestCase(TestName = "Filter without statements")]
         public void FilterWithoutStatements()
         {
             var filter = new Filter<Products>();
@@ -22,7 +23,7 @@ namespace ExpressionBuilder.Test.Database
             Assert.That(products, Is.EquivalentTo(solution));
         }
 
-        [TestCase(TestName="Filter with simple statement")]
+        [TestCase(TestName = "Filter with simple statement")]
         public void FilterWithSimpleStatement()
         {
             var filter = new Filter<Products>();
@@ -47,7 +48,7 @@ namespace ExpressionBuilder.Test.Database
         public void FilterWithPropertyChainFilterStatements()
         {
             var filter = new Filter<Products>();
-            filter.By("Categories.CategoryName", Operation.EqualTo, "Beverages", default(string), FilterStatementConnector.Or);
+            filter.By("Categories.CategoryName", Operation.EqualTo, "Beverages", default(string), Connector.Or);
             filter.By("Categories.CategoryName.Length", Operation.GreaterThanOrEqualTo, 12);
             var products = db.Products.Where(filter);
             var solution = db.Products.Where(p => (p.Categories != null && p.Categories.CategoryName != null && p.Categories.CategoryName.Trim().ToLower().Equals("beverages")) ||
@@ -125,7 +126,7 @@ namespace ExpressionBuilder.Test.Database
             var filter = new Filter<Products>();
             filter.By("SupplierID", Operation.EqualTo, 1);
             filter.StartGroup();
-            filter.By("CategoryID", Operation.EqualTo, 1, connector: FilterStatementConnector.Or);
+            filter.By("CategoryID", Operation.EqualTo, 1, Connector.Or);
             filter.By("CategoryID", Operation.EqualTo, 2);
             var people = db.Products.Where(filter);
             var solution = db.Products.Where(p => p.SupplierID == 1 && (p.CategoryID == 1 || p.CategoryID == 2));

@@ -1,10 +1,10 @@
-﻿using ExpressionBuilder.Common;
+﻿using ExpressionBuilder.Interfaces;
 using System.Resources;
 
 namespace ExpressionBuilder.Resources
 {
     /// <summary>
-    /// Extension methods for <see cref="Operation" />.
+    /// Extension methods for <see cref="IOperation" />.
     /// </summary>
     public static class OperationGlobalizationExtensionMethods
     {
@@ -16,9 +16,9 @@ namespace ExpressionBuilder.Resources
         /// <param name="operation">Operation which description should be returned.</param>
         /// <param name="resourceManager">ResourceManager where the description can be found.</param>
         /// <returns></returns>
-        public static string GetDescription(this Operation operation, ResourceManager resourceManager)
+        public static string GetDescription(this IOperation operation, ResourceManager resourceManager)
         {
-            return resourceManager.GetString(operation.ToString()) ?? operation.ToString();
+            return resourceManager.GetString(operation.Name) ?? operation.Name;
         }
     }
 }

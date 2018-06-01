@@ -9,102 +9,128 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
+using System.Data;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.ComponentModel;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace DbContext
 {
-
     [System.Data.Linq.Mapping.DatabaseAttribute(Name = "NORTHWND")]
     public partial class DbDataContext : System.Data.Linq.DataContext
     {
         private static System.Data.Linq.Mapping.MappingSource mappingSource = new System.Data.Linq.Mapping.AttributeMappingSource();
 
         #region Extensibility Method Definitions
-    
+
         partial void OnCreated();
 
         partial void InsertCategories(Categories instance);
+
         partial void UpdateCategories(Categories instance);
+
         partial void DeleteCategories(Categories instance);
+
         partial void InsertCustomerCustomerDemo(CustomerCustomerDemo instance);
+
         partial void UpdateCustomerCustomerDemo(CustomerCustomerDemo instance);
+
         partial void DeleteCustomerCustomerDemo(CustomerCustomerDemo instance);
+
         partial void InsertCustomerDemographics(CustomerDemographics instance);
+
         partial void UpdateCustomerDemographics(CustomerDemographics instance);
+
         partial void DeleteCustomerDemographics(CustomerDemographics instance);
+
         partial void InsertCustomers(Customers instance);
+
         partial void UpdateCustomers(Customers instance);
+
         partial void DeleteCustomers(Customers instance);
+
         partial void InsertEmployees(Employees instance);
+
         partial void UpdateEmployees(Employees instance);
+
         partial void DeleteEmployees(Employees instance);
+
         partial void InsertEmployeeTerritories(EmployeeTerritories instance);
+
         partial void UpdateEmployeeTerritories(EmployeeTerritories instance);
+
         partial void DeleteEmployeeTerritories(EmployeeTerritories instance);
+
         partial void InsertOrderDetails(OrderDetails instance);
+
         partial void UpdateOrderDetails(OrderDetails instance);
+
         partial void DeleteOrderDetails(OrderDetails instance);
+
         partial void InsertOrders(Orders instance);
+
         partial void UpdateOrders(Orders instance);
+
         partial void DeleteOrders(Orders instance);
+
         partial void InsertProducts(Products instance);
+
         partial void UpdateProducts(Products instance);
+
         partial void DeleteProducts(Products instance);
+
         partial void InsertRegion(Region instance);
+
         partial void UpdateRegion(Region instance);
+
         partial void DeleteRegion(Region instance);
 
-        #endregion
+        #endregion Extensibility Method Definitions
 
         public DbDataContext() :
-        base(GetConnectionString("NORTHWNDDataContextConnectionString"), mappingSource)
+        base(GetConnectionString("Northwind"), mappingSource)
         {
             OnCreated();
         }
 
         public DbDataContext(System.Data.Linq.Mapping.MappingSource mappingSource) :
-        base(GetConnectionString("NORTHWNDDataContextConnectionString"), mappingSource)
+        base(GetConnectionString("Northwind"), mappingSource)
         {
             OnCreated();
         }
 
-        private static string GetConnectionString(string connectionStringName) 
+        private static IDbConnection GetConnectionString(string connectionStringName)
         {
-            System.Configuration.ConnectionStringSettings connectionStringSettings = System.Configuration.ConfigurationManager.ConnectionStrings[connectionStringName];
-            if (connectionStringSettings == null)
-                throw new InvalidOperationException("Connection string \"" + connectionStringName +"\" could not be found in the configuration file.");
-            return connectionStringSettings.ConnectionString;
+            var dbDirectory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\..";
+            Database.DefaultConnectionFactory = new SqlCeConnectionFactory("System.Data.SqlServerCe.4.0", dbDirectory, "");
+            return Database.DefaultConnectionFactory.CreateConnection(connectionStringName);
         }
 
         public DbDataContext(string connection) :
             base(connection, mappingSource)
         {
-          OnCreated();
+            OnCreated();
         }
 
         public DbDataContext(System.Data.IDbConnection connection) :
             base(connection, mappingSource)
         {
-          OnCreated();
+            OnCreated();
         }
 
         public DbDataContext(string connection, System.Data.Linq.Mapping.MappingSource mappingSource) :
             base(connection, mappingSource)
         {
-          OnCreated();
+            OnCreated();
         }
 
         public DbDataContext(System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) :
             base(connection, mappingSource)
         {
-          OnCreated();
+            OnCreated();
         }
 
         public System.Data.Linq.Table<Categories> Categories
@@ -191,16 +217,14 @@ namespace DbContext
 
 namespace DbContext
 {
-
     /// <summary>
     /// There are no comments for DbContext.Categories in the schema.
     /// </summary>
-    [Table(Name = @"dbo.Categories")]
+    [Table(Name = @"Categories")]
     public partial class Categories : INotifyPropertyChanging, INotifyPropertyChanged
     {
-
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(System.String.Empty);
-        #pragma warning disable 0649
+#pragma warning disable 0649
 
         private int _CategoryID;
 
@@ -209,23 +233,35 @@ namespace DbContext
         private string _Description;
 
         private byte[] _Picture;
-        #pragma warning restore 0649
+#pragma warning restore 0649
 
         private EntitySet<Products> _Products;
-    
+
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
+
         partial void OnValidate(System.Data.Linq.ChangeAction action);
+
         partial void OnCreated();
+
         partial void OnCategoryIDChanging(int value);
+
         partial void OnCategoryIDChanged();
+
         partial void OnCategoryNameChanging(string value);
+
         partial void OnCategoryNameChanged();
+
         partial void OnDescriptionChanging(string value);
+
         partial void OnDescriptionChanged();
+
         partial void OnPictureChanging(byte[] value);
+
         partial void OnPictureChanged();
-        #endregion
+
+        #endregion Extensibility Method Definitions
 
         public Categories()
         {
@@ -233,7 +269,6 @@ namespace DbContext
             OnCreated();
         }
 
-    
         /// <summary>
         /// There are no comments for CategoryID in the schema.
         /// </summary>
@@ -257,7 +292,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for CategoryName in the schema.
         /// </summary>
@@ -281,7 +315,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Description in the schema.
         /// </summary>
@@ -305,7 +338,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Picture in the schema.
         /// </summary>
@@ -329,11 +361,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Products in the schema.
         /// </summary>
-        [Association(Name="Categories_Products", Storage="_Products", ThisKey="CategoryID", OtherKey="CategoryID", DeleteRule="NO ACTION")]
+        [Association(Name = "Categories_Products", Storage = "_Products", ThisKey = "CategoryID", OtherKey = "CategoryID", DeleteRule = "NO ACTION")]
         public EntitySet<Products> Products
         {
             get
@@ -345,28 +376,28 @@ namespace DbContext
                 this._Products.Assign(value);
             }
         }
-   
+
         public event PropertyChangingEventHandler PropertyChanging;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void SendPropertyChanging()
         {
-		        var handler = this.PropertyChanging;
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, emptyChangingEventArgs);
         }
 
-        protected virtual void SendPropertyChanging(System.String propertyName) 
-        {    
-		        var handler = this.PropertyChanging;
+        protected virtual void SendPropertyChanging(System.String propertyName)
+        {
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, new PropertyChangingEventArgs(propertyName));
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
-        {    
-		        var handler = this.PropertyChanged;
+        {
+            var handler = this.PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -376,7 +407,7 @@ namespace DbContext
             this.SendPropertyChanging();
             entity.Categories = this;
         }
-    
+
         private void detach_Products(Products entity)
         {
             this.SendPropertyChanging();
@@ -387,40 +418,46 @@ namespace DbContext
     /// <summary>
     /// There are no comments for DbContext.CustomerCustomerDemo in the schema.
     /// </summary>
-    [Table(Name = @"dbo.CustomerCustomerDemos")]
+    [Table(Name = @"CustomerCustomerDemos")]
     public partial class CustomerCustomerDemo : INotifyPropertyChanging, INotifyPropertyChanged
     {
-
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(System.String.Empty);
-        #pragma warning disable 0649
+#pragma warning disable 0649
 
         private string _CustomerID;
 
         private string _CustomerTypeID;
-        #pragma warning restore 0649
+#pragma warning restore 0649
 
         private EntityRef<CustomerDemographics> _CustomerDemographics;
 
         private EntityRef<Customers> _Customers;
-    
+
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
+
         partial void OnValidate(System.Data.Linq.ChangeAction action);
+
         partial void OnCreated();
+
         partial void OnCustomerIDChanging(string value);
+
         partial void OnCustomerIDChanged();
+
         partial void OnCustomerTypeIDChanging(string value);
+
         partial void OnCustomerTypeIDChanged();
-        #endregion
+
+        #endregion Extensibility Method Definitions
 
         public CustomerCustomerDemo()
         {
-            this._CustomerDemographics  = default(EntityRef<CustomerDemographics>);
-            this._Customers  = default(EntityRef<Customers>);
+            this._CustomerDemographics = default(EntityRef<CustomerDemographics>);
+            this._Customers = default(EntityRef<Customers>);
             OnCreated();
         }
 
-    
         /// <summary>
         /// There are no comments for CustomerID in the schema.
         /// </summary>
@@ -449,7 +486,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for CustomerTypeID in the schema.
         /// </summary>
@@ -478,11 +514,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for CustomerDemographics in the schema.
         /// </summary>
-        [Association(Name="CustomerDemographics_CustomerCustomerDemo", Storage="_CustomerDemographics", ThisKey="CustomerTypeID", OtherKey="CustomerTypeID", IsForeignKey=true)]
+        [Association(Name = "CustomerDemographics_CustomerCustomerDemo", Storage = "_CustomerDemographics", ThisKey = "CustomerTypeID", OtherKey = "CustomerTypeID", IsForeignKey = true)]
         public CustomerDemographics CustomerDemographics
         {
             get
@@ -515,11 +550,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Customers in the schema.
         /// </summary>
-        [Association(Name="Customers_CustomerCustomerDemo", Storage="_Customers", ThisKey="CustomerID", OtherKey="CustomerID", IsForeignKey=true)]
+        [Association(Name = "Customers_CustomerCustomerDemo", Storage = "_Customers", ThisKey = "CustomerID", OtherKey = "CustomerID", IsForeignKey = true)]
         public Customers Customers
         {
             get
@@ -551,28 +585,28 @@ namespace DbContext
                 }
             }
         }
-   
+
         public event PropertyChangingEventHandler PropertyChanging;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void SendPropertyChanging()
         {
-		        var handler = this.PropertyChanging;
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, emptyChangingEventArgs);
         }
 
-        protected virtual void SendPropertyChanging(System.String propertyName) 
-        {    
-		        var handler = this.PropertyChanging;
+        protected virtual void SendPropertyChanging(System.String propertyName)
+        {
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, new PropertyChangingEventArgs(propertyName));
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
-        {    
-		        var handler = this.PropertyChanged;
+        {
+            var handler = this.PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -581,29 +615,36 @@ namespace DbContext
     /// <summary>
     /// There are no comments for DbContext.CustomerDemographics in the schema.
     /// </summary>
-    [Table(Name = @"dbo.CustomerDemographics")]
+    [Table(Name = @"CustomerDemographics")]
     public partial class CustomerDemographics : INotifyPropertyChanging, INotifyPropertyChanged
     {
-
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(System.String.Empty);
-        #pragma warning disable 0649
+#pragma warning disable 0649
 
         private string _CustomerTypeID;
 
         private string _CustomerDesc;
-        #pragma warning restore 0649
+#pragma warning restore 0649
 
         private EntitySet<CustomerCustomerDemo> _CustomerCustomerDemo;
-    
+
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
+
         partial void OnValidate(System.Data.Linq.ChangeAction action);
+
         partial void OnCreated();
+
         partial void OnCustomerTypeIDChanging(string value);
+
         partial void OnCustomerTypeIDChanged();
+
         partial void OnCustomerDescChanging(string value);
+
         partial void OnCustomerDescChanged();
-        #endregion
+
+        #endregion Extensibility Method Definitions
 
         public CustomerDemographics()
         {
@@ -611,7 +652,6 @@ namespace DbContext
             OnCreated();
         }
 
-    
         /// <summary>
         /// There are no comments for CustomerTypeID in the schema.
         /// </summary>
@@ -635,7 +675,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for CustomerDesc in the schema.
         /// </summary>
@@ -659,11 +698,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for CustomerCustomerDemo in the schema.
         /// </summary>
-        [Association(Name="CustomerDemographics_CustomerCustomerDemo", Storage="_CustomerCustomerDemo", ThisKey="CustomerTypeID", OtherKey="CustomerTypeID", DeleteRule="NO ACTION")]
+        [Association(Name = "CustomerDemographics_CustomerCustomerDemo", Storage = "_CustomerCustomerDemo", ThisKey = "CustomerTypeID", OtherKey = "CustomerTypeID", DeleteRule = "NO ACTION")]
         public EntitySet<CustomerCustomerDemo> CustomerCustomerDemo
         {
             get
@@ -675,28 +713,28 @@ namespace DbContext
                 this._CustomerCustomerDemo.Assign(value);
             }
         }
-   
+
         public event PropertyChangingEventHandler PropertyChanging;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void SendPropertyChanging()
         {
-		        var handler = this.PropertyChanging;
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, emptyChangingEventArgs);
         }
 
-        protected virtual void SendPropertyChanging(System.String propertyName) 
-        {    
-		        var handler = this.PropertyChanging;
+        protected virtual void SendPropertyChanging(System.String propertyName)
+        {
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, new PropertyChangingEventArgs(propertyName));
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
-        {    
-		        var handler = this.PropertyChanged;
+        {
+            var handler = this.PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -706,7 +744,7 @@ namespace DbContext
             this.SendPropertyChanging();
             entity.CustomerDemographics = this;
         }
-    
+
         private void detach_CustomerCustomerDemo(CustomerCustomerDemo entity)
         {
             this.SendPropertyChanging();
@@ -717,12 +755,11 @@ namespace DbContext
     /// <summary>
     /// There are no comments for DbContext.Customers in the schema.
     /// </summary>
-    [Table(Name = @"dbo.Customers")]
+    [Table(Name = @"Customers")]
     public partial class Customers : INotifyPropertyChanging, INotifyPropertyChanged
     {
-
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(System.String.Empty);
-        #pragma warning disable 0649
+#pragma warning disable 0649
 
         private string _CustomerID;
 
@@ -745,39 +782,65 @@ namespace DbContext
         private string _Phone;
 
         private string _Fax;
-        #pragma warning restore 0649
+#pragma warning restore 0649
 
         private EntitySet<CustomerCustomerDemo> _CustomerCustomerDemo;
 
         private EntitySet<Orders> _Orders;
-    
+
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
+
         partial void OnValidate(System.Data.Linq.ChangeAction action);
+
         partial void OnCreated();
+
         partial void OnCustomerIDChanging(string value);
+
         partial void OnCustomerIDChanged();
+
         partial void OnCompanyNameChanging(string value);
+
         partial void OnCompanyNameChanged();
+
         partial void OnContactNameChanging(string value);
+
         partial void OnContactNameChanged();
+
         partial void OnContactTitleChanging(string value);
+
         partial void OnContactTitleChanged();
+
         partial void OnAddressChanging(string value);
+
         partial void OnAddressChanged();
+
         partial void OnCityChanging(string value);
+
         partial void OnCityChanged();
+
         partial void OnRegionChanging(string value);
+
         partial void OnRegionChanged();
+
         partial void OnPostalCodeChanging(string value);
+
         partial void OnPostalCodeChanged();
+
         partial void OnCountryChanging(string value);
+
         partial void OnCountryChanged();
+
         partial void OnPhoneChanging(string value);
+
         partial void OnPhoneChanged();
+
         partial void OnFaxChanging(string value);
+
         partial void OnFaxChanged();
-        #endregion
+
+        #endregion Extensibility Method Definitions
 
         public Customers()
         {
@@ -786,7 +849,6 @@ namespace DbContext
             OnCreated();
         }
 
-    
         /// <summary>
         /// There are no comments for CustomerID in the schema.
         /// </summary>
@@ -810,7 +872,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for CompanyName in the schema.
         /// </summary>
@@ -834,7 +895,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ContactName in the schema.
         /// </summary>
@@ -858,7 +918,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ContactTitle in the schema.
         /// </summary>
@@ -882,7 +941,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Address in the schema.
         /// </summary>
@@ -906,7 +964,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for City in the schema.
         /// </summary>
@@ -930,7 +987,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Region in the schema.
         /// </summary>
@@ -954,7 +1010,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for PostalCode in the schema.
         /// </summary>
@@ -978,7 +1033,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Country in the schema.
         /// </summary>
@@ -1002,7 +1056,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Phone in the schema.
         /// </summary>
@@ -1026,7 +1079,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Fax in the schema.
         /// </summary>
@@ -1050,11 +1102,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for CustomerCustomerDemo in the schema.
         /// </summary>
-        [Association(Name="Customers_CustomerCustomerDemo", Storage="_CustomerCustomerDemo", ThisKey="CustomerID", OtherKey="CustomerID", DeleteRule="NO ACTION")]
+        [Association(Name = "Customers_CustomerCustomerDemo", Storage = "_CustomerCustomerDemo", ThisKey = "CustomerID", OtherKey = "CustomerID", DeleteRule = "NO ACTION")]
         public EntitySet<CustomerCustomerDemo> CustomerCustomerDemo
         {
             get
@@ -1067,11 +1118,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Orders in the schema.
         /// </summary>
-        [Association(Name="Customers_Orders", Storage="_Orders", ThisKey="CustomerID", OtherKey="CustomerID", DeleteRule="NO ACTION")]
+        [Association(Name = "Customers_Orders", Storage = "_Orders", ThisKey = "CustomerID", OtherKey = "CustomerID", DeleteRule = "NO ACTION")]
         public EntitySet<Orders> Orders
         {
             get
@@ -1083,28 +1133,28 @@ namespace DbContext
                 this._Orders.Assign(value);
             }
         }
-   
+
         public event PropertyChangingEventHandler PropertyChanging;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void SendPropertyChanging()
         {
-		        var handler = this.PropertyChanging;
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, emptyChangingEventArgs);
         }
 
-        protected virtual void SendPropertyChanging(System.String propertyName) 
-        {    
-		        var handler = this.PropertyChanging;
+        protected virtual void SendPropertyChanging(System.String propertyName)
+        {
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, new PropertyChangingEventArgs(propertyName));
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
-        {    
-		        var handler = this.PropertyChanged;
+        {
+            var handler = this.PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -1114,7 +1164,7 @@ namespace DbContext
             this.SendPropertyChanging();
             entity.Customers = this;
         }
-    
+
         private void detach_CustomerCustomerDemo(CustomerCustomerDemo entity)
         {
             this.SendPropertyChanging();
@@ -1126,7 +1176,7 @@ namespace DbContext
             this.SendPropertyChanging();
             entity.Customers = this;
         }
-    
+
         private void detach_Orders(Orders entity)
         {
             this.SendPropertyChanging();
@@ -1137,12 +1187,11 @@ namespace DbContext
     /// <summary>
     /// There are no comments for DbContext.Employees in the schema.
     /// </summary>
-    [Table(Name = @"dbo.Employees")]
+    [Table(Name = @"Employees")]
     public partial class Employees : INotifyPropertyChanging, INotifyPropertyChanged
     {
-
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(System.String.Empty);
-        #pragma warning disable 0649
+#pragma warning disable 0649
 
         private int _EmployeeID;
 
@@ -1179,7 +1228,7 @@ namespace DbContext
         private System.Nullable<int> _ReportsTo;
 
         private string _PhotoPath;
-        #pragma warning restore 0649
+#pragma warning restore 0649
 
         private EntitySet<Employees> _Employees_ReportsTo1;
 
@@ -1188,59 +1237,98 @@ namespace DbContext
         private EntitySet<EmployeeTerritories> _EmployeeTerritories;
 
         private EntitySet<Orders> _Orders;
-    
+
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
+
         partial void OnValidate(System.Data.Linq.ChangeAction action);
+
         partial void OnCreated();
+
         partial void OnEmployeeIDChanging(int value);
+
         partial void OnEmployeeIDChanged();
+
         partial void OnLastNameChanging(string value);
+
         partial void OnLastNameChanged();
+
         partial void OnFirstNameChanging(string value);
+
         partial void OnFirstNameChanged();
+
         partial void OnTitleChanging(string value);
+
         partial void OnTitleChanged();
+
         partial void OnTitleOfCourtesyChanging(string value);
+
         partial void OnTitleOfCourtesyChanged();
+
         partial void OnBirthDateChanging(System.Nullable<System.DateTime> value);
+
         partial void OnBirthDateChanged();
+
         partial void OnHireDateChanging(System.Nullable<System.DateTime> value);
+
         partial void OnHireDateChanged();
+
         partial void OnAddressChanging(string value);
+
         partial void OnAddressChanged();
+
         partial void OnCityChanging(string value);
+
         partial void OnCityChanged();
+
         partial void OnRegionChanging(string value);
+
         partial void OnRegionChanged();
+
         partial void OnPostalCodeChanging(string value);
+
         partial void OnPostalCodeChanged();
+
         partial void OnCountryChanging(string value);
+
         partial void OnCountryChanged();
+
         partial void OnHomePhoneChanging(string value);
+
         partial void OnHomePhoneChanged();
+
         partial void OnExtensionChanging(string value);
+
         partial void OnExtensionChanged();
+
         partial void OnPhotoChanging(byte[] value);
+
         partial void OnPhotoChanged();
+
         partial void OnNotesChanging(string value);
+
         partial void OnNotesChanged();
+
         partial void OnReportsToChanging(System.Nullable<int> value);
+
         partial void OnReportsToChanged();
+
         partial void OnPhotoPathChanging(string value);
+
         partial void OnPhotoPathChanged();
-        #endregion
+
+        #endregion Extensibility Method Definitions
 
         public Employees()
         {
             this._Employees_ReportsTo1 = new EntitySet<Employees>(new Action<Employees>(this.attach_Employees_ReportsTo1), new Action<Employees>(this.detach_Employees_ReportsTo1));
-            this._Employees_ReportsTo  = default(EntityRef<Employees>);
+            this._Employees_ReportsTo = default(EntityRef<Employees>);
             this._EmployeeTerritories = new EntitySet<EmployeeTerritories>(new Action<EmployeeTerritories>(this.attach_EmployeeTerritories), new Action<EmployeeTerritories>(this.detach_EmployeeTerritories));
             this._Orders = new EntitySet<Orders>(new Action<Orders>(this.attach_Orders), new Action<Orders>(this.detach_Orders));
             OnCreated();
         }
 
-    
         /// <summary>
         /// There are no comments for EmployeeID in the schema.
         /// </summary>
@@ -1264,7 +1352,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for LastName in the schema.
         /// </summary>
@@ -1288,7 +1375,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for FirstName in the schema.
         /// </summary>
@@ -1312,7 +1398,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Title in the schema.
         /// </summary>
@@ -1336,7 +1421,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for TitleOfCourtesy in the schema.
         /// </summary>
@@ -1360,7 +1444,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for BirthDate in the schema.
         /// </summary>
@@ -1384,7 +1467,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for HireDate in the schema.
         /// </summary>
@@ -1408,7 +1490,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Address in the schema.
         /// </summary>
@@ -1432,7 +1513,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for City in the schema.
         /// </summary>
@@ -1456,7 +1536,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Region in the schema.
         /// </summary>
@@ -1480,7 +1559,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for PostalCode in the schema.
         /// </summary>
@@ -1504,7 +1582,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Country in the schema.
         /// </summary>
@@ -1528,7 +1605,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for HomePhone in the schema.
         /// </summary>
@@ -1552,7 +1628,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Extension in the schema.
         /// </summary>
@@ -1576,7 +1651,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Photo in the schema.
         /// </summary>
@@ -1600,7 +1674,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Notes in the schema.
         /// </summary>
@@ -1624,7 +1697,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ReportsTo in the schema.
         /// </summary>
@@ -1653,7 +1725,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for PhotoPath in the schema.
         /// </summary>
@@ -1677,11 +1748,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Employees_ReportsTo1 in the schema.
         /// </summary>
-        [Association(Name="Employees_Employees", Storage="_Employees_ReportsTo1", ThisKey="EmployeeID", OtherKey="ReportsTo", DeleteRule="NO ACTION")]
+        [Association(Name = "Employees_Employees", Storage = "_Employees_ReportsTo1", ThisKey = "EmployeeID", OtherKey = "ReportsTo", DeleteRule = "NO ACTION")]
         public EntitySet<Employees> Employees_ReportsTo1
         {
             get
@@ -1694,11 +1764,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Employees_ReportsTo in the schema.
         /// </summary>
-        [Association(Name="Employees_Employees", Storage="_Employees_ReportsTo", ThisKey="ReportsTo", OtherKey="EmployeeID", IsForeignKey=true)]
+        [Association(Name = "Employees_Employees", Storage = "_Employees_ReportsTo", ThisKey = "ReportsTo", OtherKey = "EmployeeID", IsForeignKey = true)]
         public Employees Employees_ReportsTo
         {
             get
@@ -1731,11 +1800,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for EmployeeTerritories in the schema.
         /// </summary>
-        [Association(Name="Employees_EmployeeTerritories", Storage="_EmployeeTerritories", ThisKey="EmployeeID", OtherKey="EmployeeID", DeleteRule="NO ACTION")]
+        [Association(Name = "Employees_EmployeeTerritories", Storage = "_EmployeeTerritories", ThisKey = "EmployeeID", OtherKey = "EmployeeID", DeleteRule = "NO ACTION")]
         public EntitySet<EmployeeTerritories> EmployeeTerritories
         {
             get
@@ -1748,11 +1816,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Orders in the schema.
         /// </summary>
-        [Association(Name="Employees_Orders", Storage="_Orders", ThisKey="EmployeeID", OtherKey="EmployeeID", DeleteRule="NO ACTION")]
+        [Association(Name = "Employees_Orders", Storage = "_Orders", ThisKey = "EmployeeID", OtherKey = "EmployeeID", DeleteRule = "NO ACTION")]
         public EntitySet<Orders> Orders
         {
             get
@@ -1764,28 +1831,28 @@ namespace DbContext
                 this._Orders.Assign(value);
             }
         }
-   
+
         public event PropertyChangingEventHandler PropertyChanging;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void SendPropertyChanging()
         {
-		        var handler = this.PropertyChanging;
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, emptyChangingEventArgs);
         }
 
-        protected virtual void SendPropertyChanging(System.String propertyName) 
-        {    
-		        var handler = this.PropertyChanging;
+        protected virtual void SendPropertyChanging(System.String propertyName)
+        {
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, new PropertyChangingEventArgs(propertyName));
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
-        {    
-		        var handler = this.PropertyChanged;
+        {
+            var handler = this.PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -1795,7 +1862,7 @@ namespace DbContext
             this.SendPropertyChanging();
             entity.Employees_ReportsTo = this;
         }
-    
+
         private void detach_Employees_ReportsTo1(Employees entity)
         {
             this.SendPropertyChanging();
@@ -1807,7 +1874,7 @@ namespace DbContext
             this.SendPropertyChanging();
             entity.Employees = this;
         }
-    
+
         private void detach_EmployeeTerritories(EmployeeTerritories entity)
         {
             this.SendPropertyChanging();
@@ -1819,7 +1886,7 @@ namespace DbContext
             this.SendPropertyChanging();
             entity.Employees = this;
         }
-    
+
         private void detach_Orders(Orders entity)
         {
             this.SendPropertyChanging();
@@ -1830,37 +1897,43 @@ namespace DbContext
     /// <summary>
     /// There are no comments for DbContext.EmployeeTerritories in the schema.
     /// </summary>
-    [Table(Name = @"dbo.EmployeeTerritories")]
+    [Table(Name = @"EmployeeTerritories")]
     public partial class EmployeeTerritories : INotifyPropertyChanging, INotifyPropertyChanged
     {
-
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(System.String.Empty);
-        #pragma warning disable 0649
+#pragma warning disable 0649
 
         private int _EmployeeID;
 
         private string _TerritoryID;
-        #pragma warning restore 0649
+#pragma warning restore 0649
 
         private EntityRef<Employees> _Employees;
-    
+
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
+
         partial void OnValidate(System.Data.Linq.ChangeAction action);
+
         partial void OnCreated();
+
         partial void OnEmployeeIDChanging(int value);
+
         partial void OnEmployeeIDChanged();
+
         partial void OnTerritoryIDChanging(string value);
+
         partial void OnTerritoryIDChanged();
-        #endregion
+
+        #endregion Extensibility Method Definitions
 
         public EmployeeTerritories()
         {
-            this._Employees  = default(EntityRef<Employees>);
+            this._Employees = default(EntityRef<Employees>);
             OnCreated();
         }
 
-    
         /// <summary>
         /// There are no comments for EmployeeID in the schema.
         /// </summary>
@@ -1889,7 +1962,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for TerritoryID in the schema.
         /// </summary>
@@ -1913,11 +1985,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Employees in the schema.
         /// </summary>
-        [Association(Name="Employees_EmployeeTerritories", Storage="_Employees", ThisKey="EmployeeID", OtherKey="EmployeeID", IsForeignKey=true)]
+        [Association(Name = "Employees_EmployeeTerritories", Storage = "_Employees", ThisKey = "EmployeeID", OtherKey = "EmployeeID", IsForeignKey = true)]
         public Employees Employees
         {
             get
@@ -1949,28 +2020,28 @@ namespace DbContext
                 }
             }
         }
-   
+
         public event PropertyChangingEventHandler PropertyChanging;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void SendPropertyChanging()
         {
-		        var handler = this.PropertyChanging;
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, emptyChangingEventArgs);
         }
 
-        protected virtual void SendPropertyChanging(System.String propertyName) 
-        {    
-		        var handler = this.PropertyChanging;
+        protected virtual void SendPropertyChanging(System.String propertyName)
+        {
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, new PropertyChangingEventArgs(propertyName));
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
-        {    
-		        var handler = this.PropertyChanged;
+        {
+            var handler = this.PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -1979,12 +2050,11 @@ namespace DbContext
     /// <summary>
     /// There are no comments for DbContext.OrderDetails in the schema.
     /// </summary>
-    [Table(Name = @"dbo.[Order Details]")]
+    [Table(Name = @"[Order Details]")]
     public partial class OrderDetails : INotifyPropertyChanging, INotifyPropertyChanged
     {
-
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(System.String.Empty);
-        #pragma warning disable 0649
+#pragma warning disable 0649
 
         private int _OrderID;
 
@@ -1995,36 +2065,49 @@ namespace DbContext
         private short _Quantity = 1;
 
         private float _Discount = 0f;
-        #pragma warning restore 0649
+#pragma warning restore 0649
 
         private EntityRef<Orders> _Orders;
 
         private EntityRef<Products> _Products;
-    
+
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
+
         partial void OnValidate(System.Data.Linq.ChangeAction action);
+
         partial void OnCreated();
+
         partial void OnOrderIDChanging(int value);
+
         partial void OnOrderIDChanged();
+
         partial void OnProductIDChanging(int value);
+
         partial void OnProductIDChanged();
+
         partial void OnUnitPriceChanging(decimal value);
+
         partial void OnUnitPriceChanged();
+
         partial void OnQuantityChanging(short value);
+
         partial void OnQuantityChanged();
+
         partial void OnDiscountChanging(float value);
+
         partial void OnDiscountChanged();
-        #endregion
+
+        #endregion Extensibility Method Definitions
 
         public OrderDetails()
         {
-            this._Orders  = default(EntityRef<Orders>);
-            this._Products  = default(EntityRef<Products>);
+            this._Orders = default(EntityRef<Orders>);
+            this._Products = default(EntityRef<Products>);
             OnCreated();
         }
 
-    
         /// <summary>
         /// There are no comments for OrderID in the schema.
         /// </summary>
@@ -2053,7 +2136,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ProductID in the schema.
         /// </summary>
@@ -2082,7 +2164,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for UnitPrice in the schema.
         /// </summary>
@@ -2106,7 +2187,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Quantity in the schema.
         /// </summary>
@@ -2130,7 +2210,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Discount in the schema.
         /// </summary>
@@ -2154,11 +2233,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Orders in the schema.
         /// </summary>
-        [Association(Name="Orders_OrderDetails", Storage="_Orders", ThisKey="OrderID", OtherKey="OrderID", IsForeignKey=true)]
+        [Association(Name = "Orders_OrderDetails", Storage = "_Orders", ThisKey = "OrderID", OtherKey = "OrderID", IsForeignKey = true)]
         public Orders Orders
         {
             get
@@ -2191,11 +2269,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Products in the schema.
         /// </summary>
-        [Association(Name="Products_OrderDetails", Storage="_Products", ThisKey="ProductID", OtherKey="ProductID", IsForeignKey=true)]
+        [Association(Name = "Products_OrderDetails", Storage = "_Products", ThisKey = "ProductID", OtherKey = "ProductID", IsForeignKey = true)]
         public Products Products
         {
             get
@@ -2227,28 +2304,28 @@ namespace DbContext
                 }
             }
         }
-   
+
         public event PropertyChangingEventHandler PropertyChanging;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void SendPropertyChanging()
         {
-		        var handler = this.PropertyChanging;
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, emptyChangingEventArgs);
         }
 
-        protected virtual void SendPropertyChanging(System.String propertyName) 
-        {    
-		        var handler = this.PropertyChanging;
+        protected virtual void SendPropertyChanging(System.String propertyName)
+        {
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, new PropertyChangingEventArgs(propertyName));
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
-        {    
-		        var handler = this.PropertyChanged;
+        {
+            var handler = this.PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -2257,12 +2334,11 @@ namespace DbContext
     /// <summary>
     /// There are no comments for DbContext.Orders in the schema.
     /// </summary>
-    [Table(Name = @"dbo.Orders")]
+    [Table(Name = @"Orders")]
     public partial class Orders : INotifyPropertyChanging, INotifyPropertyChanged
     {
-
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(System.String.Empty);
-        #pragma warning disable 0649
+#pragma warning disable 0649
 
         private int _OrderID;
 
@@ -2291,57 +2367,88 @@ namespace DbContext
         private string _ShipPostalCode;
 
         private string _ShipCountry;
-        #pragma warning restore 0649
+#pragma warning restore 0649
 
         private EntitySet<OrderDetails> _OrderDetails;
 
         private EntityRef<Customers> _Customers;
 
         private EntityRef<Employees> _Employees;
-    
+
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
+
         partial void OnValidate(System.Data.Linq.ChangeAction action);
+
         partial void OnCreated();
+
         partial void OnOrderIDChanging(int value);
+
         partial void OnOrderIDChanged();
+
         partial void OnCustomerIDChanging(string value);
+
         partial void OnCustomerIDChanged();
+
         partial void OnEmployeeIDChanging(System.Nullable<int> value);
+
         partial void OnEmployeeIDChanged();
+
         partial void OnOrderDateChanging(System.Nullable<System.DateTime> value);
+
         partial void OnOrderDateChanged();
+
         partial void OnRequiredDateChanging(System.Nullable<System.DateTime> value);
+
         partial void OnRequiredDateChanged();
+
         partial void OnShippedDateChanging(System.Nullable<System.DateTime> value);
+
         partial void OnShippedDateChanged();
+
         partial void OnShipViaChanging(System.Nullable<int> value);
+
         partial void OnShipViaChanged();
+
         partial void OnFreightChanging(System.Nullable<decimal> value);
+
         partial void OnFreightChanged();
+
         partial void OnShipNameChanging(string value);
+
         partial void OnShipNameChanged();
+
         partial void OnShipAddressChanging(string value);
+
         partial void OnShipAddressChanged();
+
         partial void OnShipCityChanging(string value);
+
         partial void OnShipCityChanged();
+
         partial void OnShipRegionChanging(string value);
+
         partial void OnShipRegionChanged();
+
         partial void OnShipPostalCodeChanging(string value);
+
         partial void OnShipPostalCodeChanged();
+
         partial void OnShipCountryChanging(string value);
+
         partial void OnShipCountryChanged();
-        #endregion
+
+        #endregion Extensibility Method Definitions
 
         public Orders()
         {
             this._OrderDetails = new EntitySet<OrderDetails>(new Action<OrderDetails>(this.attach_OrderDetails), new Action<OrderDetails>(this.detach_OrderDetails));
-            this._Customers  = default(EntityRef<Customers>);
-            this._Employees  = default(EntityRef<Employees>);
+            this._Customers = default(EntityRef<Customers>);
+            this._Employees = default(EntityRef<Employees>);
             OnCreated();
         }
 
-    
         /// <summary>
         /// There are no comments for OrderID in the schema.
         /// </summary>
@@ -2365,7 +2472,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for CustomerID in the schema.
         /// </summary>
@@ -2394,7 +2500,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for EmployeeID in the schema.
         /// </summary>
@@ -2423,7 +2528,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for OrderDate in the schema.
         /// </summary>
@@ -2447,7 +2551,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for RequiredDate in the schema.
         /// </summary>
@@ -2471,7 +2574,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ShippedDate in the schema.
         /// </summary>
@@ -2495,7 +2597,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ShipVia in the schema.
         /// </summary>
@@ -2519,7 +2620,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Freight in the schema.
         /// </summary>
@@ -2543,7 +2643,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ShipName in the schema.
         /// </summary>
@@ -2567,7 +2666,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ShipAddress in the schema.
         /// </summary>
@@ -2591,7 +2689,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ShipCity in the schema.
         /// </summary>
@@ -2615,7 +2712,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ShipRegion in the schema.
         /// </summary>
@@ -2639,7 +2735,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ShipPostalCode in the schema.
         /// </summary>
@@ -2663,7 +2758,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ShipCountry in the schema.
         /// </summary>
@@ -2687,11 +2781,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for OrderDetails in the schema.
         /// </summary>
-        [Association(Name="Orders_OrderDetails", Storage="_OrderDetails", ThisKey="OrderID", OtherKey="OrderID", DeleteRule="NO ACTION")]
+        [Association(Name = "Orders_OrderDetails", Storage = "_OrderDetails", ThisKey = "OrderID", OtherKey = "OrderID", DeleteRule = "NO ACTION")]
         public EntitySet<OrderDetails> OrderDetails
         {
             get
@@ -2704,11 +2797,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Customers in the schema.
         /// </summary>
-        [Association(Name="Customers_Orders", Storage="_Customers", ThisKey="CustomerID", OtherKey="CustomerID", IsForeignKey=true)]
+        [Association(Name = "Customers_Orders", Storage = "_Customers", ThisKey = "CustomerID", OtherKey = "CustomerID", IsForeignKey = true)]
         public Customers Customers
         {
             get
@@ -2741,11 +2833,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Employees in the schema.
         /// </summary>
-        [Association(Name="Employees_Orders", Storage="_Employees", ThisKey="EmployeeID", OtherKey="EmployeeID", IsForeignKey=true)]
+        [Association(Name = "Employees_Orders", Storage = "_Employees", ThisKey = "EmployeeID", OtherKey = "EmployeeID", IsForeignKey = true)]
         public Employees Employees
         {
             get
@@ -2777,28 +2868,28 @@ namespace DbContext
                 }
             }
         }
-   
+
         public event PropertyChangingEventHandler PropertyChanging;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void SendPropertyChanging()
         {
-		        var handler = this.PropertyChanging;
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, emptyChangingEventArgs);
         }
 
-        protected virtual void SendPropertyChanging(System.String propertyName) 
-        {    
-		        var handler = this.PropertyChanging;
+        protected virtual void SendPropertyChanging(System.String propertyName)
+        {
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, new PropertyChangingEventArgs(propertyName));
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
-        {    
-		        var handler = this.PropertyChanged;
+        {
+            var handler = this.PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -2808,7 +2899,7 @@ namespace DbContext
             this.SendPropertyChanging();
             entity.Orders = this;
         }
-    
+
         private void detach_OrderDetails(OrderDetails entity)
         {
             this.SendPropertyChanging();
@@ -2819,12 +2910,11 @@ namespace DbContext
     /// <summary>
     /// There are no comments for DbContext.Products in the schema.
     /// </summary>
-    [Table(Name = @"dbo.Products")]
+    [Table(Name = @"Products")]
     public partial class Products : INotifyPropertyChanging, INotifyPropertyChanged
     {
-
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(System.String.Empty);
-        #pragma warning disable 0649
+#pragma warning disable 0649
 
         private int _ProductID;
 
@@ -2845,46 +2935,69 @@ namespace DbContext
         private System.Nullable<short> _ReorderLevel = 0;
 
         private bool _Discontinued = false;
-        #pragma warning restore 0649
+#pragma warning restore 0649
 
         private EntitySet<OrderDetails> _OrderDetails;
 
         private EntityRef<Categories> _Categories;
-    
+
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
+
         partial void OnValidate(System.Data.Linq.ChangeAction action);
+
         partial void OnCreated();
+
         partial void OnProductIDChanging(int value);
+
         partial void OnProductIDChanged();
+
         partial void OnProductNameChanging(string value);
+
         partial void OnProductNameChanged();
+
         partial void OnSupplierIDChanging(System.Nullable<int> value);
+
         partial void OnSupplierIDChanged();
+
         partial void OnCategoryIDChanging(System.Nullable<int> value);
+
         partial void OnCategoryIDChanged();
+
         partial void OnQuantityPerUnitChanging(string value);
+
         partial void OnQuantityPerUnitChanged();
+
         partial void OnUnitPriceChanging(System.Nullable<decimal> value);
+
         partial void OnUnitPriceChanged();
+
         partial void OnUnitsInStockChanging(System.Nullable<short> value);
+
         partial void OnUnitsInStockChanged();
+
         partial void OnUnitsOnOrderChanging(System.Nullable<short> value);
+
         partial void OnUnitsOnOrderChanged();
+
         partial void OnReorderLevelChanging(System.Nullable<short> value);
+
         partial void OnReorderLevelChanged();
+
         partial void OnDiscontinuedChanging(bool value);
+
         partial void OnDiscontinuedChanged();
-        #endregion
+
+        #endregion Extensibility Method Definitions
 
         public Products()
         {
             this._OrderDetails = new EntitySet<OrderDetails>(new Action<OrderDetails>(this.attach_OrderDetails), new Action<OrderDetails>(this.detach_OrderDetails));
-            this._Categories  = default(EntityRef<Categories>);
+            this._Categories = default(EntityRef<Categories>);
             OnCreated();
         }
 
-    
         /// <summary>
         /// There are no comments for ProductID in the schema.
         /// </summary>
@@ -2908,7 +3021,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ProductName in the schema.
         /// </summary>
@@ -2932,7 +3044,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for SupplierID in the schema.
         /// </summary>
@@ -2956,7 +3067,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for CategoryID in the schema.
         /// </summary>
@@ -2985,7 +3095,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for QuantityPerUnit in the schema.
         /// </summary>
@@ -3009,7 +3118,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for UnitPrice in the schema.
         /// </summary>
@@ -3033,7 +3141,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for UnitsInStock in the schema.
         /// </summary>
@@ -3057,7 +3164,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for UnitsOnOrder in the schema.
         /// </summary>
@@ -3081,7 +3187,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for ReorderLevel in the schema.
         /// </summary>
@@ -3105,7 +3210,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Discontinued in the schema.
         /// </summary>
@@ -3129,11 +3233,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for OrderDetails in the schema.
         /// </summary>
-        [Association(Name="Products_OrderDetails", Storage="_OrderDetails", ThisKey="ProductID", OtherKey="ProductID", DeleteRule="NO ACTION")]
+        [Association(Name = "Products_OrderDetails", Storage = "_OrderDetails", ThisKey = "ProductID", OtherKey = "ProductID", DeleteRule = "NO ACTION")]
         public EntitySet<OrderDetails> OrderDetails
         {
             get
@@ -3146,11 +3249,10 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for Categories in the schema.
         /// </summary>
-        [Association(Name="Categories_Products", Storage="_Categories", ThisKey="CategoryID", OtherKey="CategoryID", IsForeignKey=true)]
+        [Association(Name = "Categories_Products", Storage = "_Categories", ThisKey = "CategoryID", OtherKey = "CategoryID", IsForeignKey = true)]
         public Categories Categories
         {
             get
@@ -3182,28 +3284,28 @@ namespace DbContext
                 }
             }
         }
-   
+
         public event PropertyChangingEventHandler PropertyChanging;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void SendPropertyChanging()
         {
-		        var handler = this.PropertyChanging;
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, emptyChangingEventArgs);
         }
 
-        protected virtual void SendPropertyChanging(System.String propertyName) 
-        {    
-		        var handler = this.PropertyChanging;
+        protected virtual void SendPropertyChanging(System.String propertyName)
+        {
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, new PropertyChangingEventArgs(propertyName));
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
-        {    
-		        var handler = this.PropertyChanged;
+        {
+            var handler = this.PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -3213,7 +3315,7 @@ namespace DbContext
             this.SendPropertyChanging();
             entity.Products = this;
         }
-    
+
         private void detach_OrderDetails(OrderDetails entity)
         {
             this.SendPropertyChanging();
@@ -3224,34 +3326,40 @@ namespace DbContext
     /// <summary>
     /// There are no comments for DbContext.Region in the schema.
     /// </summary>
-    [Table(Name = @"dbo.Regions")]
+    [Table(Name = @"Regions")]
     public partial class Region : INotifyPropertyChanging, INotifyPropertyChanged
     {
-
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(System.String.Empty);
-        #pragma warning disable 0649
+#pragma warning disable 0649
 
         private int _RegionID;
 
         private string _RegionDescription;
-        #pragma warning restore 0649
-    
+#pragma warning restore 0649
+
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
+
         partial void OnValidate(System.Data.Linq.ChangeAction action);
+
         partial void OnCreated();
+
         partial void OnRegionIDChanging(int value);
+
         partial void OnRegionIDChanged();
+
         partial void OnRegionDescriptionChanging(string value);
+
         partial void OnRegionDescriptionChanged();
-        #endregion
+
+        #endregion Extensibility Method Definitions
 
         public Region()
         {
             OnCreated();
         }
 
-    
         /// <summary>
         /// There are no comments for RegionID in the schema.
         /// </summary>
@@ -3275,7 +3383,6 @@ namespace DbContext
             }
         }
 
-    
         /// <summary>
         /// There are no comments for RegionDescription in the schema.
         /// </summary>
@@ -3298,31 +3405,30 @@ namespace DbContext
                 }
             }
         }
-   
+
         public event PropertyChangingEventHandler PropertyChanging;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void SendPropertyChanging()
         {
-		        var handler = this.PropertyChanging;
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, emptyChangingEventArgs);
         }
 
-        protected virtual void SendPropertyChanging(System.String propertyName) 
-        {    
-		        var handler = this.PropertyChanging;
+        protected virtual void SendPropertyChanging(System.String propertyName)
+        {
+            var handler = this.PropertyChanging;
             if (handler != null)
                 handler(this, new PropertyChangingEventArgs(propertyName));
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
-        {    
-		        var handler = this.PropertyChanged;
+        {
+            var handler = this.PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
 }

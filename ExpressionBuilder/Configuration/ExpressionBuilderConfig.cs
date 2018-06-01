@@ -11,7 +11,6 @@ namespace ExpressionBuilder.Configuration
         private const string SupportedTypeCollectionName = "SupportedTypes";
 
         [ConfigurationProperty(SupportedTypeCollectionName)]
-        
         public SupportedTypesElementConfiguration SupportedTypes { get { return (SupportedTypesElementConfiguration)base[SupportedTypeCollectionName]; } }
 
         public class SupportedTypeElement : ConfigurationElement
@@ -46,7 +45,9 @@ namespace ExpressionBuilder.Configuration
             protected override object GetElementKey(ConfigurationElement element)
             {
                 if (element == null)
+                {
                     throw new ArgumentNullException("element");
+                }
 
                 return ((SupportedTypeElement)element).Type;
             }

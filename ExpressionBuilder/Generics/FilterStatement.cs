@@ -1,12 +1,11 @@
-﻿using ExpressionBuilder.Interfaces;
+﻿using ExpressionBuilder.Common;
+using ExpressionBuilder.Exceptions;
+using ExpressionBuilder.Helpers;
+using ExpressionBuilder.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 using System.Xml;
 using System.Xml.Schema;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Helpers;
-using ExpressionBuilder.Exceptions;
 
 namespace ExpressionBuilder.Generics
 {
@@ -17,26 +16,30 @@ namespace ExpressionBuilder.Generics
     public class FilterStatement<TPropertyType> : IFilterStatement
     {
         /// <summary>
-		/// Establishes how this filter statement will connect to the next one. 
+		/// Establishes how this filter statement will connect to the next one.
 		/// </summary>
-        public FilterStatementConnector Connector { get; set; }
+        public Connector Connector { get; set; }
+
         /// <summary>
 		/// Property identifier conventionalized by for the Expression Builder.
 		/// </summary>
         public string PropertyId { get; set; }
+
         /// <summary>
 		/// Express the interaction between the property and the constant value defined in this filter statement.
 		/// </summary>
-        public Operation Operation { get; set; }
+        public IOperation Operation { get; set; }
+
         /// <summary>
 		/// Constant value that will interact with the property defined in this filter statement.
 		/// </summary>
         public object Value { get; set; }
+
         /// <summary>
         /// Constant value that will interact with the property defined in this filter statement when the operation demands a second value to compare to.
         /// </summary>
         public object Value2 { get; set; }
-        
+
         /// <summary>
         /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
         /// </summary>
@@ -45,28 +48,35 @@ namespace ExpressionBuilder.Generics
         /// <param name="value"></param>
         /// <param name="value2"></param>
         /// <param name="connector"></param>
-		public FilterStatement(string propertyId, Operation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), FilterStatementConnector connector = FilterStatementConnector.And)
-		{
-			PropertyId = propertyId;
-			Connector = connector;
-			Operation = operation;
-			if (typeof(TPropertyType).IsArray)
-			{
-				if (operation != Operation.Contains && operation != Operation.In) throw new ArgumentException("Only 'Operacao.Contains' and 'Operacao.In' support arrays as parameters.");
+        public FilterStatement(string propertyId, IOperation operation, TPropertyType value, TPropertyType value2, Connector connector)
+        {
+            PropertyId = propertyId;
+            Connector = connector;
+            Operation = operation;
+            SetValues(value, value2);
+            Validate();
+        }
 
-				var listType = typeof(List<>);
+        private void SetValues(TPropertyType value, TPropertyType value2)
+        {
+            if (typeof(TPropertyType).IsArray)
+            {
+                if (!Operation.SupportsLists)
+                {
+                    throw new ArgumentException("It seems the chosen operation does not support arrays as parameters.");
+                }
+
+                var listType = typeof(List<>);
                 var constructedListType = listType.MakeGenericType(typeof(TPropertyType).GetElementType());
                 Value = value != null ? Activator.CreateInstance(constructedListType, value) : null;
                 Value2 = value2 != null ? Activator.CreateInstance(constructedListType, value2) : null;
             }
-			else
-			{
-				Value = value;
+            else
+            {
+                Value = value;
                 Value2 = value2;
-			}
-
-            Validate();
-		}
+            }
+        }
 
         /// <summary>
         /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
@@ -78,14 +88,14 @@ namespace ExpressionBuilder.Generics
         /// </summary>
         public void Validate()
         {
-            var helper = new OperationHelper();            
-            ValidateNumberOfValues(helper);
+            var helper = new OperationHelper();
+            ValidateNumberOfValues();
             ValidateSupportedOperations(helper);
         }
 
-        private void ValidateNumberOfValues(OperationHelper helper)
+        private void ValidateNumberOfValues()
         {
-            var numberOfValues = helper.NumberOfValuesAcceptable(Operation);
+            var numberOfValues = Operation.NumberOfValues;
             var failsForSingleValue = numberOfValues == 1 && Value2 != null && !Value2.Equals(default(TPropertyType));
             var failsForNoValueAtAll = numberOfValues == 0 && Value != null && Value2 != null && (!Value.Equals(default(TPropertyType)) || !Value2.Equals(default(TPropertyType)));
 
@@ -97,7 +107,7 @@ namespace ExpressionBuilder.Generics
 
         private void ValidateSupportedOperations(OperationHelper helper)
         {
-            List<Operation> supportedOperations = null;
+            HashSet<IOperation> supportedOperations = null;
             if (typeof(TPropertyType) == typeof(object))
             {
                 //TODO: Issue regarding the TPropertyType that comes from the UI always as 'Object'
@@ -105,7 +115,7 @@ namespace ExpressionBuilder.Generics
                 System.Diagnostics.Debug.WriteLine("WARN: Not able to check if the operation is supported or not.");
                 return;
             }
-            
+
             supportedOperations = helper.SupportedOperations(typeof(TPropertyType));
 
             if (!supportedOperations.Contains(Operation))
@@ -120,21 +130,21 @@ namespace ExpressionBuilder.Generics
         /// <returns></returns>
 		public override string ToString()
         {
-            var operationHelper = new OperationHelper();
-
-            switch (operationHelper.NumberOfValuesAcceptable(Operation))
+            switch (Operation.NumberOfValues)
             {
                 case 0:
                     return string.Format("{0} {1}", PropertyId, Operation);
+
                 case 2:
                     return string.Format("{0} {1} {2} And {3}", PropertyId, Operation, Value, Value2);
+
                 default:
                     return string.Format("{0} {1} {2}", PropertyId, Operation, Value);
             }
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public XmlSchema GetSchema()
@@ -150,7 +160,7 @@ namespace ExpressionBuilder.Generics
         {
             reader.Read();
             PropertyId = reader.ReadElementContentAsString();
-            Operation = (Operation)Enum.Parse(typeof(Operation), reader.ReadElementContentAsString());
+            Operation = Operations.Operation.ByName(reader.ReadElementContentAsString());
             if (typeof(TPropertyType).IsEnum)
             {
                 Value = Enum.Parse(typeof(TPropertyType), reader.ReadElementContentAsString());
@@ -160,7 +170,7 @@ namespace ExpressionBuilder.Generics
                 Value = Convert.ChangeType(reader.ReadElementContentAsString(), typeof(TPropertyType));
             }
 
-            Connector = (FilterStatementConnector)Enum.Parse(typeof(FilterStatementConnector), reader.ReadElementContentAsString());
+            Connector = (Connector)Enum.Parse(typeof(Connector), reader.ReadElementContentAsString());
         }
 
         /// <summary>
@@ -170,10 +180,9 @@ namespace ExpressionBuilder.Generics
         public void WriteXml(XmlWriter writer)
         {
             var type = Value.GetType();
-            var serializer = new XmlSerializer(type);
             writer.WriteAttributeString("Type", type.AssemblyQualifiedName);
             writer.WriteElementString("PropertyId", PropertyId);
-            writer.WriteElementString("Operation", Operation.ToString("d"));
+            writer.WriteElementString("Operation", Operation.Name);
             writer.WriteElementString("Value", Value.ToString());
             writer.WriteElementString("Connector", Connector.ToString("d"));
         }

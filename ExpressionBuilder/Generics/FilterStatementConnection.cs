@@ -24,7 +24,7 @@ namespace ExpressionBuilder.Generics
 		{
 			get
 			{
-				_statement.Connector = FilterStatementConnector.And;
+				_statement.Connector = Connector.And;
 				return _filter;
 			}
 		}
@@ -36,7 +36,7 @@ namespace ExpressionBuilder.Generics
 		{
 			get
 			{
-				_statement.Connector = FilterStatementConnector.Or;
+				_statement.Connector = Connector.Or;
 				return _filter;
 			}
 		}

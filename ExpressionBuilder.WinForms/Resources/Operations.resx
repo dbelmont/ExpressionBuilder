@@ -159,4 +159,7 @@
   <data name="StartsWith" xml:space="preserve">
     <value>Starts with</value>
   </data>
+  <data name="ThisDay" xml:space="preserve">
+    <value>This day</value>
+  </data>
 </root>

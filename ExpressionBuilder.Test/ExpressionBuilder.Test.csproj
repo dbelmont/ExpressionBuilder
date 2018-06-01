@@ -10,6 +10,8 @@
     <AssemblyName>ExpressionBuilder.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,6 +36,9 @@
     <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
+    <Reference Include="FluentAssertions, Version=5.3.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.5.3.0\lib\net45\FluentAssertions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -49,21 +54,40 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomOperations\EqualTo.cs" />
+    <Compile Include="CustomOperations\ThisDay.cs" />
     <Compile Include="Database\BuilderTest.cs" />
     <Compile Include="Database\Northwind.cs" />
-    <Compile Include="Unit\BuilderTest.cs" />
+    <Compile Include="Integration\BuilderTest.cs" />
     <Compile Include="Unit\FilterTest.cs" />
     <Compile Include="Unit\FilterXmlSerializerTests.cs" />
+    <Compile Include="Unit\Helpers\ExtensionMethods.cs" />
     <Compile Include="Unit\HelperTests.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Person.cs" />
-    <Compile Include="Unit\OperationTests.cs" />
+    <Compile Include="Unit\Operations\NotEqualToTests.cs" />
+    <Compile Include="Unit\Operations\IsNullOrWhiteSpaceOrNotOperationsTests.cs" />
+    <Compile Include="Unit\Operations\IsNullIsNotNullOperationsTests.cs" />
+    <Compile Include="Unit\Operations\IsEmptyIsNotEmptyOperationsTests.cs" />
+    <Compile Include="Unit\Operations\InTests.cs" />
+    <Compile Include="Unit\Operations\SimpleNumericComparisonOperationsTests.cs" />
+    <Compile Include="Unit\Operations\EqualToTests.cs" />
+    <Compile Include="Unit\Operations\BetweenTests.cs" />
+    <Compile Include="Unit\Operations\MethodCallOperationsTests.cs" />
+    <Compile Include="Unit\Operations\DoesNotContainTests.cs" />
+    <Compile Include="Integration\OperationTests.cs" />
     <Compile Include="Resources\Operations.Designer.cs">
       <DependentUpon>Operations.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -80,12 +104,14 @@
       <DependentUpon>Person.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Unit\PropertyLoaderTest.cs" />
+    <Compile Include="Integration\PropertyLoaderTest.cs" />
+    <Compile Include="Unit\Helpers\TestData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="CodeCoverage.runsettings" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -115,6 +141,17 @@
       <LastGenOutput>Person.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Northwind.sdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
+    if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

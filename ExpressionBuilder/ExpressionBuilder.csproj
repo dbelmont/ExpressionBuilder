@@ -46,30 +46,52 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\NumberOfValuesAttribute.cs" />
-    <Compile Include="Attributes\SupportedOperationsAttribute.cs" />
     <Compile Include="Builders\FilterBuilder.cs" />
     <Compile Include="Common\Enumerations.cs" />
+    <Compile Include="Common\CommonExtensionMethods.cs" />
     <Compile Include="Configuration\ExpressionBuilderConfig.cs" />
-    <Compile Include="Helpers\BuilderHelper.cs" />
+    <Compile Include="Exceptions\OperationNotFoundException.cs" />
+    <Compile Include="Exceptions\PropertyValueTypeMismatchException.cs" />
     <Compile Include="Exceptions\WrongNumberOfValuesException.cs" />
     <Compile Include="Exceptions\UnsupportedOperationException.cs" />
     <Compile Include="Generics\FilterStatement.cs" />
     <Compile Include="Generics\Filter.cs" />
     <Compile Include="Generics\FilterStatementConnection.cs" />
+    <Compile Include="Helpers\OperationEqualityComparer.cs" />
     <Compile Include="Helpers\OperationHelper.cs" />
     <Compile Include="Interfaces\IFilter.cs" />
     <Compile Include="Interfaces\IFilterStatementConnection.cs" />
-    <Compile Include="Interfaces\IBuilderHelper.cs" />
     <Compile Include="Interfaces\IFilterStatement.cs" />
+    <Compile Include="Interfaces\IOperation.cs" />
     <Compile Include="Interfaces\IOperationHelper.cs" />
     <Compile Include="Interfaces\IPropertyCollection.cs" />
+    <Compile Include="Operations\Between.cs" />
+    <Compile Include="Operations\DoesNotContain.cs" />
+    <Compile Include="Operations\IsNotEmpty.cs" />
+    <Compile Include="Operations\IsNotNull.cs" />
+    <Compile Include="Operations\IsEmpty.cs" />
+    <Compile Include="Operations\IsNotNullNorWhiteSpace.cs" />
+    <Compile Include="Operations\IsNullOrWhiteSpace.cs" />
+    <Compile Include="Operations\IsNull.cs" />
+    <Compile Include="Operations\In.cs" />
+    <Compile Include="Operations\EndsWith.cs" />
+    <Compile Include="Operations\Operation.cs" />
+    <Compile Include="Operations\StartsWith.cs" />
+    <Compile Include="Operations\Contains.cs" />
+    <Compile Include="Operations\LessThanOrEqualTo.cs" />
+    <Compile Include="Operations\LessThan.cs" />
+    <Compile Include="Operations\GreaterThanOrEqualTo.cs" />
+    <Compile Include="Operations\GreaterThan.cs" />
+    <Compile Include="Operations\NotEqualTo.cs" />
+    <Compile Include="Operations\EqualTo.cs" />
+    <Compile Include="Operations\OperationBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\OperationGlobalizationExtensionMethods.cs" />
     <Compile Include="Resources\Property.cs" />
@@ -81,5 +103,6 @@
     </None>
     <None Include="readme.md" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

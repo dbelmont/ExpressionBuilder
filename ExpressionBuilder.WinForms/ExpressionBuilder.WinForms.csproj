@@ -59,6 +59,8 @@
     <Compile Include="Controls\ucFilter.Designer.cs">
       <DependentUpon>ucFilter.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomOperations\EqualTo.cs" />
+    <Compile Include="CustomOperations\ThisDay.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,5 +104,6 @@
       <Name>ExpressionBuilder</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

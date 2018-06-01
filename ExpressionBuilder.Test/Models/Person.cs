@@ -3,27 +3,27 @@ using System.Collections.Generic;
 
 namespace ExpressionBuilder.Test.Models
 {
-	public enum PersonGender
-	{
-		Male,
-		Female
-	}
-	
-	public class Person
-	{
-		public int Id { get; set; }
-		public string Name { get; set; }
-		public PersonGender Gender { get; set; }
-		public BirthData Birth { get; set; }
-		public List<Contact> Contacts { get; private set; }
+    public enum PersonGender
+    {
+        Male,
+        Female
+    }
+
+    public class Person
+    {
+        public int Id;
+        public string Name { get; set; }
+        public PersonGender Gender { get; set; }
+        public BirthData Birth { get; set; }
+        public List<Contact> Contacts { get; private set; }
         public Company Employer { get; set; }
         public double Salary { get; set; }
-		
-		public Person()
-		{
-			Contacts = new List<Contact>();
+
+        public Person()
+        {
+            Contacts = new List<Contact>();
             Birth = new BirthData();
-		}
+        }
 
         public override int GetHashCode()
         {
@@ -53,9 +53,10 @@ namespace ExpressionBuilder.Test.Models
         }
 
         public class BirthData
-		{
-			public DateTime? Date { get; set; }
-			public string Country { get; set; }
+        {
+            public DateTime? Date { get; set; }
+            public string Country { get; set; }
+
             public DateTimeOffset? DateOffset
             {
                 get
@@ -63,27 +64,28 @@ namespace ExpressionBuilder.Test.Models
                     return Date.HasValue ? new DateTimeOffset?(Date.Value) : new DateTimeOffset?();
                 }
             }
-		    public int Age
-		    {
-		        get
-		        {
-		            if (!Date.HasValue) return 0;
 
-		            var timeSpan = DateTime.Now - Date.Value;
+            public int Age
+            {
+                get
+                {
+                    if (!Date.HasValue) return 0;
+
+                    var timeSpan = DateTime.Now - Date.Value;
                     return (int)(timeSpan.Days / 365.2425);
-		        }
-		    }
+                }
+            }
 
-			public override string ToString()
-			{
-				return string.Format("Born at {0} in {1} ({2} yo)", Date.Value.ToShortDateString(), Country, Age);
-			}
+            public override string ToString()
+            {
+                return string.Format("Born at {0} in {1} ({2} yo)", Date.Value.ToShortDateString(), Country, Age);
+            }
+        }
 
-		}
-
-        public class Company {
+        public class Company
+        {
             public string Name { get; set; }
             public string Industry { get; set; }
         }
-	}
+    }
 }
