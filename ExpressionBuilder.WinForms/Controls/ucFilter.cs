@@ -61,12 +61,12 @@ namespace ExpressionBuilder.WinForms.Controls
             if (ctrl != null)
             {
                 var property = _properties[PropertyId];
-                var type = Nullable.GetUnderlyingType(property.Info.PropertyType) ?? property.Info.PropertyType;
+                var type = Nullable.GetUnderlyingType(property.MemberType) ?? property.MemberType;
                 if (type == typeof(string)) return ctrl.Text;
                 if (type == typeof(DateTime)) return (ctrl as DateTimePicker).Value;
                 if (type == typeof(int)) return Convert.ToInt32((ctrl as NumericUpDown).Value);
                 if (type == typeof(bool)) return Boolean.Parse(ctrl.Text);
-                if (type.IsEnum) return Enum.ToObject(property.Info.PropertyType, (ctrl as DomainUpDown).SelectedItem);
+                if (type.IsEnum) return Enum.ToObject(property.MemberType, (ctrl as DomainUpDown).SelectedItem);
             }
 
             return null;
@@ -124,7 +124,7 @@ namespace ExpressionBuilder.WinForms.Controls
         {
             LoadValueControls();
 
-            var type = _properties[PropertyId].Info.PropertyType;
+            var type = _properties[PropertyId].MemberType;
             var supportedOperations = new OperationHelper()
                                         .SupportedOperations(type)
                                         .Select(o => new
@@ -164,9 +164,9 @@ namespace ExpressionBuilder.WinForms.Controls
 
         private Control CreateNewControl()
         {
-            var info = _properties[PropertyId].Info;
-            var underlyingNullableType = Nullable.GetUnderlyingType(info.PropertyType);
-            var type = underlyingNullableType ?? info.PropertyType;
+            var memberType = _properties[PropertyId].MemberType;
+            var underlyingNullableType = Nullable.GetUnderlyingType(memberType);
+            var type = underlyingNullableType ?? memberType;
             Control ctrl = null;
             if (type.IsEnum || type == typeof(bool))
             {
@@ -206,7 +206,9 @@ namespace ExpressionBuilder.WinForms.Controls
 
         public IPropertyCollection LoadProperties(Type type)
         {
-            return _properties = new PropertyCollection(type, Resources.Person.ResourceManager);
+            _properties = new PropertyCollection(type);
+            _properties.LoadProperties(Resources.Person.ResourceManager);
+            return _properties;
         }
 
         private void BtnAddClick(object sender, EventArgs e)

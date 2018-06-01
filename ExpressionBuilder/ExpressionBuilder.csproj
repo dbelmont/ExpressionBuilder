@@ -58,7 +58,7 @@
     <Compile Include="Common\CommonExtensionMethods.cs" />
     <Compile Include="Configuration\ExpressionBuilderConfig.cs" />
     <Compile Include="Exceptions\OperationNotFoundException.cs" />
-    <Compile Include="Helpers\BuilderHelper.cs" />
+    <Compile Include="Exceptions\PropertyValueTypeMismatchException.cs" />
     <Compile Include="Exceptions\WrongNumberOfValuesException.cs" />
     <Compile Include="Exceptions\UnsupportedOperationException.cs" />
     <Compile Include="Generics\FilterStatement.cs" />
@@ -68,7 +68,6 @@
     <Compile Include="Helpers\OperationHelper.cs" />
     <Compile Include="Interfaces\IFilter.cs" />
     <Compile Include="Interfaces\IFilterStatementConnection.cs" />
-    <Compile Include="Interfaces\IBuilderHelper.cs" />
     <Compile Include="Interfaces\IFilterStatement.cs" />
     <Compile Include="Interfaces\IOperation.cs" />
     <Compile Include="Interfaces\IOperationHelper.cs" />

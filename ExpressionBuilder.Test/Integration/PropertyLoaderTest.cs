@@ -36,8 +36,8 @@ namespace ExpressionBuilder.Test.Integration
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
 
-            IPropertyCollection loader = new PropertyCollection(typeof(Person));
-            var properties = loader.LoadProperties(Resources.Person.ResourceManager);
+            IPropertyCollection loader = new PropertyCollection(typeof(Person), Resources.Person.ResourceManager);
+            var properties = loader.ToList();
             var ids = properties.Select(p => p.Id);
             var names = properties.Select(p => p.Name);
 
@@ -66,6 +66,24 @@ namespace ExpressionBuilder.Test.Integration
             {
                 property.ToString().Should().Be(string.Format("{0} ({1})", property.Name, property.Id));
             }
+        }
+
+        [TestCase(TestName = "Checking the loading of classes' properties and fields")]
+        public void LoadingPropertiesAndFields()
+        {
+            IPropertyCollection properties = new PropertyCollection(typeof(Person));
+            var id = properties.ToList().Single(p => p.Id == "Id");
+            var name = properties.ToList().Single(p => p.Id == "Name");
+            id.MemberType.Should().Be(typeof(int));
+            name.MemberType.Should().Be(typeof(string));
+        }
+
+        [TestCase(TestName = "Checking if all properties and fields were loaded")]
+        public void LoadingAllPropertiesAndFields()
+        {
+            var properties = new PropertyCollection(typeof(Person)).ToList();
+            properties.Count.Should().Be(propertyIds.Count);
+            properties.Select(p => p.Id).Should().BeEquivalentTo(propertyIds);
         }
     }
 }

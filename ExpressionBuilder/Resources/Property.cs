@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace ExpressionBuilder.Resources
 {
@@ -12,16 +11,26 @@ namespace ExpressionBuilder.Resources
         /// Property identifier conventionalized by for the Expression Builder.
         /// </summary>
         public string Id { get; private set; }
+
         /// <summary>
         /// Property name obtained from a ResourceManager, or the property's original name (in the absence of a ResourceManager correspondent value).
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
         /// Property metadata.
         /// </summary>
-        public PropertyInfo Info { get; private set; }
+        public MemberInfo Info { get; private set; }
 
-        internal Property(string id, string name, PropertyInfo info)
+        public System.Type MemberType
+        {
+            get
+            {
+                return Info.MemberType == MemberTypes.Property ? (Info as PropertyInfo).PropertyType : (Info as FieldInfo).FieldType;
+            }
+        }
+
+        internal Property(string id, string name, MemberInfo info)
         {
             Id = id;
             Name = name;

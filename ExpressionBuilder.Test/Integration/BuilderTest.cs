@@ -4,6 +4,7 @@ using ExpressionBuilder.Generics;
 using ExpressionBuilder.Operations;
 using ExpressionBuilder.Test.Models;
 using ExpressionBuilder.Test.Unit.Helpers;
+using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -64,7 +65,7 @@ namespace ExpressionBuilder.Test.Integration
         {
             var filter = new Filter<Person>();
             filter.By("Birth.Country", Operation.EqualTo, "usa", default(string), Connector.Or);
-            filter.By("Birth.Date", Operation.LessThanOrEqualTo, new DateTime(1980, 1, 1), connector: Connector.Or);
+            filter.By("Birth.Date", Operation.LessThanOrEqualTo, new DateTime(1980, 1, 1), DateTime.MinValue, Connector.Or);
             filter.By("Name", Operation.Contains, "Doe");
             var people = People.Where(filter);
             var solution = People.Where(p => (p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim().ToLower().Equals("usa")) ||
@@ -317,6 +318,24 @@ namespace ExpressionBuilder.Test.Integration
                                              && (p.Salary >= 4000 && p.Salary <= 5000));
 
             Assert.That(people, Is.Not.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Property value type mismatch with an operation that expects one value")]
+        public void PropertyValueTypeMismatchWithOneValue()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Name", Operation.EqualTo, 1);
+            var ex = Assert.Throws<PropertyValueTypeMismatchException>(() => People.Where(filter));
+            ex.Message.Should().Be("The type of the member 'Name' (String) is different from the type of one of the constants (Int32)");
+        }
+
+        [TestCase(TestName = "Property value type mismatch with an operation that expects two values")]
+        public void PropertyValueTypeMismatchWithTwoValues()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Id", Operation.Between, (int)1, 7700000000000007D);
+            var ex = Assert.Throws<PropertyValueTypeMismatchException>(() => People.Where(filter));
+            ex.Message.Should().Be("The type of the member 'Id' (Int32) is different from the type of one of the constants (Double)");
         }
     }
 }

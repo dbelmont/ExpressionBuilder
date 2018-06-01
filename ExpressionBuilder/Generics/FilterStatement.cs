@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.Serialization;
 
 namespace ExpressionBuilder.Generics
 {
@@ -49,14 +48,23 @@ namespace ExpressionBuilder.Generics
         /// <param name="value"></param>
         /// <param name="value2"></param>
         /// <param name="connector"></param>
-        public FilterStatement(string propertyId, IOperation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), Connector connector = Connector.And)
+        public FilterStatement(string propertyId, IOperation operation, TPropertyType value, TPropertyType value2, Connector connector)
         {
             PropertyId = propertyId;
             Connector = connector;
             Operation = operation;
+            SetValues(value, value2);
+            Validate();
+        }
+
+        private void SetValues(TPropertyType value, TPropertyType value2)
+        {
             if (typeof(TPropertyType).IsArray)
             {
-                if (!Operation.SupportsLists) throw new ArgumentException("It seems the chosen operation does not support arrays as parameters.");
+                if (!Operation.SupportsLists)
+                {
+                    throw new ArgumentException("It seems the chosen operation does not support arrays as parameters.");
+                }
 
                 var listType = typeof(List<>);
                 var constructedListType = listType.MakeGenericType(typeof(TPropertyType).GetElementType());
@@ -68,8 +76,6 @@ namespace ExpressionBuilder.Generics
                 Value = value;
                 Value2 = value2;
             }
-
-            Validate();
         }
 
         /// <summary>
@@ -83,11 +89,11 @@ namespace ExpressionBuilder.Generics
         public void Validate()
         {
             var helper = new OperationHelper();
-            ValidateNumberOfValues(helper);
+            ValidateNumberOfValues();
             ValidateSupportedOperations(helper);
         }
 
-        private void ValidateNumberOfValues(OperationHelper helper)
+        private void ValidateNumberOfValues()
         {
             var numberOfValues = Operation.NumberOfValues;
             var failsForSingleValue = numberOfValues == 1 && Value2 != null && !Value2.Equals(default(TPropertyType));
@@ -124,8 +130,6 @@ namespace ExpressionBuilder.Generics
         /// <returns></returns>
 		public override string ToString()
         {
-            var operationHelper = new OperationHelper();
-
             switch (Operation.NumberOfValues)
             {
                 case 0:
@@ -156,8 +160,7 @@ namespace ExpressionBuilder.Generics
         {
             reader.Read();
             PropertyId = reader.ReadElementContentAsString();
-            //TODO: Find a better way to resolve this dependency
-            Operation = new OperationHelper().GetOperationByName(reader.ReadElementContentAsString());
+            Operation = Operations.Operation.ByName(reader.ReadElementContentAsString());
             if (typeof(TPropertyType).IsEnum)
             {
                 Value = Enum.Parse(typeof(TPropertyType), reader.ReadElementContentAsString());
@@ -177,7 +180,6 @@ namespace ExpressionBuilder.Generics
         public void WriteXml(XmlWriter writer)
         {
             var type = Value.GetType();
-            var serializer = new XmlSerializer(type);
             writer.WriteAttributeString("Type", type.AssemblyQualifiedName);
             writer.WriteElementString("PropertyId", PropertyId);
             writer.WriteElementString("Operation", Operation.Name);

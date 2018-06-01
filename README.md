@@ -1,10 +1,10 @@
-# <img src="ExpressionBuilder\ExpressionBuilder.png" width="36"> Expression Builder
+# <img src="ExpressionBuilder\ExpressionBuilder.png" width="36" style="position: relative; top: 5px">Expression Builder
 In short words, this library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters. That can be used to help to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.  If you would like more details on how it works, please, check out the article [Build Lambda Expression Dynamically](https://www.codeproject.com/Articles/1079028/Build-Lambda-Expressions-Dynamically).
 
-![buildStatus](https://dbelmont.visualstudio.com/_apis/public/build/definitions/514190c1-40ad-46f3-b8d7-428acd1a108c/2/badge)
+![buildStatus](https://dbelmont.visualstudio.com/_apis/public/build/definitions/514190c1-40ad-46f3-b8d7-428acd1a108c/2/badge) ![Codacy Badge](https://api.codacy.com/project/badge/Grade/dc3b91e17b554d0183f4b504bb3c50d1)
 
 * [Features](#features)
-  * [New on version 2.0](#new-on-version-20)
+  * [New on version 2](#new-on-version-2)
 * [How to use it](#how-to-use-it)
   * [Convetions](#conventions)
   * [Supported types/operations](#supported-typesoperations)
@@ -28,8 +28,9 @@ Would this help you in anyway? Well, if your answer is 'yes', you just made my d
 
 Please, feel free to leave comments and to place issues if you find errors or realize there is any missing feature.
 
-## New on version 2.0:
+## New on version 2:
 * [Custom operations](#custom-operations): create your own operations or overwrite the behaviour of the default operations
+* Full support to [Properties and Fields](/ExpressionBuilder/issues/14)
 * Enum renaming: **FilterStatementConnector** has changed to just **Connector**
 * Other minor improvements
 
@@ -220,7 +221,7 @@ Complex expressions are handled basically by grouping up filter statements, like
 var filter = new Filter<Products>();
 filter.By("SupplierID", Operation.EqualTo, 1);
 filter.StartGroup();
-filter.By("CategoryID", Operation.EqualTo, 1, connector: Connector.Or);
+filter.By("CategoryID", Operation.EqualTo, 1, Connector.Or);
 filter.By("CategoryID", Operation.EqualTo, 2);
 var people = db.Products.Where(filter);
 

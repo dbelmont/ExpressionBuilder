@@ -1,4 +1,5 @@
 ﻿using ExpressionBuilder.Common;
+using ExpressionBuilder.Exceptions;
 using ExpressionBuilder.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,8 @@ namespace ExpressionBuilder.Builders
 {
     internal class FilterBuilder
     {
-        private readonly IBuilderHelper builderHelper;
-        private readonly IOperationHelper operationHelper;
-
-        internal FilterBuilder(IBuilderHelper builderHelper, IOperationHelper operationHelper)
+        internal FilterBuilder()
         {
-            this.builderHelper = builderHelper;
-            this.operationHelper = operationHelper;
         }
 
         public Expression<Func<T, bool>> GetExpression<T>(IFilter filter) where T : class
@@ -45,9 +41,13 @@ namespace ExpressionBuilder.Builders
             {
                 Expression expr = null;
                 if (IsList(statement))
+                {
                     expr = ProcessListStatement(param, statement);
+                }
                 else
+                {
                     expr = GetExpression(param, statement);
+                }
 
                 expression = expression == null ? expr : CombineExpressions(expression, expr, connector);
                 connector = statement.Connector;
@@ -74,7 +74,7 @@ namespace ExpressionBuilder.Builders
             var type = param.Type.GetProperty(basePropertyName).PropertyType.GetGenericArguments()[0];
             ParameterExpression listItemParam = Expression.Parameter(type, "i");
             var lambda = Expression.Lambda(GetExpression(listItemParam, statement, propertyName), listItemParam);
-            var member = builderHelper.GetMemberExpression(param, basePropertyName);
+            var member = param.GetMemberExpression(basePropertyName);
             var enumerableType = typeof(Enumerable);
             var anyInfo = enumerableType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == "Any" && m.GetParameters().Count() == 2);
             anyInfo = anyInfo.MakeGenericMethod(type);
@@ -85,7 +85,7 @@ namespace ExpressionBuilder.Builders
         {
             Expression resultExpr = null;
             var memberName = propertyName ?? statement.PropertyId;
-            MemberExpression member = builderHelper.GetMemberExpression(param, memberName);
+            MemberExpression member = param.GetMemberExpression(memberName);
 
             if (Nullable.GetUnderlyingType(member.Type) != null && statement.Value != null)
             {
@@ -96,35 +96,63 @@ namespace ExpressionBuilder.Builders
             var constant1 = Expression.Constant(statement.Value);
             var constant2 = Expression.Constant(statement.Value2);
 
+            CheckPropertyValueMismatch(member, constant1);
+
             var safeStringExpression = statement.Operation.GetExpression(member, constant1, constant2);
             resultExpr = resultExpr != null ? Expression.AndAlso(resultExpr, safeStringExpression) : safeStringExpression;
             resultExpr = GetSafePropertyMember(param, memberName, resultExpr);
 
             if (statement.Operation.ExpectNullValues && memberName.Contains("."))
             {
-                resultExpr = Expression.OrElse(CheckIfParentIsNull(param, member, memberName), resultExpr);
+                resultExpr = Expression.OrElse(CheckIfParentIsNull(param, memberName), resultExpr);
             }
 
             return resultExpr;
         }
 
-        public Expression GetSafePropertyMember(ParameterExpression param, String memberName, Expression expr)
+        private void CheckPropertyValueMismatch(MemberExpression member, ConstantExpression constant1)
+        {
+            var memberType = member.Member.MemberType == MemberTypes.Property ? (member.Member as PropertyInfo).PropertyType : (member.Member as FieldInfo).FieldType;
+
+            var constant1Type = GetConstantType(constant1);
+
+            if (constant1.Value != null && memberType != constant1Type)
+            {
+                throw new PropertyValueTypeMismatchException(member.Member.Name, memberType.Name, constant1.Type.Name);
+            }
+        }
+
+        private Type GetConstantType(ConstantExpression constant)
+        {
+            if (constant != null && constant.Value != null && constant.Value.IsGenericList())
+            {
+                return constant.Value.GetType().GenericTypeArguments[0];
+            }
+
+            return constant != null && constant.Value != null ? constant.Value.GetType() : null;
+        }
+
+        public Expression GetSafePropertyMember(ParameterExpression param, string memberName, Expression expr)
         {
             if (!memberName.Contains("."))
             {
                 return expr;
             }
 
-            string parentName = memberName.Substring(0, memberName.IndexOf("."));
-            Expression parentMember = builderHelper.GetMemberExpression(param, parentName);
+            var parentMember = GetParentMember(param, memberName);
             return Expression.AndAlso(Expression.NotEqual(parentMember, Expression.Constant(null)), expr);
         }
 
-        protected Expression CheckIfParentIsNull(ParameterExpression param, MemberExpression member, string memberName)
+        protected Expression CheckIfParentIsNull(ParameterExpression param, string memberName)
         {
-            string parentName = memberName.Substring(0, memberName.IndexOf("."));
-            Expression parentMember = builderHelper.GetMemberExpression(param, parentName);
+            var parentMember = GetParentMember(param, memberName);
             return Expression.Equal(parentMember, Expression.Constant(null));
+        }
+
+        private Expression GetParentMember(ParameterExpression param, string memberName)
+        {
+            var parentName = memberName.Substring(0, memberName.IndexOf("."));
+            return param.GetMemberExpression(parentName);
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using ExpressionBuilder.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Resources;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 
 namespace ExpressionBuilder.Resources
 {
@@ -21,24 +22,24 @@ namespace ExpressionBuilder.Resources
         /// ResourceManager which the properties descriptions should be gotten from.
         /// </summary>
         public ResourceManager ResourceManager { get; private set; }
-        
+
         private List<Property> Properties { get; set; }
-        
+
         /// <summary>
         /// Gets the number of <see cref="Property" /> contained in the <see cref="PropertyCollection" />.
         /// </summary>
         public int Count => Properties.Count();
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public object SyncRoot => throw new NotImplementedException();
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool IsSynchronized => throw new NotImplementedException();
-        
+
         /// <summary>
         /// Retrieves a property based on its Id.
         /// </summary>
@@ -53,6 +54,7 @@ namespace ExpressionBuilder.Resources
         public PropertyCollection(Type type)
         {
             Type = type;
+            Properties = LoadProperties(Type);
         }
 
         /// <summary>
@@ -73,14 +75,12 @@ namespace ExpressionBuilder.Resources
         public List<Property> LoadProperties(ResourceManager resourceManager)
         {
             ResourceManager = resourceManager;
-            var resourceSet = resourceManager.GetResourceSet(System.Threading.Thread.CurrentThread.CurrentCulture, true, false);
-            var properties = LoadProperties(Type);
-            foreach (Property property in properties)
+            foreach (Property property in Properties)
             {
                 property.Name = resourceManager.GetString(GetPropertyResourceName(property.Id)) ?? property.Name;
             }
 
-            return Properties = properties;
+            return Properties;
         }
 
         private string GetPropertyResourceName(string propertyConventionName)
@@ -94,37 +94,39 @@ namespace ExpressionBuilder.Resources
         private List<Property> LoadProperties(Type type)
         {
             var list = new List<Property>();
-            var properties = type.GetProperties();
-            foreach (var property in properties)
+            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
+            MemberInfo[] members = type.GetFields(bindingFlags).Cast<MemberInfo>()
+                                    .Concat(type.GetProperties(bindingFlags)).ToArray();
+            foreach (var member in members)
             {
-                if (property.PropertyType.IsValueType || property.PropertyType == typeof(String))
-                {
-                    list.Add(new Property(property.Name, property.Name, property));
-                    continue;
-                }
-
-                if (property.PropertyType.IsGenericType && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
-                {
-                    var props = LoadProperties(property.PropertyType.GetGenericArguments()[0]);
-                    foreach (var info in props)
-                    {
-                        list.Add(new Property(property.Name + "[" + info.Id + "]", info.Name, info.Info));
-                    }
-                    continue;
-                }
-
-                if (!property.PropertyType.IsValueType)
-                {
-                    var props = LoadProperties(property.PropertyType);
-                    foreach (var info in props)
-                    {
-                        list.Add(new Property(property.Name + "." + info.Id, info.Name, info.Info));
-                    }
-                    continue;
-                }
+                list.AddRange(GetProperties(member));
             }
 
             return list;
+        }
+
+        private IEnumerable<Property> GetProperties(MemberInfo member)
+        {
+            var memberType = GetMemberType(member);
+
+            if (memberType.IsValueType || memberType == typeof(string))
+            {
+                return new List<Property> { new Property(member.Name, member.Name, member) };
+            }
+
+            if (memberType.IsGenericType && typeof(IEnumerable).IsAssignableFrom(memberType))
+            {
+                return LoadProperties(memberType.GetGenericArguments()[0])
+                        .Select(p => new Property(member.Name + "[" + p.Id + "]", p.Name, p.Info));
+            }
+
+            return LoadProperties(memberType)
+                    .Select(p => new Property(member.Name + "." + p.Id, p.Name, p.Info));
+        }
+
+        private Type GetMemberType(MemberInfo member)
+        {
+            return member.MemberType == MemberTypes.Property ? (member as PropertyInfo).PropertyType : (member as FieldInfo).FieldType;
         }
 
         /// <summary>

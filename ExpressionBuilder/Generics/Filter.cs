@@ -1,13 +1,13 @@
 ﻿using ExpressionBuilder.Builders;
 using ExpressionBuilder.Common;
+using ExpressionBuilder.Helpers;
 using ExpressionBuilder.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
-using ExpressionBuilder.Helpers;
-using System.Linq;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder.Generics
 {
@@ -53,8 +53,7 @@ namespace ExpressionBuilder.Generics
         /// </summary>
 		public Filter()
         {
-            _statements = new List<List<IFilterStatement>>();
-            _statements.Add(new List<IFilterStatement>());
+            _statements = new List<List<IFilterStatement>> { new List<IFilterStatement>() };
         }
 
         /// <summary>
@@ -65,9 +64,35 @@ namespace ExpressionBuilder.Generics
         /// <param name="operation">Operation to be used.</param>
         /// <param name="connector"></param>
         /// <returns></returns>
-        public IFilterStatementConnection By(string propertyId, IOperation operation, Connector connector = Connector.And)
+        public IFilterStatementConnection By(string propertyId, IOperation operation, Connector connector)
         {
             return By<string>(propertyId, operation, null, null, connector);
+        }
+
+        /// <summary>
+        /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
+        /// (To be used by <see cref="IOperation" /> that need no values)
+        /// </summary>
+        /// <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
+        /// <param name="operation">Operation to be used.</param>
+        /// <returns></returns>
+        public IFilterStatementConnection By(string propertyId, IOperation operation)
+        {
+            return By<string>(propertyId, operation, null, null, Connector.And);
+        }
+
+        /// <summary>
+        /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
+        /// </summary>
+        /// <typeparam name="TPropertyType"></typeparam>
+        /// <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
+        /// <param name="operation">Operation to be used.</param>
+        /// <param name="value"></param>
+        /// <param name="value2"></param>
+        /// <returns></returns>
+		public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value)
+        {
+            return By(propertyId, operation, value, default(TPropertyType));
         }
 
         /// <summary>
@@ -80,7 +105,36 @@ namespace ExpressionBuilder.Generics
         /// <param name="value2"></param>
         /// <param name="connector"></param>
         /// <returns></returns>
-		public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), Connector connector = Connector.And)
+		public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value, Connector connector)
+        {
+            return By(propertyId, operation, value, default(TPropertyType), connector);
+        }
+
+        /// <summary>
+        /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
+        /// </summary>
+        /// <typeparam name="TPropertyType"></typeparam>
+        /// <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
+        /// <param name="operation">Operation to be used.</param>
+        /// <param name="value"></param>
+        /// <param name="value2"></param>
+        /// <returns></returns>
+		public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value, TPropertyType value2)
+        {
+            return By(propertyId, operation, value, value2, Connector.And);
+        }
+
+        /// <summary>
+        /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
+        /// </summary>
+        /// <typeparam name="TPropertyType"></typeparam>
+        /// <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
+        /// <param name="operation">Operation to be used.</param>
+        /// <param name="value"></param>
+        /// <param name="value2"></param>
+        /// <param name="connector"></param>
+        /// <returns></returns>
+		public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value, TPropertyType value2, Connector connector)
         {
             IFilterStatement statement = new FilterStatement<TPropertyType>(propertyId, operation, value, value2, connector);
             CurrentStatementGroup.Add(statement);
@@ -113,7 +167,7 @@ namespace ExpressionBuilder.Generics
         /// <param name="filter"></param>
         public static implicit operator Func<TClass, bool>(Filter<TClass> filter)
         {
-            var builder = new FilterBuilder(new BuilderHelper(), new OperationHelper());
+            var builder = new FilterBuilder();
             return builder.GetExpression<TClass>(filter).Compile();
         }
 
@@ -123,7 +177,7 @@ namespace ExpressionBuilder.Generics
         /// <param name="filter"></param>
         public static implicit operator System.Linq.Expressions.Expression<Func<TClass, bool>>(Filter<TClass> filter)
         {
-            var builder = new FilterBuilder(new BuilderHelper(), new OperationHelper());
+            var builder = new FilterBuilder();
             return builder.GetExpression<TClass>(filter);
         }
 
@@ -138,18 +192,24 @@ namespace ExpressionBuilder.Generics
 
             foreach (var statementGroup in _statements)
             {
-                if (_statements.Count() > 1) result.Append("(");
+                if (_statements.Count() > 1)
+                {
+                    result.Append("(");
+                }
 
                 var groupResult = new System.Text.StringBuilder();
                 foreach (var statement in statementGroup)
                 {
                     if (groupResult.Length > 0) groupResult.Append(" " + lastConector + " ");
-                    groupResult.Append(statement.ToString());
+                    groupResult.Append(statement);
                     lastConector = statement.Connector;
                 }
 
                 result.Append(groupResult.ToString().Trim());
-                if (_statements.Count() > 1) result.Append(")");
+                if (_statements.Count() > 1)
+                {
+                    result.Append(")");
+                }
             }
 
             return result.ToString();

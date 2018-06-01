@@ -126,7 +126,7 @@ namespace ExpressionBuilder.Test.Database
             var filter = new Filter<Products>();
             filter.By("SupplierID", Operation.EqualTo, 1);
             filter.StartGroup();
-            filter.By("CategoryID", Operation.EqualTo, 1, connector: Connector.Or);
+            filter.By("CategoryID", Operation.EqualTo, 1, Connector.Or);
             filter.By("CategoryID", Operation.EqualTo, 2);
             var people = db.Products.Where(filter);
             var solution = db.Products.Where(p => p.SupplierID == 1 && (p.CategoryID == 1 || p.CategoryID == 2));

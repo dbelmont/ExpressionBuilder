@@ -33,7 +33,7 @@ namespace ExpressionBuilder.Exceptions
         /// Initializes a new instance of the <see cref="UnsupportedOperationException" /> class.
         /// </summary>
         /// <param name="operation">Operation used.</param>
-        /// <param name="typeName">Name of the type</param>
+        /// <param name="typeName">Name of the type.</param>
         public UnsupportedOperationException(IOperation operation, String typeName) : base()
         {
             Operation = operation;
