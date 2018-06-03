@@ -34,7 +34,7 @@ namespace ExpressionBuilder.Exceptions
         /// </summary>
         /// <param name="operation">Operation used.</param>
         /// <param name="typeName">Name of the type.</param>
-        public UnsupportedOperationException(IOperation operation, String typeName) : base()
+        public UnsupportedOperationException(IOperation operation, String typeName)
         {
             Operation = operation;
             TypeName = typeName;

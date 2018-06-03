@@ -28,24 +28,24 @@ namespace ExpressionBuilder.Resources
         /// <summary>
         /// Gets the number of <see cref="Property" /> contained in the <see cref="PropertyCollection" />.
         /// </summary>
-        public int Count => Properties.Count();
+        public int Count { get { return Properties.Count(); } }
 
         /// <summary>
         ///
         /// </summary>
-        public object SyncRoot => throw new NotImplementedException();
+        public object SyncRoot { get { throw new NotImplementedException(); } }
 
         /// <summary>
         ///
         /// </summary>
-        public bool IsSynchronized => throw new NotImplementedException();
+        public bool IsSynchronized { get { throw new NotImplementedException(); } }
 
         /// <summary>
         /// Retrieves a property based on its Id.
         /// </summary>
         /// <param name="propertyId">Property conventionalized <see cref="Property.Id" />.</param>
         /// <returns></returns>
-        public Property this[string propertyId] => Properties.FirstOrDefault(p => p.Id.Equals(propertyId));
+        public Property this[string propertyId] { get { return Properties.FirstOrDefault(p => p.Id.Equals(propertyId)); } }
 
         /// <summary>
         /// Instantiates a new <see cref="PropertyCollection" />.

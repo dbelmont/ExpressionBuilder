@@ -18,7 +18,7 @@ namespace ExpressionBuilder.Generics
     [Serializable]
     public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     {
-        private List<List<IFilterStatement>> _statements;
+        private readonly List<List<IFilterStatement>> _statements;
 
         public IFilter Group
         {
@@ -138,7 +138,7 @@ namespace ExpressionBuilder.Generics
         {
             IFilterStatement statement = new FilterStatement<TPropertyType>(propertyId, operation, value, value2, connector);
             CurrentStatementGroup.Add(statement);
-            return new FilterStatementConnection<TClass>(this, statement);
+            return new FilterStatementConnection(this, statement);
         }
 
         /// <summary>
@@ -200,7 +200,11 @@ namespace ExpressionBuilder.Generics
                 var groupResult = new System.Text.StringBuilder();
                 foreach (var statement in statementGroup)
                 {
-                    if (groupResult.Length > 0) groupResult.Append(" " + lastConector + " ");
+                    if (groupResult.Length > 0)
+                    {
+                        groupResult.Append(" " + lastConector + " ");
+                    }
+
                     groupResult.Append(statement);
                     lastConector = statement.Connector;
                 }

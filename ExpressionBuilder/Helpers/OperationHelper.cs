@@ -130,8 +130,17 @@ namespace ExpressionBuilder.Helpers
         /// Loads a list of custom operations into the <see cref="Operations"></see> list.
         /// </summary>
         /// <param name="operations">List of operations to load.</param>
+        public void LoadOperations(List<IOperation> operations)
+        {
+            LoadOperations(operations, false);
+        }
+
+        /// <summary>
+        /// Loads a list of custom operations into the <see cref="Operations"></see> list.
+        /// </summary>
+        /// <param name="operations">List of operations to load.</param>
         /// <param name="overloadExisting">Specifies that any matching pre-existing operations should be replaced by the ones from the list. (Useful to overwrite the default operations)</param>
-        public void LoadOperations(List<IOperation> operations, bool overloadExisting = false)
+        public void LoadOperations(List<IOperation> operations, bool overloadExisting)
         {
             foreach (var operation in operations)
             {
