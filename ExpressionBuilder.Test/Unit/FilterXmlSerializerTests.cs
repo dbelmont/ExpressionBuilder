@@ -52,7 +52,7 @@ namespace ExpressionBuilder.Test.Unit
         public void SerializeFilterStatementWithNumericValue()
         {
             var serializer = new XmlSerializer(typeof(FilterStatement<int>));
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb;
             using (var writer = new StringWriter())
             {
                 var statement = new FilterStatement<int>

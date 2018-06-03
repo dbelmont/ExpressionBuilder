@@ -96,8 +96,8 @@ namespace ExpressionBuilder.Generics
         private void ValidateNumberOfValues()
         {
             var numberOfValues = Operation.NumberOfValues;
-            var failsForSingleValue = numberOfValues == 1 && Value2 != null && !Value2.Equals(default(TPropertyType));
-            var failsForNoValueAtAll = numberOfValues == 0 && Value != null && Value2 != null && (!Value.Equals(default(TPropertyType)) || !Value2.Equals(default(TPropertyType)));
+            var failsForSingleValue = numberOfValues == 1 && !Equals(Value2, default(TPropertyType));
+            var failsForNoValueAtAll = numberOfValues == 0 && (!Equals(Value, default(TPropertyType)) || !Equals(Value2, default(TPropertyType)));
 
             if (failsForSingleValue || failsForNoValueAtAll)
             {
@@ -107,16 +107,14 @@ namespace ExpressionBuilder.Generics
 
         private void ValidateSupportedOperations(OperationHelper helper)
         {
-            HashSet<IOperation> supportedOperations = null;
             if (typeof(TPropertyType) == typeof(object))
             {
                 //TODO: Issue regarding the TPropertyType that comes from the UI always as 'Object'
-                //supportedOperations = helper.GetSupportedOperations(Value.GetType());
                 System.Diagnostics.Debug.WriteLine("WARN: Not able to check if the operation is supported or not.");
                 return;
             }
 
-            supportedOperations = helper.SupportedOperations(typeof(TPropertyType));
+            var supportedOperations = helper.SupportedOperations(typeof(TPropertyType));
 
             if (!supportedOperations.Contains(Operation))
             {
