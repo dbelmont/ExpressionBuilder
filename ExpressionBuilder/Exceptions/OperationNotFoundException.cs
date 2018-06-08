@@ -5,6 +5,7 @@ namespace ExpressionBuilder.Exceptions
     /// <summary>
     /// Represents an attempt to instantiate an operation that was not loaded.
     /// </summary>
+    [Serializable]
     public class OperationNotFoundException : Exception
     {
         /// <summary>

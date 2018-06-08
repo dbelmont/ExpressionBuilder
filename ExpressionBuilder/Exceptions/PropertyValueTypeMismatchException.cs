@@ -5,6 +5,7 @@ namespace ExpressionBuilder.Exceptions
     /// <summary>
     /// Represents an attempt to set a property's value with an object of a different type from the property's type.
     /// </summary>
+    [Serializable]
     public class PropertyValueTypeMismatchException : Exception
     {
         /// <summary>

@@ -6,6 +6,7 @@ namespace ExpressionBuilder.Exceptions
     /// <summary>
     /// Represents an attempt to use an operation not currently supported by a type.
     /// </summary>
+    [Serializable]
     public class UnsupportedOperationException : Exception
     {
         /// <summary>

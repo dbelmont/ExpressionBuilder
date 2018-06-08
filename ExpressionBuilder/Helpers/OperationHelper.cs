@@ -116,7 +116,7 @@ namespace ExpressionBuilder.Helpers
         /// <returns></returns>
         public IOperation GetOperationByName(string operationName)
         {
-            var operation = Operations.SingleOrDefault(o => o.Name == operationName && o.Active == true);
+            var operation = Operations.SingleOrDefault(o => o.Name == operationName && o.Active);
 
             if (operation == null)
             {
