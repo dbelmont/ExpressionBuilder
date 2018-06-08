@@ -1,7 +1,12 @@
 # <img src="ExpressionBuilder\ExpressionBuilder.png" width="36" style="position: relative; top: 5px">Expression Builder
 In short words, this library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters. That can be used to help to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.  If you would like more details on how it works, please, check out the article [Build Lambda Expression Dynamically](https://www.codeproject.com/Articles/1079028/Build-Lambda-Expressions-Dynamically).
 
-![buildStatus](https://dbelmont.visualstudio.com/_apis/public/build/definitions/514190c1-40ad-46f3-b8d7-428acd1a108c/2/badge) ![Codacy Badge](https://api.codacy.com/project/badge/Grade/dc3b91e17b554d0183f4b504bb3c50d1)
+| | Badges |
+| -- | -- |
+Build | ![buildStatus](https://dbelmont.visualstudio.com/_apis/public/build/definitions/514190c1-40ad-46f3-b8d7-428acd1a108c/2/badge)
+Quality | ![Codacy Badge](https://api.codacy.com/project/badge/Grade/dc3b91e17b554d0183f4b504bb3c50d1) ![SonarQube Quality Gate Statys](https://sonarcloud.io/api/project_badges/measure?project=expressionbuilder&metric=alert_status) ![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=expressionbuilder&metric=coverage)
+Nuget | [![NuGet](https://img.shields.io/nuget/v/LambdaExpressionBuilder.svg)](https://www.nuget.org/packages/LambdaExpressionBuilder) [![NuGet](https://img.shields.io/nuget/dt/LambdaExpressionBuilder.svg)](https://www.nuget.org/packages/LambdaExpressionBuilder/)
+
 
 * [Features](#features)
   * [New on version 2](#new-on-version-2)

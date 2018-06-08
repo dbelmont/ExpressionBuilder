@@ -6,6 +6,7 @@ namespace ExpressionBuilder.Exceptions
     /// <summary>
     /// Represents an attempt to use an operation providing the wrong number of values.
     /// </summary>
+    [Serializable]
     public class WrongNumberOfValuesException : Exception
     {
         /// <summary>

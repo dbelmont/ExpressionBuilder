@@ -1,0 +1,24 @@
+﻿<AnalyzeParams>
+  <TargetExecutable>packages\NUnit.ConsoleRunner.3.8.0\tools\nunit3-console.exe</TargetExecutable>
+  <TargetArguments>ExpressionBuilder.Test\bin\Debug\ExpressionBuilder.Test.dll</TargetArguments>
+  <TargetWorkingDir>.</TargetWorkingDir>
+  <Output>CoverageAnalysis\TestsCoverage.html</Output>
+  <ReportType>html</ReportType>
+
+  <Filters>
+    <ExcludeFilters>
+      <FilterEntry>
+        <ModuleMask>*.Test*</ModuleMask>
+      </FilterEntry>
+      <FilterEntry>
+        <ModuleMask>ExpressionBuilder.WinForms</ModuleMask>
+      </FilterEntry>
+      <FilterEntry>
+        <ModuleMask>FluentAssertions</ModuleMask>
+      </FilterEntry>
+      <FilterEntry>
+        <ModuleMask>xunit.runner.visualstudio.dotnetcore.testadapter</ModuleMask>
+      </FilterEntry>
+    </ExcludeFilters>
+  </Filters>
+</AnalyzeParams>
