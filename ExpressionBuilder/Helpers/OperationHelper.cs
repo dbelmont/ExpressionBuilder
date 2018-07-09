@@ -1,5 +1,7 @@
 ﻿using ExpressionBuilder.Common;
+#if (NET452)
 using ExpressionBuilder.Configuration;
+#endif
 using ExpressionBuilder.Exceptions;
 using ExpressionBuilder.Interfaces;
 using System;
@@ -64,7 +66,9 @@ namespace ExpressionBuilder.Helpers
         /// <returns></returns>
         public HashSet<IOperation> SupportedOperations(Type type)
         {
+#if (NET452)
             GetCustomSupportedTypes();
+#endif
             return GetSupportedOperations(type);
         }
 
@@ -90,7 +94,7 @@ namespace ExpressionBuilder.Helpers
 
             return new HashSet<IOperation>(supportedOperations);
         }
-
+#if (NET452)
         private void GetCustomSupportedTypes()
         {
             var configSection = ConfigurationManager.GetSection(ExpressionBuilderConfig.SectionName) as ExpressionBuilderConfig;
@@ -108,6 +112,7 @@ namespace ExpressionBuilder.Helpers
                 }
             }
         }
+#endif
 
         /// <summary>
         /// Instantiates an IOperation given its name.
