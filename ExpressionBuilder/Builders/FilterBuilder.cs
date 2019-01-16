@@ -69,7 +69,7 @@ namespace ExpressionBuilder.Builders
         private Expression ProcessListStatement(ParameterExpression param, IFilterStatement statement)
         {
             var basePropertyName = statement.PropertyId.Substring(0, statement.PropertyId.IndexOf("["));
-            var propertyName = statement.PropertyId.Substring(statement.PropertyId.IndexOf("["), statement.PropertyId.IndexOf("]"));
+            var propertyName = statement.PropertyId.Substring(statement.PropertyId.IndexOf("[") + 1).Replace("]", string.Empty);
 
             var type = param.Type.GetProperty(basePropertyName).PropertyType.GetGenericArguments()[0];
             ParameterExpression listItemParam = Expression.Parameter(type, "i");
