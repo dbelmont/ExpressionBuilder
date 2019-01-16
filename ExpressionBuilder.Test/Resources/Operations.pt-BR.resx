@@ -168,6 +168,9 @@
   <data name="NotEqualTo" xml:space="preserve">
     <value>diferente</value>
   </data>
+  <data name="NotIn" xml:space="preserve">
+    <value>não entre</value>
+  </data>
   <data name="StartsWith" xml:space="preserve">
     <value>começa com</value>
   </data>

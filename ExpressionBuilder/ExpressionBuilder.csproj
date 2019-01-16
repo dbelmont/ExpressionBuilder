@@ -82,6 +82,7 @@
     <Compile Include="Operations\IsNull.cs" />
     <Compile Include="Operations\In.cs" />
     <Compile Include="Operations\EndsWith.cs" />
+    <Compile Include="Operations\NotIn.cs" />
     <Compile Include="Operations\Operation.cs" />
     <Compile Include="Operations\StartsWith.cs" />
     <Compile Include="Operations\Contains.cs" />

@@ -115,8 +115,13 @@ namespace ExpressionBuilder.Builders
             var memberType = member.Member.MemberType == MemberTypes.Property ? (member.Member as PropertyInfo).PropertyType : (member.Member as FieldInfo).FieldType;
 
             var constant1Type = GetConstantType(constant1);
+            var nullableType = constant1Type != null ? Nullable.GetUnderlyingType(constant1Type) : null;
 
-            if (constant1.Value != null && memberType != constant1Type)
+            var constantValueIsNotNull = constant1.Value != null;
+            var memberAndConstantTypeDoNotMatch = memberType != constant1Type;
+            var memberAndNullableUnderlyingTypeDoNotMatch = nullableType != null && memberType != nullableType;
+
+            if (constantValueIsNotNull && (memberAndConstantTypeDoNotMatch || memberAndNullableUnderlyingTypeDoNotMatch))
             {
                 throw new PropertyValueTypeMismatchException(member.Member.Name, memberType.Name, constant1.Type.Name);
             }

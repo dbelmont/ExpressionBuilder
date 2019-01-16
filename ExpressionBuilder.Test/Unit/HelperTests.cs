@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ExpressionBuilder.Exceptions;
+﻿using ExpressionBuilder.Exceptions;
 using ExpressionBuilder.Helpers;
 using ExpressionBuilder.Interfaces;
 using ExpressionBuilder.Test.CustomOperations;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ExpressionBuilder.Test.Unit
 {
@@ -33,6 +33,7 @@ namespace ExpressionBuilder.Test.Unit
             if (numberType.IsArray)
             {
                 numberOperations.Add("In");
+                numberOperations.Add("NotIn");
             }
 
             var operations = operationHelper.SupportedOperations(numberType);
@@ -52,6 +53,7 @@ namespace ExpressionBuilder.Test.Unit
             if (textType.IsArray)
             {
                 textOperations.Add("In");
+                textOperations.Add("NotIn");
             }
 
             var operations = definitions.SupportedOperations(textType);

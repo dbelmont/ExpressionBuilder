@@ -107,6 +107,11 @@ namespace ExpressionBuilder.Operations
         public static IOperation StartsWith { get { return new StartsWith(); } }
 
         /// <summary>
+        /// Operation representing the inverse of a list "Contains" method call.
+        /// </summary>
+        public static IOperation NotIn { get { return new NotIn(); } }
+
+        /// <summary>
         /// Instantiates an IOperation given its name.
         /// </summary>
         /// <param name="operationName">Name of the operation to be instantiated.</param>
