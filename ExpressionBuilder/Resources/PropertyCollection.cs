@@ -23,6 +23,8 @@ namespace ExpressionBuilder.Resources
         /// </summary>
         public ResourceManager ResourceManager { get; private set; }
 
+        private readonly HashSet<Type> _visitedTypes;
+
         private List<Property> Properties { get; set; }
 
         /// <summary>
@@ -54,6 +56,7 @@ namespace ExpressionBuilder.Resources
         public PropertyCollection(Type type)
         {
             Type = type;
+            _visitedTypes = new HashSet<Type>();
             Properties = LoadProperties(Type);
         }
 
@@ -94,6 +97,13 @@ namespace ExpressionBuilder.Resources
         private List<Property> LoadProperties(Type type)
         {
             var list = new List<Property>();
+            if (_visitedTypes.Contains(type))
+            {
+                return list;
+            }
+
+            _visitedTypes.Add(type);
+
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
             MemberInfo[] members = type.GetFields(bindingFlags).Cast<MemberInfo>()
                                     .Concat(type.GetProperties(bindingFlags)).ToArray();

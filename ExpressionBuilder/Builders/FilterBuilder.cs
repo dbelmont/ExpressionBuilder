@@ -144,8 +144,11 @@ namespace ExpressionBuilder.Builders
                 return expr;
             }
 
-            var parentMember = GetParentMember(param, memberName);
-            return Expression.AndAlso(Expression.NotEqual(parentMember, Expression.Constant(null)), expr);
+            var index = memberName.LastIndexOf(".");
+            var parentName = memberName.Substring(0, index);
+            var subParam = param.GetMemberExpression(parentName);
+            var resultExpr = Expression.AndAlso(Expression.NotEqual(subParam, Expression.Constant(null)), expr);
+            return GetSafePropertyMember(param, parentName, resultExpr);
         }
 
         protected Expression CheckIfParentIsNull(ParameterExpression param, string memberName)
@@ -154,7 +157,7 @@ namespace ExpressionBuilder.Builders
             return Expression.Equal(parentMember, Expression.Constant(null));
         }
 
-        private Expression GetParentMember(ParameterExpression param, string memberName)
+        private MemberExpression GetParentMember(ParameterExpression param, string memberName)
         {
             var parentName = memberName.Substring(0, memberName.IndexOf("."));
             return param.GetMemberExpression(parentName);
