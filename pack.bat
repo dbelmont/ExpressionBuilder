@@ -1,0 +1,1 @@
+nuget pack ExpressionBuilder\ExpressionBuilder.csproj -Build -Properties Configuration=Release

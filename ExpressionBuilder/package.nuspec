@@ -18,11 +18,12 @@
     </description>
     <releaseNotes>
       Main changes in this version:
-      • Custom operations: create your own operations or overwrite the behaviour of the default operations
-      • Enum renaming: The "FilterStatementConnector" enum has changed to just "Connector"
-      • Other minor improvements
+      • 'FilterFactory' class added to offer a "non-generics" approach for creating filters (issue #25)
+      • Improved support for nested properties (issues #26 and #29)
+      • Added new 'NotIn' operator (issue #36)
+      • Fixed bug that used to throw an exception when using the `In` operator over a nullable property (issue #37)
     </releaseNotes>
-    <copyright>David Belmont © 2018</copyright>
+    <copyright>David Belmont © 2019</copyright>
     <tags>LINQ Lambda Expression Builder LINQ Database Queryable</tags>
   </metadata>
   <files>
