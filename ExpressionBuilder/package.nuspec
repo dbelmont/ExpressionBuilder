@@ -8,7 +8,7 @@
     <owners>David Belmont</owners>
     <iconUrl>https://raw.githubusercontent.com/dbelmont/ExpressionBuilder/master/ExpressionBuilder/ExpressionBuilder.png</iconUrl>
     <projectUrl>https://github.com/dbelmont/ExpressionBuilder</projectUrl>
-    <licenseUrl>https://github.com/dbelmont/ExpressionBuilder/blob/master/LICENSE</licenseUrl>
+    <license type="file">license.txt</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>
       This library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters.
@@ -30,5 +30,6 @@
     <file src="bin\$configuration$\$id$.dll" target="lib\net45" />
     <file src="bin\$configuration$\$id$.xml" target="lib\net45" />
     <file src="readme.md" target="" />
+    <file src="license.txt" target="" />
   </files>
 </package>

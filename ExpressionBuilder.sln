@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		dotCover.xml = dotCover.xml
 		NuGet.config = NuGet.config
+		pack.bat = pack.bat
 		packages.config = packages.config
 		README.md = README.md
 		SonarQube.Analysis.xml = SonarQube.Analysis.xml
