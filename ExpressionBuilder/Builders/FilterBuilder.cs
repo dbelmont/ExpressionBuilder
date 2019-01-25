@@ -1,4 +1,4 @@
-﻿using ExpressionBuilder.Common;
+using ExpressionBuilder.Common;
 using ExpressionBuilder.Exceptions;
 using ExpressionBuilder.Interfaces;
 using System;
@@ -69,7 +69,7 @@ namespace ExpressionBuilder.Builders
         private Expression ProcessListStatement(ParameterExpression param, IFilterStatement statement)
         {
             var basePropertyName = statement.PropertyId.Substring(0, statement.PropertyId.IndexOf("["));
-            var propertyName = statement.PropertyId.Replace(basePropertyName, "").Replace("[", "").Replace("]", "");
+            var propertyName = statement.PropertyId.Substring(statement.PropertyId.IndexOf("[") + 1).Replace("]", string.Empty);
 
             var type = param.Type.GetProperty(basePropertyName).PropertyType.GetGenericArguments()[0];
             ParameterExpression listItemParam = Expression.Parameter(type, "i");
@@ -115,8 +115,13 @@ namespace ExpressionBuilder.Builders
             var memberType = member.Member.MemberType == MemberTypes.Property ? (member.Member as PropertyInfo).PropertyType : (member.Member as FieldInfo).FieldType;
 
             var constant1Type = GetConstantType(constant1);
+            var nullableType = constant1Type != null ? Nullable.GetUnderlyingType(constant1Type) : null;
 
-            if (constant1.Value != null && memberType != constant1Type)
+            var constantValueIsNotNull = constant1.Value != null;
+            var memberAndConstantTypeDoNotMatch = memberType != constant1Type;
+            var memberAndNullableUnderlyingTypeDoNotMatch = nullableType != null && memberType != nullableType;
+
+            if (constantValueIsNotNull && (memberAndConstantTypeDoNotMatch || memberAndNullableUnderlyingTypeDoNotMatch))
             {
                 throw new PropertyValueTypeMismatchException(member.Member.Name, memberType.Name, constant1.Type.Name);
             }
@@ -139,8 +144,11 @@ namespace ExpressionBuilder.Builders
                 return expr;
             }
 
-            var parentMember = GetParentMember(param, memberName);
-            return Expression.AndAlso(Expression.NotEqual(parentMember, Expression.Constant(null)), expr);
+            var index = memberName.LastIndexOf(".");
+            var parentName = memberName.Substring(0, index);
+            var subParam = param.GetMemberExpression(parentName);
+            var resultExpr = Expression.AndAlso(Expression.NotEqual(subParam, Expression.Constant(null)), expr);
+            return GetSafePropertyMember(param, parentName, resultExpr);
         }
 
         protected Expression CheckIfParentIsNull(ParameterExpression param, string memberName)
@@ -149,7 +157,7 @@ namespace ExpressionBuilder.Builders
             return Expression.Equal(parentMember, Expression.Constant(null));
         }
 
-        private Expression GetParentMember(ParameterExpression param, string memberName)
+        private MemberExpression GetParentMember(ParameterExpression param, string memberName)
         {
             var parentName = memberName.Substring(0, memberName.IndexOf("."));
             return param.GetMemberExpression(parentName);
