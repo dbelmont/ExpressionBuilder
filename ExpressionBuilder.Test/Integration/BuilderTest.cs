@@ -353,6 +353,16 @@ namespace ExpressionBuilder.Test.Integration
             ex.Message.Should().Be("The type of the member 'Id' (Int32) is different from the type of one of the constants (Double)");
         }
 
+        [TestCase(TestName = "Should not throw an exception when using the 'In' operator over a list of nullable objects")]
+        public void ShouldNotThrowExceptionWhenUsingTheInOperatorOverListOfNullableObjects()
+        {
+            var filter = new Filter<Person>();
+            var idList = new long?[] { 123 };
+            filter.By("EmployeeReferenceNumber", Operation.In, idList);
+            var result = People.Where(filter);
+            result.Should().NotBeEmpty();
+        }
+
         [TestCase(TestName = "Nested property with depth of two", Category = "NestedProperties")]
         public void NestedPropertyDepthTwo()
         {

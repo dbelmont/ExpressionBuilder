@@ -118,7 +118,7 @@ namespace ExpressionBuilder.Builders
             var nullableType = constant1Type != null ? Nullable.GetUnderlyingType(constant1Type) : null;
 
             var constantValueIsNotNull = constant1.Value != null;
-            var memberAndConstantTypeDoNotMatch = memberType != constant1Type;
+            var memberAndConstantTypeDoNotMatch = nullableType == null && memberType != constant1Type;
             var memberAndNullableUnderlyingTypeDoNotMatch = nullableType != null && memberType != nullableType;
 
             if (constantValueIsNotNull && (memberAndConstantTypeDoNotMatch || memberAndNullableUnderlyingTypeDoNotMatch))
