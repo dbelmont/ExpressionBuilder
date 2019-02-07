@@ -19,6 +19,7 @@ namespace ExpressionBuilder.Test.Models
         public Company Employer { get; set; }
         public Person Manager { get; set; }
         public double Salary { get; set; }
+        public long? EmployeeReferenceNumber { get; set; }
 
         public Person()
         {

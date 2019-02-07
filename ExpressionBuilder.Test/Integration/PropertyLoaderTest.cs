@@ -15,17 +15,17 @@ namespace ExpressionBuilder.Test.Integration
     {
         private readonly List<string> propertyIds = new List<string>
         {
-            "Id", "Name", "Gender", "Salary", "Birth.Date", "Birth.DateOffset", "Birth.Age", "Birth.Country", "Contacts[Type]", "Contacts[Value]", "Contacts[Comments]", "Employer.Name", "Employer.Industry"
+            "Id", "Name", "Gender", "Salary", "Birth.Date", "Birth.DateOffset", "Birth.Age", "Birth.Country", "Contacts[Type]", "Contacts[Value]", "Contacts[Comments]", "Employer.Name", "Employer.Industry", "EmployeeReferenceNumber"
         };
 
         private readonly List<string> propertyNames = new List<string>
         {
-            "Id", "Name", "Gender", "Salary", "Date of Birth", "DateOffset","Age", "Country of Birth", "Contact's Type", "Contact's Value", "Contact's Comments", "Employer's Name", "Employer's Industry"
+            "Id", "Name", "Gender", "Salary", "Date of Birth", "DateOffset","Age", "Country of Birth", "Contact's Type", "Contact's Value", "Contact's Comments", "Employer's Name", "Employer's Industry", "EmployeeReferenceNumber"
         };
 
         private readonly List<string> propertyNamesptBr = new List<string>
         {
-            "Id", "Nome", "Sexo", "Salário", "Data de nascimento", "DateOffset", "Idade", "País de origem", "Tipo de contato", "Valor do contato", "Comentários do contato", "Nome do empregador", "Indústria do empregador"
+            "Id", "Nome", "Sexo", "Salário", "Data de nascimento", "DateOffset", "Idade", "País de origem", "Tipo de contato", "Valor do contato", "Comentários do contato", "Nome do empregador", "Indústria do empregador", "EmployeeReferenceNumber"
         };
 
         [TestCase("", TestName = "Loading properties' info")]
