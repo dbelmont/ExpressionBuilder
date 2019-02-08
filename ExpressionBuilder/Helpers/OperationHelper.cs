@@ -4,7 +4,6 @@ using ExpressionBuilder.Exceptions;
 using ExpressionBuilder.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 
 namespace ExpressionBuilder.Helpers
@@ -15,6 +14,8 @@ namespace ExpressionBuilder.Helpers
     public class OperationHelper : IOperationHelper
     {
         private static HashSet<IOperation> _operations;
+
+        private readonly Settings _settings;
 
         private readonly Dictionary<TypeGroup, HashSet<Type>> TypeGroups;
 
@@ -47,6 +48,8 @@ namespace ExpressionBuilder.Helpers
         /// </summary>
         public OperationHelper()
         {
+            _settings = new Settings();
+            Settings.LoadSettings(_settings);
             TypeGroups = new Dictionary<TypeGroup, HashSet<Type>>
             {
                 { TypeGroup.Text, new HashSet<Type> { typeof(string), typeof(char) } },
@@ -68,6 +71,17 @@ namespace ExpressionBuilder.Helpers
             return GetSupportedOperations(type);
         }
 
+        private void GetCustomSupportedTypes()
+        {
+            foreach (var supportedType in _settings.SupportedTypes)
+            {
+                if (supportedType.Type != null)
+                {
+                    TypeGroups[supportedType.TypeGroup].Add(supportedType.Type);
+                }
+            }
+        }
+
         private HashSet<IOperation> GetSupportedOperations(Type type)
         {
             var underlyingNullableType = Nullable.GetUnderlyingType(type);
@@ -80,33 +94,20 @@ namespace ExpressionBuilder.Helpers
                 supportedOperations.AddRange(Operations.Where(o => o.SupportsLists && o.Active));
             }
 
-            var typeGroup = TypeGroups.FirstOrDefault(i => i.Value.Any(v => v.Name == typeName)).Key;
+            var typeGroup = TypeGroup.Default;
+            if (TypeGroups.Any(i => i.Value.Any(v => v.Name == typeName)))
+            {
+                typeGroup = TypeGroups.FirstOrDefault(i => i.Value.Any(v => v.Name == typeName)).Key;
+            }
+
             supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(typeGroup) && !o.SupportsLists && o.Active));
 
             if (underlyingNullableType != null)
             {
-                supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(TypeGroup.Nullable) && o.Active));
+                supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(TypeGroup.Nullable) && !o.SupportsLists && o.Active));
             }
 
             return new HashSet<IOperation>(supportedOperations);
-        }
-
-        private void GetCustomSupportedTypes()
-        {
-            var configSection = ConfigurationManager.GetSection(ExpressionBuilderConfig.SectionName) as ExpressionBuilderConfig;
-            if (configSection == null)
-            {
-                return;
-            }
-
-            foreach (ExpressionBuilderConfig.SupportedTypeElement supportedType in configSection.SupportedTypes)
-            {
-                Type type = Type.GetType(supportedType.Type, false, true);
-                if (type != null)
-                {
-                    TypeGroups[supportedType.TypeGroup].Add(type);
-                }
-            }
         }
 
         /// <summary>

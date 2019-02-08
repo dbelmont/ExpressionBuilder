@@ -14,6 +14,8 @@
     <Compile Include="..\ExpressionBuilder.Test\Integration\PropertyLoaderTest.cs" Link="Integration\PropertyLoaderTest.cs" />
     <Compile Include="..\ExpressionBuilder.Test\Models\Contact.cs" Link="Models\Contact.cs" />
     <Compile Include="..\ExpressionBuilder.Test\Models\Person.cs" Link="Models\Person.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Resources\Operations.Designer.cs" Link="Resources\Operations.Designer.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Resources\Person.Designer.cs" Link="Resources\Person.Designer.cs" />
     <Compile Include="..\ExpressionBuilder.Test\Unit\FilterTest.cs" Link="Unit\FilterTest.cs" />
     <Compile Include="..\ExpressionBuilder.Test\Unit\FilterXmlSerializerTests.cs" Link="Unit\FilterXmlSerializerTests.cs" />
     <Compile Include="..\ExpressionBuilder.Test\Unit\Helpers\ExtensionMethods.cs" Link="Unit\Helpers\ExtensionMethods.cs" />
@@ -32,6 +34,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="..\ExpressionBuilder.Test\Resources\Operations.pt-BR.resx" Link="Resources\Operations.pt-BR.resx" />
+    <EmbeddedResource Include="..\ExpressionBuilder.Test\Resources\Operations.resx" Link="Resources\Operations.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ExpressionBuilder.Test\Resources\Person.pt-BR.resx" Link="Resources\Person.pt-BR.resx" />
+    <EmbeddedResource Include="..\ExpressionBuilder.Test\Resources\Person.resx" Link="Resources\Person.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>Resources</CustomToolNamespace>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.6.0" />
     <PackageReference Include="nunit" Version="3.10.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
@@ -46,32 +61,15 @@
     <Folder Include="Models\" />
     <Folder Include="CustomOperations\" />
     <Folder Include="Integration\" />
+    <Folder Include="Resources\" />
     <Folder Include="Unit\Helpers\" />
     <Folder Include="Unit\Operations\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\Operations.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Operations.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\Person.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Person.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\Operations.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Operations.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Person.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Person.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

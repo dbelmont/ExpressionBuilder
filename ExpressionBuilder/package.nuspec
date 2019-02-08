@@ -7,7 +7,7 @@
     <authors>David Belmont</authors>
     <owners>David Belmont</owners>
     <iconUrl>https://raw.githubusercontent.com/dbelmont/ExpressionBuilder/master/ExpressionBuilder/ExpressionBuilder.png</iconUrl>
-    <projectUrl>https://github.com/dbelmont/ExpressionBuilder</projectUrl>
+    <projectUrl>http://dbelmont.github.io/ExpressionBuilder/</projectUrl>
     <license type="file">license.txt</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>
@@ -18,17 +18,21 @@
     </description>
     <releaseNotes>
       Main changes in this version:
+      • Added support for .NetStandard 2.0 (which should include support for .Net Core 2.0) (huge thanks to Joris Labie @labiej)
       • 'FilterFactory' class added to offer a "non-generics" approach for creating filters (issue #25)
       • Improved support for nested properties (issues #26 and #29)
       • Added new 'NotIn' operator (issue #36)
+      • Fixed bug that used to throw an exception when using the `In` operator over a nullable property (issue #37)
       • Fixed bug that used to throw an exception when using the `In` operator over a nullable property (issue #37)
     </releaseNotes>
     <copyright>David Belmont © 2019</copyright>
     <tags>LINQ Lambda Expression Builder LINQ Database Queryable</tags>
   </metadata>
   <files>
-    <file src="bin\$configuration$\$id$.dll" target="lib\net45" />
-    <file src="bin\$configuration$\$id$.xml" target="lib\net45" />
+    <file src="bin\$configuration$\net452\$id$.dll" target="lib\net452" />
+    <file src="bin\$configuration$\net452\$id$.xml" target="lib\net452" />
+    <file src="bin\$configuration$\netstandard2.0\$id$.dll" target="lib\netstandard2.0" />
+    <file src="bin\$configuration$\netstandard2.0\$id$.xml" target="lib\netstandard2.0" />
     <file src="readme.md" target="" />
     <file src="license.txt" target="" />
   </files>

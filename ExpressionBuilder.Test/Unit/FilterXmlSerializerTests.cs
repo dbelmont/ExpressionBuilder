@@ -1,15 +1,14 @@
-﻿using System;
+﻿using ExpressionBuilder.Common;
+using ExpressionBuilder.Generics;
+using ExpressionBuilder.Operations;
+using ExpressionBuilder.Test.Models;
+using NUnit.Framework;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Generics;
-using ExpressionBuilder.Helpers;
-using ExpressionBuilder.Operations;
-using ExpressionBuilder.Test.Models;
-using NUnit.Framework;
 
 namespace ExpressionBuilder.Test.Unit
 {
@@ -27,7 +26,11 @@ namespace ExpressionBuilder.Test.Unit
 
             var sb = new StringBuilder();
             sb.Append("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
-            sb.Append("<FilterOfPerson Type=\"ExpressionBuilder.Test.Models.Person, ExpressionBuilder.Test, Version=1.0.6330.24179, Culture=neutral, PublicKeyToken=null\">");
+#if NETCOREAPP2_0
+            sb.Append("<FilterOfPerson Type=\"ExpressionBuilder.Test.Models.Person, ExpressionBuilder.Test.NetCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\">");
+#else
+            sb.Append("<FilterOfPerson Type=\"ExpressionBuilder.Test.Models.Person, ExpressionBuilder.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\">");
+#endif
             sb.Append("  <Statements>");
             sb.Append("  <StatementsGroup>");
             sb.Append("    <FilterStatementOfInt32 Type=\"System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\">");
@@ -36,7 +39,11 @@ namespace ExpressionBuilder.Test.Unit
             sb.Append("      <Value>2</Value>");
             sb.Append("      <Connector>1</Connector>");
             sb.Append("    </FilterStatementOfInt32>");
-            sb.Append("    <FilterStatementOfPersonGender Type=\"ExpressionBuilder.Test.Models.PersonGender, ExpressionBuilder.Test, Version=1.0.6330.24179, Culture=neutral, PublicKeyToken=null\">");
+#if NETCOREAPP2_0
+            sb.Append("    <FilterStatementOfPersonGender Type=\"ExpressionBuilder.Test.Models.PersonGender, ExpressionBuilder.Test.NetCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\">");
+#else
+            sb.Append("    <FilterStatementOfPersonGender Type=\"ExpressionBuilder.Test.Models.PersonGender, ExpressionBuilder.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\">");
+#endif
             sb.Append("      <PropertyId>Gender</PropertyId>");
             sb.Append("      <Operation>EqualTo</Operation>");
             sb.Append("      <Value>Male</Value>");
