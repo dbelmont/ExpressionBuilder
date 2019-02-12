@@ -12,9 +12,9 @@ using System;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
+using System.Data.SQLite;
 using System.Reflection;
 
 namespace DbContext
@@ -90,10 +90,20 @@ namespace DbContext
 
         #endregion Extensibility Method Definitions
 
-        public DbDataContext() :
-        base(GetConnectionString("Northwind"), mappingSource)
+        public DbDataContext() : base(GetConnection())
         {
             OnCreated();
+        }
+
+        private static IDbConnection GetConnection()
+        {
+            var dbDirectory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\..";
+            var conn = new SQLiteConnection
+            {
+                ConnectionString = new SQLiteConnectionStringBuilder()
+                { DataSource = $"{dbDirectory}\\Northwind.db", ForeignKeys = true }.ConnectionString
+            };
+            return conn;
         }
 
         public DbDataContext(System.Data.Linq.Mapping.MappingSource mappingSource) :
@@ -104,8 +114,6 @@ namespace DbContext
 
         private static IDbConnection GetConnectionString(string connectionStringName)
         {
-            var dbDirectory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\..";
-            Database.DefaultConnectionFactory = new SqlCeConnectionFactory("System.Data.SqlServerCe.4.0", dbDirectory, "");
             return Database.DefaultConnectionFactory.CreateConnection(connectionStringName);
         }
 
@@ -385,21 +393,27 @@ namespace DbContext
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, emptyChangingEventArgs);
+            }
         }
 
         protected virtual void SendPropertyChanging(System.String propertyName)
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, new PropertyChangingEventArgs(propertyName));
+            }
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
         {
             var handler = this.PropertyChanged;
             if (handler != null)
+            {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         private void attach_Products(Products entity)
@@ -594,21 +608,27 @@ namespace DbContext
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, emptyChangingEventArgs);
+            }
         }
 
         protected virtual void SendPropertyChanging(System.String propertyName)
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, new PropertyChangingEventArgs(propertyName));
+            }
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
         {
             var handler = this.PropertyChanged;
             if (handler != null)
+            {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 
@@ -722,21 +742,27 @@ namespace DbContext
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, emptyChangingEventArgs);
+            }
         }
 
         protected virtual void SendPropertyChanging(System.String propertyName)
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, new PropertyChangingEventArgs(propertyName));
+            }
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
         {
             var handler = this.PropertyChanged;
             if (handler != null)
+            {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         private void attach_CustomerCustomerDemo(CustomerCustomerDemo entity)
@@ -1142,21 +1168,27 @@ namespace DbContext
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, emptyChangingEventArgs);
+            }
         }
 
         protected virtual void SendPropertyChanging(System.String propertyName)
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, new PropertyChangingEventArgs(propertyName));
+            }
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
         {
             var handler = this.PropertyChanged;
             if (handler != null)
+            {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         private void attach_CustomerCustomerDemo(CustomerCustomerDemo entity)
@@ -1840,21 +1872,27 @@ namespace DbContext
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, emptyChangingEventArgs);
+            }
         }
 
         protected virtual void SendPropertyChanging(System.String propertyName)
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, new PropertyChangingEventArgs(propertyName));
+            }
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
         {
             var handler = this.PropertyChanged;
             if (handler != null)
+            {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         private void attach_Employees_ReportsTo1(Employees entity)
@@ -2029,28 +2067,34 @@ namespace DbContext
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, emptyChangingEventArgs);
+            }
         }
 
         protected virtual void SendPropertyChanging(System.String propertyName)
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, new PropertyChangingEventArgs(propertyName));
+            }
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
         {
             var handler = this.PropertyChanged;
             if (handler != null)
+            {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 
     /// <summary>
     /// There are no comments for DbContext.OrderDetails in the schema.
     /// </summary>
-    [Table(Name = @"[Order Details]")]
+    [Table(Name = @"[OrderDetails]")]
     public partial class OrderDetails : INotifyPropertyChanging, INotifyPropertyChanged
     {
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(System.String.Empty);
@@ -2313,21 +2357,27 @@ namespace DbContext
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, emptyChangingEventArgs);
+            }
         }
 
         protected virtual void SendPropertyChanging(System.String propertyName)
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, new PropertyChangingEventArgs(propertyName));
+            }
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
         {
             var handler = this.PropertyChanged;
             if (handler != null)
+            {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 
@@ -2877,21 +2927,27 @@ namespace DbContext
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, emptyChangingEventArgs);
+            }
         }
 
         protected virtual void SendPropertyChanging(System.String propertyName)
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, new PropertyChangingEventArgs(propertyName));
+            }
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
         {
             var handler = this.PropertyChanged;
             if (handler != null)
+            {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         private void attach_OrderDetails(OrderDetails entity)
@@ -3293,21 +3349,27 @@ namespace DbContext
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, emptyChangingEventArgs);
+            }
         }
 
         protected virtual void SendPropertyChanging(System.String propertyName)
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, new PropertyChangingEventArgs(propertyName));
+            }
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
         {
             var handler = this.PropertyChanged;
             if (handler != null)
+            {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         private void attach_OrderDetails(OrderDetails entity)
@@ -3414,21 +3476,27 @@ namespace DbContext
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, emptyChangingEventArgs);
+            }
         }
 
         protected virtual void SendPropertyChanging(System.String propertyName)
         {
             var handler = this.PropertyChanging;
             if (handler != null)
+            {
                 handler(this, new PropertyChangingEventArgs(propertyName));
+            }
         }
 
         protected virtual void SendPropertyChanged(System.String propertyName)
         {
             var handler = this.PropertyChanged;
             if (handler != null)
+            {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

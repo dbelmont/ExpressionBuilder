@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="..\ExpressionBuilder.Test\CustomOperations\EqualTo.cs" Link="CustomOperations\EqualTo.cs" />
     <Compile Include="..\ExpressionBuilder.Test\CustomOperations\ThisDay.cs" Link="CustomOperations\ThisDay.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Database\BuilderTest.cs" Link="Database\BuilderTest.cs" />
     <Compile Include="..\ExpressionBuilder.Test\Integration\BuilderTest.cs" Link="Integration\BuilderTest.cs" />
     <Compile Include="..\ExpressionBuilder.Test\Integration\OperationTests.cs" Link="Integration\OperationTests.cs" />
     <Compile Include="..\ExpressionBuilder.Test\Integration\PropertyLoaderTest.cs" Link="Integration\PropertyLoaderTest.cs" />
@@ -48,6 +49,8 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.6.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.1" />
     <PackageReference Include="nunit" Version="3.10.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
@@ -64,6 +67,12 @@
     <Folder Include="Resources\" />
     <Folder Include="Unit\Helpers\" />
     <Folder Include="Unit\Operations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\ExpressionBuilder.Test\Northwind.db" Link="Northwind.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
