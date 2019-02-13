@@ -144,7 +144,7 @@ namespace ExpressionBuilder.Builders
                 return expr;
             }
 
-            var index = memberName.LastIndexOf(".");
+            var index = memberName.LastIndexOf(".", StringComparison.InvariantCulture);
             var parentName = memberName.Substring(0, index);
             var subParam = param.GetMemberExpression(parentName);
             var resultExpr = Expression.AndAlso(Expression.NotEqual(subParam, Expression.Constant(null)), expr);

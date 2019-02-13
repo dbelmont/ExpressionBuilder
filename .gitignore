@@ -277,3 +277,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+/CoverageAnalysis
