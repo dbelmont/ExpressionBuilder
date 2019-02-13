@@ -21,8 +21,9 @@
 </Description>
     <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Version>2.1.0-beta</Version>
+    <Version>2.1.0-rc</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>LambdaExpressionBuilder</PackageId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
     <DocumentationFile>C:\Dev\ExpressionBuilder\ExpressionBuilder\ExpressionBuilder.xml</DocumentationFile>

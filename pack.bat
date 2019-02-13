@@ -1,1 +1,1 @@
-nuget pack ExpressionBuilder\ExpressionBuilder.csproj -Build -Properties Configuration=Release
+dotnet pack ExpressionBuilder\ExpressionBuilder.csproj -c Release
