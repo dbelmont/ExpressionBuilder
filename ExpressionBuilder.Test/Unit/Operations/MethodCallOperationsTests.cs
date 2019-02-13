@@ -26,7 +26,9 @@ namespace ExpressionBuilder.Test.Unit.Operations
         public void GetExpressionTest(string methodName, string value)
         {
             var propertyName = "Name";
-            var operation = (IOperation)Activator.CreateInstance("ExpressionBuilder", "ExpressionBuilder.Operations." + methodName).Unwrap();
+            var type = typeof(IFilter).Assembly.Types()
+                .Single(t => t.FullName == "ExpressionBuilder.Operations." + methodName);
+            var operation = (IOperation)Activator.CreateInstance(type);
             var param = Expression.Parameter(typeof(Person), "x");
             var member = Expression.Property(param, propertyName);
             var constant1 = Expression.Constant(value);

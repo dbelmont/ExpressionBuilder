@@ -1,0 +1,1213 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ExpressionBuilder</name>
+    </assembly>
+    <members>
+        <member name="M:ExpressionBuilder.Common.CommonExtensionMethods.GetMemberExpression(System.Linq.Expressions.ParameterExpression,System.String)">
+            <summary>
+            Gets a member expression for an specific property
+            </summary>
+            <param name="param"></param>
+            <param name="propertyName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Common.CommonExtensionMethods.TrimToLower(System.Linq.Expressions.MemberExpression)">
+            <summary>
+            Applies the string Trim and ToLower methods to an ExpressionMember.
+            </summary>
+            <param name="member">Member to which to methods will be applied.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Common.CommonExtensionMethods.TrimToLower(System.Linq.Expressions.ConstantExpression)">
+            <summary>
+            Applies the string Trim and ToLower methods to an ExpressionMember.
+            </summary>
+            <param name="constant">Constant to which to methods will be applied.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Common.CommonExtensionMethods.AddNullCheck(System.Linq.Expressions.Expression,System.Linq.Expressions.MemberExpression)">
+            <summary>
+            Adds a "null check" to the expression (before the original one).
+            </summary>
+            <param name="expression">Expression to which the null check will be pre-pended.</param>
+            <param name="member">Member that will be checked.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Common.CommonExtensionMethods.IsGenericList(System.Object)">
+            <summary>
+            Checks if an object is a generic list.
+            </summary>
+            <param name="o">Object to be tested.</param>
+            <returns>TRUE if the object is a generic list.</returns>
+        </member>
+        <member name="T:ExpressionBuilder.Common.Connector">
+            <summary>
+            Defines how the filter statements will be connected to each other.
+            </summary>
+        </member>
+        <member name="F:ExpressionBuilder.Common.Connector.And">
+            <summary>
+            Determines that both the current AND the next filter statement needs to be satisfied.
+            </summary>
+        </member>
+        <member name="F:ExpressionBuilder.Common.Connector.Or">
+            <summary>
+            Determines that the current OR the next filter statement needs to be satisfied.
+            </summary>
+        </member>
+        <member name="T:ExpressionBuilder.Common.TypeGroup">
+            <summary>
+            Groups types into simple groups and map the supported operations to each group.
+            </summary>
+        </member>
+        <member name="F:ExpressionBuilder.Common.TypeGroup.Default">
+            <summary>
+            Default type group, only supports EqualTo and NotEqualTo.
+            </summary>
+        </member>
+        <member name="F:ExpressionBuilder.Common.TypeGroup.Text">
+            <summary>
+            Supports all text related operations.
+            </summary>
+        </member>
+        <member name="F:ExpressionBuilder.Common.TypeGroup.Number">
+            <summary>
+            Supports all numeric related operations.
+            </summary>
+        </member>
+        <member name="F:ExpressionBuilder.Common.TypeGroup.Boolean">
+            <summary>
+            Supports boolean related operations.
+            </summary>
+        </member>
+        <member name="F:ExpressionBuilder.Common.TypeGroup.Date">
+            <summary>
+            Supports all date related operations.
+            </summary>
+        </member>
+        <member name="F:ExpressionBuilder.Common.TypeGroup.Nullable">
+            <summary>
+            Supports nullable related operations.
+            </summary>
+        </member>
+        <member name="T:ExpressionBuilder.Exceptions.OperationNotFoundException">
+            <summary>
+            Represents an attempt to instantiate an operation that was not loaded.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Exceptions.OperationNotFoundException.OperationName">
+            <summary>
+            Name of the operation that was intended to be instantiated.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Exceptions.OperationNotFoundException.Message">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Exceptions.OperationNotFoundException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ExpressionBuilder.Exceptions.OperationNotFoundException" /> class.
+            </summary>
+            <param name="operationName">Name of the operation that was intended to be instantiated.</param>
+        </member>
+        <member name="T:ExpressionBuilder.Exceptions.PropertyValueTypeMismatchException">
+            <summary>
+            Represents an attempt to set a property's value with an object of a different type from the property's type.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Exceptions.PropertyValueTypeMismatchException.MemberName">
+            <summary>
+            Name of the property or fields.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Exceptions.PropertyValueTypeMismatchException.MemberType">
+            <summary>
+            Type of the property or field.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Exceptions.PropertyValueTypeMismatchException.ConstantType">
+            <summary>
+            Type of the constant which value tried to be attributed to the property or field.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Exceptions.PropertyValueTypeMismatchException.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Exceptions.PropertyValueTypeMismatchException.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ExpressionBuilder.Exceptions.PropertyValueTypeMismatchException" /> class.
+            </summary>
+            <param name="memberName">Property or field name.</param>
+            <param name="memberType">Property or field type.</param>
+            <param name="constantType">Type of the constant which value tried to be attributed to the property or field.</param>
+        </member>
+        <member name="T:ExpressionBuilder.Exceptions.UnsupportedOperationException">
+            <summary>
+            Represents an attempt to use an operation not currently supported by a type.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Exceptions.UnsupportedOperationException.Operation">
+            <summary>
+            Gets the <see cref="P:ExpressionBuilder.Exceptions.UnsupportedOperationException.Operation" /> attempted to be used.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Exceptions.UnsupportedOperationException.TypeName">
+            <summary>
+            Gets name of the type.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Exceptions.UnsupportedOperationException.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Exceptions.UnsupportedOperationException.#ctor(ExpressionBuilder.Interfaces.IOperation,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ExpressionBuilder.Exceptions.UnsupportedOperationException" /> class.
+            </summary>
+            <param name="operation">Operation used.</param>
+            <param name="typeName">Name of the type.</param>
+        </member>
+        <member name="T:ExpressionBuilder.Exceptions.WrongNumberOfValuesException">
+            <summary>
+            Represents an attempt to use an operation providing the wrong number of values.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Exceptions.WrongNumberOfValuesException.Operation">
+            <summary>
+            Gets the <see cref="P:ExpressionBuilder.Exceptions.WrongNumberOfValuesException.Operation" /> attempted to be used.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Exceptions.WrongNumberOfValuesException.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Exceptions.WrongNumberOfValuesException.#ctor(ExpressionBuilder.Interfaces.IOperation)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ExpressionBuilder.Exceptions.WrongNumberOfValuesException" /> class.
+            </summary>
+            <param name="operation">Operation used.</param>
+        </member>
+        <member name="T:ExpressionBuilder.FilterFactory">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.FilterFactory.Create(System.Type)">
+            <summary>
+            Creates a Filter&lt;TClass&gt; by passing the 'TClass' as a parameter.
+            </summary>
+            <param name="type"></param>
+            <typeparam name="TClass"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:ExpressionBuilder.Generics.Filter`1">
+            <summary>
+            Aggregates <see cref="T:ExpressionBuilder.Generics.FilterStatement`1" /> and build them into a LINQ expression.
+            </summary>
+            <typeparam name="TClass"></typeparam>
+        </member>
+        <member name="P:ExpressionBuilder.Generics.Filter`1.Statements">
+            <summary>
+            List of <see cref="T:ExpressionBuilder.Interfaces.IFilterStatement" /> groups that will be combined and built into a LINQ expression.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:ExpressionBuilder.Generics.Filter`1" />
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.By(System.String,ExpressionBuilder.Interfaces.IOperation,ExpressionBuilder.Common.Connector)">
+            <summary>
+            Adds a new <see cref="T:ExpressionBuilder.Generics.FilterStatement`1" /> to the <see cref="T:ExpressionBuilder.Generics.Filter`1" />.
+            (To be used by <see cref="T:ExpressionBuilder.Interfaces.IOperation" /> that need no values)
+            </summary>
+            <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
+            <param name="operation">Operation to be used.</param>
+            <param name="connector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.By(System.String,ExpressionBuilder.Interfaces.IOperation)">
+            <summary>
+            Adds a new <see cref="T:ExpressionBuilder.Generics.FilterStatement`1" /> to the <see cref="T:ExpressionBuilder.Generics.Filter`1" />.
+            (To be used by <see cref="T:ExpressionBuilder.Interfaces.IOperation" /> that need no values)
+            </summary>
+            <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
+            <param name="operation">Operation to be used.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.By``1(System.String,ExpressionBuilder.Interfaces.IOperation,``0)">
+            <summary>
+            Adds a new <see cref="T:ExpressionBuilder.Generics.FilterStatement`1" /> to the <see cref="T:ExpressionBuilder.Generics.Filter`1" />.
+            </summary>
+            <typeparam name="TPropertyType"></typeparam>
+            <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
+            <param name="operation">Operation to be used.</param>
+            <param name="value"></param>
+            <param name="value2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.By``1(System.String,ExpressionBuilder.Interfaces.IOperation,``0,ExpressionBuilder.Common.Connector)">
+            <summary>
+            Adds a new <see cref="T:ExpressionBuilder.Generics.FilterStatement`1" /> to the <see cref="T:ExpressionBuilder.Generics.Filter`1" />.
+            </summary>
+            <typeparam name="TPropertyType"></typeparam>
+            <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
+            <param name="operation">Operation to be used.</param>
+            <param name="value"></param>
+            <param name="value2"></param>
+            <param name="connector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.By``1(System.String,ExpressionBuilder.Interfaces.IOperation,``0,``0)">
+            <summary>
+            Adds a new <see cref="T:ExpressionBuilder.Generics.FilterStatement`1" /> to the <see cref="T:ExpressionBuilder.Generics.Filter`1" />.
+            </summary>
+            <typeparam name="TPropertyType"></typeparam>
+            <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
+            <param name="operation">Operation to be used.</param>
+            <param name="value"></param>
+            <param name="value2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.By``1(System.String,ExpressionBuilder.Interfaces.IOperation,``0,``0,ExpressionBuilder.Common.Connector)">
+            <summary>
+            Adds a new <see cref="T:ExpressionBuilder.Generics.FilterStatement`1" /> to the <see cref="T:ExpressionBuilder.Generics.Filter`1" />.
+            </summary>
+            <typeparam name="TPropertyType"></typeparam>
+            <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
+            <param name="operation">Operation to be used.</param>
+            <param name="value"></param>
+            <param name="value2"></param>
+            <param name="connector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.StartGroup">
+            <summary>
+            Starts a new group denoting that every subsequent filter statement should be grouped together (as if using a parenthesis).
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.Clear">
+            <summary>
+            Removes all <see cref="T:ExpressionBuilder.Generics.FilterStatement`1" />, leaving the <see cref="T:ExpressionBuilder.Generics.Filter`1" /> empty.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.op_Implicit(ExpressionBuilder.Generics.Filter{`0})~System.Func{`0,System.Boolean}">
+            <summary>
+            Implicitly converts a <see cref="T:ExpressionBuilder.Generics.Filter`1" /> into a <see cref="T:System.Func`2" />.
+            </summary>
+            <param name="filter"></param>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.op_Implicit(ExpressionBuilder.Generics.Filter{`0})~System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}}">
+            <summary>
+            Implicitly converts a <see cref="T:ExpressionBuilder.Generics.Filter`1" /> into a <see cref="!:System.Linq.Expressions.Expression&lt;Func&lt;TClass, TResult&gt;&gt;" />.
+            </summary>
+            <param name="filter"></param>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.ToString">
+            <summary>
+            String representation of <see cref="T:ExpressionBuilder.Generics.Filter`1" />.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.GetSchema">
+             <summary>
+            
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.ReadXml(System.Xml.XmlReader)">
+            <summary>
+             Generates an object from its XML representation.
+            </summary>
+            <param name="reader">The System.Xml.XmlReader stream from which the object is deserialized.</param>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.Filter`1.WriteXml(System.Xml.XmlWriter)">
+            <summary>
+            Converts an object into its XML representation.
+            </summary>
+            <param name="writer">The System.Xml.XmlWriter stream to which the object is serialized.</param>
+        </member>
+        <member name="T:ExpressionBuilder.Generics.FilterStatement`1">
+            <summary>
+            Defines how a property should be filtered.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Generics.FilterStatement`1.Connector">
+            <summary>
+            Establishes how this filter statement will connect to the next one.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Generics.FilterStatement`1.PropertyId">
+            <summary>
+            Property identifier conventionalized by for the Expression Builder.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Generics.FilterStatement`1.Operation">
+            <summary>
+            Express the interaction between the property and the constant value defined in this filter statement.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Generics.FilterStatement`1.Value">
+            <summary>
+            Constant value that will interact with the property defined in this filter statement.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Generics.FilterStatement`1.Value2">
+            <summary>
+            Constant value that will interact with the property defined in this filter statement when the operation demands a second value to compare to.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.FilterStatement`1.#ctor(System.String,ExpressionBuilder.Interfaces.IOperation,`0,`0,ExpressionBuilder.Common.Connector)">
+            <summary>
+            Instantiates a new <see cref="T:ExpressionBuilder.Generics.FilterStatement`1" />.
+            </summary>
+            <param name="propertyId"></param>
+            <param name="operation"></param>
+            <param name="value"></param>
+            <param name="value2"></param>
+            <param name="connector"></param>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.FilterStatement`1.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:ExpressionBuilder.Generics.FilterStatement`1" />.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.FilterStatement`1.Validate">
+            <summary>
+            Validates the FilterStatement regarding the number of provided values and supported operations.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.FilterStatement`1.ToString">
+            <summary>
+            String representation of <see cref="T:ExpressionBuilder.Generics.FilterStatement`1" />.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.FilterStatement`1.GetSchema">
+             <summary>
+            
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.FilterStatement`1.ReadXml(System.Xml.XmlReader)">
+            <summary>
+             Generates an object from its XML representation.
+            </summary>
+            <param name="reader">The System.Xml.XmlReader stream from which the object is deserialized.</param>
+        </member>
+        <member name="M:ExpressionBuilder.Generics.FilterStatement`1.WriteXml(System.Xml.XmlWriter)">
+            <summary>
+            Converts an object into its XML representation.
+            </summary>
+            <param name="writer">The System.Xml.XmlWriter stream to which the object is serialized.</param>
+        </member>
+        <member name="T:ExpressionBuilder.Generics.FilterStatementConnection">
+            <summary>
+            Connects to FilterStatement together.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Generics.FilterStatementConnection.And">
+            <summary>
+            Defines that the last filter statement will connect to the next one using the 'AND' logical operator.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Generics.FilterStatementConnection.Or">
+            <summary>
+            Defines that the last filter statement will connect to the next one using the 'OR' logical operator.
+            </summary>
+        </member>
+        <member name="T:ExpressionBuilder.Helpers.OperationHelper">
+            <summary>
+            Useful methods regarding <seealso cref="T:ExpressionBuilder.Interfaces.IOperation"></seealso>.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Helpers.OperationHelper.LoadDefaultOperations">
+            <summary>
+            Loads the default operations overwriting any previous changes to the <see cref="P:ExpressionBuilder.Helpers.OperationHelper.Operations"></see> list.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Helpers.OperationHelper.Operations">
+            <summary>
+            List of all operations loaded so far.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Helpers.OperationHelper.#ctor">
+            <summary>
+            Instantiates a new OperationHelper.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Helpers.OperationHelper.SupportedOperations(System.Type)">
+            <summary>
+            Retrieves a list of <see cref="T:ExpressionBuilder.Interfaces.IOperation"></see> supported by a type.
+            </summary>
+            <param name="type">Type for which supported operations should be retrieved.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Helpers.OperationHelper.GetOperationByName(System.String)">
+            <summary>
+            Instantiates an IOperation given its name.
+            </summary>
+            <param name="operationName">Name of the operation to be instantiated.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Helpers.OperationHelper.LoadOperations(System.Collections.Generic.List{ExpressionBuilder.Interfaces.IOperation})">
+            <summary>
+            Loads a list of custom operations into the <see cref="P:ExpressionBuilder.Helpers.OperationHelper.Operations"></see> list.
+            </summary>
+            <param name="operations">List of operations to load.</param>
+        </member>
+        <member name="M:ExpressionBuilder.Helpers.OperationHelper.LoadOperations(System.Collections.Generic.List{ExpressionBuilder.Interfaces.IOperation},System.Boolean)">
+            <summary>
+            Loads a list of custom operations into the <see cref="P:ExpressionBuilder.Helpers.OperationHelper.Operations"></see> list.
+            </summary>
+            <param name="operations">List of operations to load.</param>
+            <param name="overloadExisting">Specifies that any matching pre-existing operations should be replaced by the ones from the list. (Useful to overwrite the default operations)</param>
+        </member>
+        <member name="T:ExpressionBuilder.Interfaces.IFilter">
+            <summary>
+            Defines a filter from which a expression will be built.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IFilter.Group">
+            <summary>
+            Starts a new group of statements (similar behavior as a parenthesis at the expression).
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IFilter.Statements">
+            <summary>
+            List of statements groups that compose this filter.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IFilter.By(System.String,ExpressionBuilder.Interfaces.IOperation)">
+            <summary>
+            Add a statement, that doesn't need value, to this filter.
+            </summary>
+            <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
+            <param name="operation">Express the interaction between the property and the constant value.</param>
+            <returns>A FilterStatementConnection object that defines how this statement will be connected to the next one.</returns>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IFilter.By(System.String,ExpressionBuilder.Interfaces.IOperation,ExpressionBuilder.Common.Connector)">
+            <summary>
+            Add a statement, that doesn't need value, to this filter.
+            </summary>
+            <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
+            <param name="operation">Express the interaction between the property and the constant value.</param>
+            <param name="connector">Establishes how this filter statement will connect to the next one.</param>
+            <returns>A FilterStatementConnection object that defines how this statement will be connected to the next one.</returns>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IFilter.By``1(System.String,ExpressionBuilder.Interfaces.IOperation,``0)">
+            <summary>
+            Adds another statement to this filter.
+            </summary>
+            <param name="propertyId">Name of the property that will be filtered.</param>
+            <param name="operation">Express the interaction between the property and the constant value.</param>
+            <param name="value">Constant value that will interact with the property, required by operations that demands one value or more.</param>
+            <returns>A FilterStatementConnection object that defines how this statement will be connected to the next one.</returns>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IFilter.By``1(System.String,ExpressionBuilder.Interfaces.IOperation,``0,ExpressionBuilder.Common.Connector)">
+            <summary>
+            Adds another statement to this filter.
+            </summary>
+            <param name="propertyId">Name of the property that will be filtered.</param>
+            <param name="operation">Express the interaction between the property and the constant value.</param>
+            <param name="value">Constant value that will interact with the property, required by operations that demands one value or more.</param>
+            <param name="connector">Establishes how this filter statement will connect to the next one.</param>
+            <returns>A FilterStatementConnection object that defines how this statement will be connected to the next one.</returns>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IFilter.By``1(System.String,ExpressionBuilder.Interfaces.IOperation,``0,``0)">
+            <summary>
+            Adds another statement to this filter.
+            </summary>
+            <param name="propertyId">Name of the property that will be filtered.</param>
+            <param name="operation">Express the interaction between the property and the constant value.</param>
+            <param name="value">Constant value that will interact with the property, required by operations that demands one value or more.</param>
+            <param name="value2">Constant value that will interact with the property, required by operations that demands two values.</param>
+            <returns>A FilterStatementConnection object that defines how this statement will be connected to the next one.</returns>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IFilter.By``1(System.String,ExpressionBuilder.Interfaces.IOperation,``0,``0,ExpressionBuilder.Common.Connector)">
+            <summary>
+            Adds another statement to this filter.
+            </summary>
+            <param name="propertyId">Name of the property that will be filtered.</param>
+            <param name="operation">Express the interaction between the property and the constant value.</param>
+            <param name="value">Constant value that will interact with the property, required by operations that demands one value or more.</param>
+            <param name="value2">Constant value that will interact with the property, required by operations that demands two values.</param>
+            <param name="connector">Establishes how this filter statement will connect to the next one.</param>
+            <returns>A FilterStatementConnection object that defines how this statement will be connected to the next one.</returns>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IFilter.StartGroup">
+            <summary>
+            Starts a new group denoting that every subsequent filter statement should be grouped together (as if using a parenthesis).
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IFilter.Clear">
+            <summary>
+            Removes all statements from this filter.
+            </summary>
+        </member>
+        <member name="T:ExpressionBuilder.Interfaces.IFilterStatement">
+            <summary>
+            Defines how a property should be filtered.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IFilterStatement.Connector">
+            <summary>
+            Establishes how this filter statement will connect to the next one.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IFilterStatement.PropertyId">
+            <summary>
+            Property identifier conventionalized by for the Expression Builder.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IFilterStatement.Operation">
+            <summary>
+            Express the interaction between the property and the constant value defined in this filter statement.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IFilterStatement.Value">
+            <summary>
+            Constant value that will interact with the property defined in this filter statement.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IFilterStatement.Value2">
+            <summary>
+            Constant value that will interact with the property defined in this filter statement when the operation demands a second value to compare to.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IFilterStatement.Validate">
+            <summary>
+            Validates the FilterStatement regarding the number of provided values and supported operations.
+            </summary>
+        </member>
+        <member name="T:ExpressionBuilder.Interfaces.IFilterStatementConnection">
+            <summary>
+            Connects to FilterStatement together.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IFilterStatementConnection.And">
+            <summary>
+            Defines that the last filter statement will connect to the next one using the 'AND' logical operator.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IFilterStatementConnection.Or">
+            <summary>
+            Defines that the last filter statement will connect to the next one using the 'OR' logical operator.
+            </summary>
+        </member>
+        <member name="T:ExpressionBuilder.Interfaces.IOperation">
+            <summary>
+            Define an operation.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IOperation.Name">
+            <summary>
+            The operations name (works as an identifier as well).
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IOperation.TypeGroup">
+            <summary>
+            Type group were the operation fall into.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IOperation.NumberOfValues">
+            <summary>
+            Number of values supported by the operation.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IOperation.Active">
+            <summary>
+            Determines if the operation is active (default is true).
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IOperation.SupportsLists">
+            <summary>
+            Determines if the operations supports lists.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IOperation.ExpectNullValues">
+            <summary>
+            Determines if this operation expects nulls to happen within its values.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IOperation.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <summary>
+            Returns the expression generated through this operation.
+            </summary>
+            <param name="member">Member access expression</param>
+            <param name="constant1">The operation's first constant value.</param>
+            <param name="constant2">The operation's second constant value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IOperation.ToString">
+            <summary>
+            Returns a string representation of the operation.
+            </summary>
+        </member>
+        <member name="T:ExpressionBuilder.Interfaces.IOperationHelper">
+            <summary>
+            Useful methods regarding <seealso cref="T:ExpressionBuilder.Interfaces.IOperation"></seealso>.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IOperationHelper.Operations">
+            <summary>
+            List of all operations loaded so far.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IOperationHelper.SupportedOperations(System.Type)">
+            <summary>
+            Retrieves a list of <see cref="T:ExpressionBuilder.Operations.Operation"></see> supported by a type.
+            </summary>
+            <param name="type">Type for which supported operations should be retrieved.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IOperationHelper.GetOperationByName(System.String)">
+            <summary>
+            Instantiates an IOperation given its name.
+            </summary>
+            <param name="operationName">Name of the operation to be instantiated.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IOperationHelper.LoadOperations(System.Collections.Generic.List{ExpressionBuilder.Interfaces.IOperation})">
+            <summary>
+            Loads a list of custom operations into the <see cref="P:ExpressionBuilder.Interfaces.IOperationHelper.Operations"></see> list.
+            </summary>
+            <param name="operations">List of operations to load.</param>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IOperationHelper.LoadOperations(System.Collections.Generic.List{ExpressionBuilder.Interfaces.IOperation},System.Boolean)">
+            <summary>
+            Loads a list of custom operations into the <see cref="P:ExpressionBuilder.Interfaces.IOperationHelper.Operations"></see> list.
+            </summary>
+            <param name="operations">List of operations to load.</param>
+            <param name="overloadExisting">Specifies that any matching pre-existing operations should be replaced by the ones from the list. (Useful to overwrite the default operations)</param>
+        </member>
+        <member name="T:ExpressionBuilder.Interfaces.IPropertyCollection">
+            <summary>
+            Collection of <see cref="T:ExpressionBuilder.Resources.Property" />.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IPropertyCollection.Type">
+            <summary>
+            Type from which the properties are loaded.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IPropertyCollection.ResourceManager">
+            <summary>
+            ResourceManager which the properties descriptions should be gotten from.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Interfaces.IPropertyCollection.Item(System.String)">
+            <summary>
+            Retrieves a property based on its Id.
+            </summary>
+            <param name="propertyId">Property conventionalized <see cref="P:ExpressionBuilder.Resources.Property.Id" />.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IPropertyCollection.LoadProperties(System.Resources.ResourceManager)">
+            <summary>
+            Loads the properties names from the specified ResourceManager.
+            </summary>
+            <param name="resourceManager"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Interfaces.IPropertyCollection.ToList">
+            <summary>
+            Converts the collection into a list.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ExpressionBuilder.Operations.Between">
+            <summary>
+            Operation representing a range comparison.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.Between.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.Between.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.Contains">
+            <summary>
+            Operation representing a string "Contains" method call.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.Contains.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.Contains.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.DoesNotContain">
+            <summary>
+            Operation that checks for the non-existence of a substring within another string.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.DoesNotContain.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.DoesNotContain.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.EndsWith">
+            <summary>
+            Operation representing a string "EndsWith" method call.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.EndsWith.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.EndsWith.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.EqualTo">
+            <summary>
+            Operation representing an equality comparison.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.EqualTo.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.EqualTo.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.GreaterThan">
+            <summary>
+            Operation representing an "greater than" comparison.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.GreaterThan.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.GreaterThan.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.GreaterThanOrEqualTo">
+            <summary>
+            Operation representing an "greater than or equal" comparison.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.GreaterThanOrEqualTo.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.GreaterThanOrEqualTo.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.In">
+            <summary>
+            Operation representing a list "Contains" method call.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.In.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.In.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.IsEmpty">
+            <summary>
+            Operation representing a check for an empty string.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.IsEmpty.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.IsEmpty.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.IsNotEmpty">
+            <summary>
+            Operation representing a check for a non-empty string.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.IsNotEmpty.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.IsNotEmpty.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.IsNotNull">
+            <summary>
+            Operation representing a "not-null" check.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.IsNotNull.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.IsNotNull.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.IsNotNullNorWhiteSpace">
+            <summary>
+            Operation representing a "not null nor whitespace" check.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.IsNotNullNorWhiteSpace.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.IsNotNullNorWhiteSpace.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.IsNull">
+            <summary>
+            Operation representing a null check.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.IsNull.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.IsNull.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.IsNullOrWhiteSpace">
+            <summary>
+            Operation representing a "null or whitespace" check.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.IsNullOrWhiteSpace.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.IsNullOrWhiteSpace.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.LessThan">
+            <summary>
+            Operation representing an "less than" comparison.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.LessThan.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.LessThan.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.LessThanOrEqualTo">
+            <summary>
+            Operation representing an "less than or equal" comparison.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.LessThanOrEqualTo.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.LessThanOrEqualTo.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.NotEqualTo">
+            <summary>
+            Operation representing an inequality comparison.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.NotEqualTo.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.NotEqualTo.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.NotIn">
+            <summary>
+            Operation representing the inverse of a list "Contains" method call.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.NotIn.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.NotIn.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.Operation">
+            <summary>
+            Exposes the default operations supported by the <seealso cref="T:ExpressionBuilder.Builders.FilterBuilder" />.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.Between">
+            <summary>
+            Operation representing a range comparison.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.Contains">
+            <summary>
+            Operation representing a string "Contains" method call.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.DoesNotContain">
+            <summary>
+            Operation that checks for the non-existence of a substring within another string.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.EndsWith">
+            <summary>
+            Operation representing a string "EndsWith" method call.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.EqualTo">
+            <summary>
+            Operation representing an equality comparison.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.GreaterThan">
+            <summary>
+            Operation representing an "greater than" comparison.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.GreaterThanOrEqualTo">
+            <summary>
+            Operation representing an "greater than or equal" comparison.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.In">
+            <summary>
+            Operation representing a list "Contains" method call.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.IsEmpty">
+            <summary>
+            Operation representing a check for an empty string.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.IsNotEmpty">
+            <summary>
+            Operation representing a check for a non-empty string.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.IsNotNull">
+            <summary>
+            Operation representing a "not-null" check.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.IsNotNullNorWhiteSpace">
+            <summary>
+            Operation representing a "not null nor whitespace" check.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.IsNull">
+            <summary>
+            Operation representing a null check.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.IsNullOrWhiteSpace">
+            <summary>
+            Operation representing a "null or whitespace" check.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.LessThan">
+            <summary>
+            Operation representing an "less than" comparison.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.LessThanOrEqualTo">
+            <summary>
+            Operation representing an "less than or equal" comparison.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.NotEqualTo">
+            <summary>
+            Operation representing an inequality comparison.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.StartsWith">
+            <summary>
+            Operation representing a string "StartsWith" method call.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.Operation.NotIn">
+            <summary>
+            Operation representing the inverse of a list "Contains" method call.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.Operation.ByName(System.String)">
+            <summary>
+            Instantiates an IOperation given its name.
+            </summary>
+            <param name="operationName">Name of the operation to be instantiated.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.Operation.LoadOperations(System.Collections.Generic.List{ExpressionBuilder.Interfaces.IOperation},System.Boolean)">
+            <summary>
+            Loads a list of custom operations into the <see cref="N:ExpressionBuilder.Operations"></see> list.
+            </summary>
+            <param name="operations">List of operations to load.</param>
+            <param name="overloadExisting">Specifies that any matching pre-existing operations should be replaced by the ones from the list. (Useful to overwrite the default operations)</param>
+        </member>
+        <member name="T:ExpressionBuilder.Operations.OperationBase">
+            <summary>
+            Base class for operations.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Operations.OperationBase.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:ExpressionBuilder.Operations.OperationBase.TypeGroup">
+            <inheritdoc />
+        </member>
+        <member name="P:ExpressionBuilder.Operations.OperationBase.NumberOfValues">
+            <inheritdoc />
+        </member>
+        <member name="P:ExpressionBuilder.Operations.OperationBase.Active">
+            <inheritdoc />
+        </member>
+        <member name="P:ExpressionBuilder.Operations.OperationBase.SupportsLists">
+            <inheritdoc />
+        </member>
+        <member name="P:ExpressionBuilder.Operations.OperationBase.ExpectNullValues">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.OperationBase.#ctor(System.String,System.Int32,ExpressionBuilder.Common.TypeGroup,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Instantiates a new operation.
+            </summary>
+            <param name="name">Operations name.</param>
+            <param name="numberOfValues">Number of values supported by the operation.</param>
+            <param name="typeGroups">TypeGroup(s) which the operation supports.</param>
+            <param name="active">Determines if the operation is active.</param>
+            <param name="supportsLists">Determines if the operation supports arrays.</param>
+            <param name="expectNullValues"></param>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.OperationBase.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.OperationBase.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.OperationBase.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.OperationBase.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Operations.StartsWith">
+            <summary>
+            Operation representing a string "StartsWith" method call.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Operations.StartsWith.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:ExpressionBuilder.Operations.StartsWith.GetExpression(System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,System.Linq.Expressions.ConstantExpression)">
+            <inheritdoc />
+        </member>
+        <member name="T:ExpressionBuilder.Resources.OperationGlobalizationExtensionMethods">
+            <summary>
+            Extension methods for <see cref="T:ExpressionBuilder.Interfaces.IOperation" />.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Resources.OperationGlobalizationExtensionMethods.GetDescription(ExpressionBuilder.Interfaces.IOperation,System.Resources.ResourceManager)">
+            <summary>
+            Retrieves the description for an operation from the specified resource manager.
+            If it's not possible to find a key that matches the operation value, then
+            the operation value itself will be return as the description.
+            </summary>
+            <param name="operation">Operation which description should be returned.</param>
+            <param name="resourceManager">ResourceManager where the description can be found.</param>
+            <returns></returns>
+        </member>
+        <member name="T:ExpressionBuilder.Resources.Property">
+            <summary>
+            Provides information on the property to the Expression Builder.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Resources.Property.Id">
+            <summary>
+            Property identifier conventionalized by the Expression Builder.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Resources.Property.Name">
+            <summary>
+            Property name obtained from a ResourceManager, or the property's original name (in the absence of a ResourceManager correspondent value).
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Resources.Property.Info">
+            <summary>
+            Property metadata.
+            </summary>
+        </member>
+        <member name="M:ExpressionBuilder.Resources.Property.ToString">
+            <summary>
+            String representation of <see cref="T:ExpressionBuilder.Resources.Property" />.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ExpressionBuilder.Resources.PropertyCollection">
+            <summary>
+            Collection of <see cref="T:ExpressionBuilder.Resources.Property" />.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Resources.PropertyCollection.Type">
+            <summary>
+            Type from which the properties are loaded.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Resources.PropertyCollection.ResourceManager">
+            <summary>
+            ResourceManager which the properties descriptions should be gotten from.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Resources.PropertyCollection.Count">
+            <summary>
+            Gets the number of <see cref="T:ExpressionBuilder.Resources.Property" /> contained in the <see cref="T:ExpressionBuilder.Resources.PropertyCollection" />.
+            </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Resources.PropertyCollection.SyncRoot">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Resources.PropertyCollection.IsSynchronized">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:ExpressionBuilder.Resources.PropertyCollection.Item(System.String)">
+            <summary>
+            Retrieves a property based on its Id.
+            </summary>
+            <param name="propertyId">Property conventionalized <see cref="P:ExpressionBuilder.Resources.Property.Id" />.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Resources.PropertyCollection.#ctor(System.Type)">
+            <summary>
+            Instantiates a new <see cref="T:ExpressionBuilder.Resources.PropertyCollection" />.
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:ExpressionBuilder.Resources.PropertyCollection.#ctor(System.Type,System.Resources.ResourceManager)">
+            <summary>
+            Instantiates a new <see cref="T:ExpressionBuilder.Resources.PropertyCollection" />.
+            </summary>
+            <param name="type"></param>
+            <param name="resourceManager"></param>
+        </member>
+        <member name="M:ExpressionBuilder.Resources.PropertyCollection.LoadProperties(System.Resources.ResourceManager)">
+            <summary>
+            Loads the properties names from the specified ResourceManager.
+            </summary>
+            <param name="resourceManager"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Resources.PropertyCollection.CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the elements of the <see cref="T:ExpressionBuilder.Resources.PropertyCollection" /> to an System.Array,
+            starting at a particular System.Array index.
+            </summary>
+            <param name="array">
+            The one-dimensional System.Array that is the destination of the elements copied
+            from System.Collections.ICollection. The System.Array must have zero-based indexing.
+            </param>
+            <param name="index">The zero-based index in array at which copying begins.</param>
+        </member>
+        <member name="M:ExpressionBuilder.Resources.PropertyCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ExpressionBuilder.Resources.PropertyCollection.ToList">
+            <summary>
+            Converts the collection into a list.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

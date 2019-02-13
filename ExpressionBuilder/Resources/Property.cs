@@ -8,7 +8,7 @@ namespace ExpressionBuilder.Resources
     public class Property
     {
         /// <summary>
-        /// Property identifier conventionalized by for the Expression Builder.
+        /// Property identifier conventionalized by the Expression Builder.
         /// </summary>
         public string Id { get; private set; }
 

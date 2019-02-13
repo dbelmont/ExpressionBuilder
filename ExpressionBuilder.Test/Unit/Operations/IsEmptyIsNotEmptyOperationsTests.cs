@@ -1,5 +1,4 @@
 ﻿using ExpressionBuilder.Interfaces;
-using ExpressionBuilder.Operations;
 using ExpressionBuilder.Test.Models;
 using ExpressionBuilder.Test.Unit.Helpers;
 using FluentAssertions;
@@ -26,7 +25,9 @@ namespace ExpressionBuilder.Test.Unit.Operations
         {
             var propertyName = "Country";
             var value = string.Empty;
-            var operation = (IOperation)Activator.CreateInstance("ExpressionBuilder", "ExpressionBuilder.Operations." + methodName).Unwrap();
+            var type = typeof(IFilter).Assembly.Types()
+                .Single(t => t.FullName == "ExpressionBuilder.Operations." + methodName);
+            var operation = (IOperation)Activator.CreateInstance(type);
             var param = Expression.Parameter(typeof(Person), "x");
             var parent = Expression.Property(param, "Birth");
             var member = Expression.Property(parent, "Country");

@@ -1,4 +1,13 @@
-﻿using DbContext;
+﻿#if NETCOREAPP2_0
+
+using ExpressionBuilder.Test.NetCore.Database;
+
+#else
+
+using DbContext;
+
+#endif
+
 using ExpressionBuilder.Common;
 using ExpressionBuilder.Generics;
 using ExpressionBuilder.Operations;
@@ -49,10 +58,10 @@ namespace ExpressionBuilder.Test.Database
         {
             var filter = new Filter<Products>();
             filter.By("Categories.CategoryName", Operation.EqualTo, "Beverages", default(string), Connector.Or);
-            filter.By("Categories.CategoryName.Length", Operation.GreaterThanOrEqualTo, 12);
+            filter.By("ProductID", Operation.In, new[] { 1, 2, 4, 5 });
             var products = db.Products.Where(filter);
             var solution = db.Products.Where(p => (p.Categories != null && p.Categories.CategoryName != null && p.Categories.CategoryName.Trim().ToLower().Equals("beverages")) ||
-                                             (p.Categories != null && p.Categories.CategoryName != null && p.Categories.CategoryName.Length >= 12));
+                                                  new[] { 1, 2, 4, 5 }.Contains(p.ProductID));
             Assert.That(products, Is.EquivalentTo(solution));
         }
 

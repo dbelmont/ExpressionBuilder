@@ -30,6 +30,21 @@ namespace ExpressionBuilder.Test.Integration
             }
         }
 
+        private List<Company> _companies;
+
+        public List<Company> Companies
+        {
+            get
+            {
+                if (_companies == null)
+                {
+                    _companies = new TestData().Companies;
+                }
+
+                return _companies;
+            }
+        }
+
         [TestCase(TestName = "Build expression from an empty filter: should return all records")]
         public void BuilderWithEmptyFilter()
         {
@@ -173,7 +188,7 @@ namespace ExpressionBuilder.Test.Integration
         public void BuilderUsingIsEmptyOperation()
         {
             var filter = new Filter<Person>();
-            filter.By("Birth.Country", Operation.IsEmpty, (object)null, (object)null, Connector.And);
+            filter.By("Birth.Country", Operation.IsEmpty, null, (object)null, Connector.And);
             var people = People.Where(filter);
             var solution = People.Where(p => p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim() == string.Empty);
             Assert.That(people, Is.EquivalentTo(solution));
@@ -333,9 +348,65 @@ namespace ExpressionBuilder.Test.Integration
         public void PropertyValueTypeMismatchWithTwoValues()
         {
             var filter = new Filter<Person>();
-            filter.By("Id", Operation.Between, (int)1, 7700000000000007D);
+            filter.By("Id", Operation.Between, 1, 7700000000000007D);
             var ex = Assert.Throws<PropertyValueTypeMismatchException>(() => People.Where(filter));
             ex.Message.Should().Be("The type of the member 'Id' (Int32) is different from the type of one of the constants (Double)");
+        }
+
+        [TestCase(TestName = "Should not throw an exception when using the 'In' operator over a list of nullable objects")]
+        public void ShouldNotThrowExceptionWhenUsingTheInOperatorOverListOfNullableObjects()
+        {
+            var filter = new Filter<Person>();
+            var idList = new long?[] { 123 };
+            filter.By("EmployeeReferenceNumber", Operation.In, idList);
+            var result = People.Where(filter);
+            result.Should().NotBeEmpty();
+        }
+
+        [TestCase(TestName = "Nested property with depth of two", Category = "NestedProperties")]
+        public void NestedPropertyDepthTwo()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Manager.Birth.Country", Operation.EqualTo, "USA");
+            var people = People.Where(filter);
+            var solution = People.Where(p => p.Manager != null && p.Manager.Birth != null && p.Manager.Birth.Country == "USA");
+
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Nested property with depth of three", Category = "NestedProperties")]
+        public void NestedPropertyDepthThree()
+        {
+            var filter = new Filter<Person>();
+            filter.By("Manager.Employer.Owner.Name", Operation.Contains, "smith");
+            var people = People.Where(filter);
+            var solution = People.Where(p => p.Manager != null && p.Manager.Employer != null
+                                                               && p.Manager.Employer.Owner.Name.Trim().ToLower().Contains("smith"));
+
+            Assert.That(people, Is.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Nested list property with depth of two", Category = "NestedProperties")]
+        public void NestedListPropertyDepthTwo()
+        {
+            var filter = new Filter<Company>();
+            filter.By("Managers[Birth.Country]", Operation.EqualTo, "USA");
+            var companies = Companies.Where(filter);
+            var solution = Companies.Where(c => c.Managers.Any(p => p.Birth != null && p.Birth.Country == "USA"));
+
+            Assert.That(companies, Is.EquivalentTo(solution));
+        }
+
+        [TestCase(TestName = "Nested list property with depth of three", Category = "NestedProperties")]
+        public void NestedListPropertyDepthThree()
+        {
+            var filter = new Filter<Company>();
+            filter.By("Managers[Employer.Owner.Name]", Operation.Contains, "smith");
+            var companies = Companies.Where(filter);
+            var solution = Companies.Where(c => c.Managers.Any(p => p.Employer != null
+                                                                    && p.Employer.Owner.Name.Trim().ToLower().Contains("smith")));
+
+            Assert.That(companies, Is.EquivalentTo(solution));
         }
     }
 }

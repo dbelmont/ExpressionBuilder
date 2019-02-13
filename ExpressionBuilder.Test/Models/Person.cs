@@ -17,7 +17,9 @@ namespace ExpressionBuilder.Test.Models
         public BirthData Birth { get; set; }
         public List<Contact> Contacts { get; private set; }
         public Company Employer { get; set; }
+        public Person Manager { get; set; }
         public double Salary { get; set; }
+        public long? EmployeeReferenceNumber { get; set; }
 
         public Person()
         {
@@ -69,7 +71,10 @@ namespace ExpressionBuilder.Test.Models
             {
                 get
                 {
-                    if (!Date.HasValue) return 0;
+                    if (!Date.HasValue)
+                    {
+                        return 0;
+                    }
 
                     var timeSpan = DateTime.Now - Date.Value;
                     return (int)(timeSpan.Days / 365.2425);
@@ -81,11 +86,18 @@ namespace ExpressionBuilder.Test.Models
                 return string.Format("Born at {0} in {1} ({2} yo)", Date.Value.ToShortDateString(), Country, Age);
             }
         }
+    }
 
-        public class Company
+    public class Company
+    {
+        public string Name { get; set; }
+        public string Industry { get; set; }
+        public Person Owner { get; set; }
+        public List<Person> Managers { get; set; }
+
+        public Company()
         {
-            public string Name { get; set; }
-            public string Industry { get; set; }
+            Managers = new List<Person>();
         }
     }
 }

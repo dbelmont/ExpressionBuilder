@@ -1,108 +1,65 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ProjectGuid>{70BF550D-5943-4162-8FAB-0BBA743A3D93}</ProjectGuid>
-    <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <OutputType>Library</OutputType>
-    <RootNamespace>ExpressionBuilder</RootNamespace>
-    <AssemblyName>ExpressionBuilder</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
+    <Authors>David Belmont</Authors>
+    <RepositoryUrl>https://github.com/dbelmont/ExpressionBuilder</RepositoryUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/dbelmont/ExpressionBuilder/master/ExpressionBuilder/ExpressionBuilder.png</PackageIconUrl>
+    <PackageProjectUrl>http://dbelmont.github.io/ExpressionBuilder/</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/dbelmont/ExpressionBuilder/blob/master/LICENSE</PackageLicenseUrl>
+    <Copyright>David Belmont © 2019</Copyright>
+    <PackageTags>LINQ Lambda Expression Builder LINQ Database Queryable</PackageTags>
+    <PackageReleaseNotes>Main changes in this version:
+      • Added support for .NetStandard 2.0 (which should include support for .Net Core 2.0) (huge thanks to Joris Labie @labiej)
+      • 'FilterFactory' class added to offer a "non-generics" approach for creating filters (issue #25)
+      • Improved support for nested properties (issues #26 and #29)
+      • Added new 'NotIn' operator (issue #36)
+      • Fixed bug that used to throw an exception when using the `In` operator over a nullable property (issue #37)</PackageReleaseNotes>
+    <Description>This library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters.
+
+      Useful to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.
+</Description>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Version>2.1.0-beta</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>C:\Dev\ExpressionBuilder\ExpressionBuilder\ExpressionBuilder.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <DebugSymbols>True</DebugSymbols>
-    <DebugType>Full</DebugType>
-    <Optimize>False</Optimize>
-    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <DebugSymbols>False</DebugSymbols>
-    <DebugType>None</DebugType>
-    <Optimize>True</Optimize>
-    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DocumentationFile>bin\Release\ExpressionBuilder.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\ExpressionBuilder.xml</DocumentationFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.CSharp">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Configuration.ConfigurationManager">
+      <Version>4.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.ComponentModel.Annotations">
+      <Version>4.5.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Runtime.Caching" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builders\FilterBuilder.cs" />
-    <Compile Include="Common\Enumerations.cs" />
-    <Compile Include="Common\CommonExtensionMethods.cs" />
-    <Compile Include="Configuration\ExpressionBuilderConfig.cs" />
-    <Compile Include="Exceptions\OperationNotFoundException.cs" />
-    <Compile Include="Exceptions\PropertyValueTypeMismatchException.cs" />
-    <Compile Include="Exceptions\WrongNumberOfValuesException.cs" />
-    <Compile Include="Exceptions\UnsupportedOperationException.cs" />
-    <Compile Include="Generics\FilterStatement.cs" />
-    <Compile Include="Generics\Filter.cs" />
-    <Compile Include="Generics\FilterStatementConnection.cs" />
-    <Compile Include="Helpers\OperationEqualityComparer.cs" />
-    <Compile Include="Helpers\OperationHelper.cs" />
-    <Compile Include="Interfaces\IFilter.cs" />
-    <Compile Include="Interfaces\IFilterStatementConnection.cs" />
-    <Compile Include="Interfaces\IFilterStatement.cs" />
-    <Compile Include="Interfaces\IOperation.cs" />
-    <Compile Include="Interfaces\IOperationHelper.cs" />
-    <Compile Include="Interfaces\IPropertyCollection.cs" />
-    <Compile Include="Operations\Between.cs" />
-    <Compile Include="Operations\DoesNotContain.cs" />
-    <Compile Include="Operations\IsNotEmpty.cs" />
-    <Compile Include="Operations\IsNotNull.cs" />
-    <Compile Include="Operations\IsEmpty.cs" />
-    <Compile Include="Operations\IsNotNullNorWhiteSpace.cs" />
-    <Compile Include="Operations\IsNullOrWhiteSpace.cs" />
-    <Compile Include="Operations\IsNull.cs" />
-    <Compile Include="Operations\In.cs" />
-    <Compile Include="Operations\EndsWith.cs" />
-    <Compile Include="Operations\Operation.cs" />
-    <Compile Include="Operations\StartsWith.cs" />
-    <Compile Include="Operations\Contains.cs" />
-    <Compile Include="Operations\LessThanOrEqualTo.cs" />
-    <Compile Include="Operations\LessThan.cs" />
-    <Compile Include="Operations\GreaterThanOrEqualTo.cs" />
-    <Compile Include="Operations\GreaterThan.cs" />
-    <Compile Include="Operations\NotEqualTo.cs" />
-    <Compile Include="Operations\EqualTo.cs" />
-    <Compile Include="Operations\OperationBase.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\OperationGlobalizationExtensionMethods.cs" />
-    <Compile Include="Resources\Property.cs" />
-    <Compile Include="Resources\PropertyCollection.cs" />
+    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="package.nuspec">
-      <SubType>Designer</SubType>
+    <None Include="ExpressionBuilder.xml">
+      <Pack>true</Pack>
+      <PackagePath>lib\net452;lib\netstandard2.0</PackagePath>
     </None>
-    <None Include="readme.md" />
+    <None Include="readme.md">
+      <Pack>true</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="license.txt">
+      <Pack>true</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

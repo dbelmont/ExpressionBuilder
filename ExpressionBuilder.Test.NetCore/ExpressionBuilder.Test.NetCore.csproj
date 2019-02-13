@@ -1,0 +1,84 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\ExpressionBuilder.Test\CustomOperations\EqualTo.cs" Link="CustomOperations\EqualTo.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\CustomOperations\ThisDay.cs" Link="CustomOperations\ThisDay.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Database\BuilderTest.cs" Link="Database\BuilderTest.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Integration\BuilderTest.cs" Link="Integration\BuilderTest.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Integration\OperationTests.cs" Link="Integration\OperationTests.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Integration\PropertyLoaderTest.cs" Link="Integration\PropertyLoaderTest.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Models\Contact.cs" Link="Models\Contact.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Models\Person.cs" Link="Models\Person.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Resources\Operations.Designer.cs" Link="Resources\Operations.Designer.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Resources\Person.Designer.cs" Link="Resources\Person.Designer.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\FilterTest.cs" Link="Unit\FilterTest.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\FilterXmlSerializerTests.cs" Link="Unit\FilterXmlSerializerTests.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\Helpers\ExtensionMethods.cs" Link="Unit\Helpers\ExtensionMethods.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\Helpers\TestData.cs" Link="Unit\Helpers\TestData.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\HelperTests.cs" Link="Unit\HelperTests.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\Operations\BetweenTests.cs" Link="Unit\Operations\BetweenTests.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\Operations\DoesNotContainTests.cs" Link="Unit\Operations\DoesNotContainTests.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\Operations\EqualToTests.cs" Link="Unit\Operations\EqualToTests.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\Operations\InTests.cs" Link="Unit\Operations\InTests.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\Operations\IsEmptyIsNotEmptyOperationsTests.cs" Link="Unit\Operations\IsEmptyIsNotEmptyOperationsTests.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\Operations\IsNullIsNotNullOperationsTests.cs" Link="Unit\Operations\IsNullIsNotNullOperationsTests.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\Operations\IsNullOrWhiteSpaceOrNotOperationsTests.cs" Link="Unit\Operations\IsNullOrWhiteSpaceOrNotOperationsTests.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\Operations\MethodCallOperationsTests.cs" Link="Unit\Operations\MethodCallOperationsTests.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\Operations\NotEqualToTests.cs" Link="Unit\Operations\NotEqualToTests.cs" />
+    <Compile Include="..\ExpressionBuilder.Test\Unit\Operations\SimpleNumericComparisonOperationsTests.cs" Link="Unit\Operations\SimpleNumericComparisonOperationsTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\ExpressionBuilder.Test\Resources\Operations.pt-BR.resx" Link="Resources\Operations.pt-BR.resx" />
+    <EmbeddedResource Include="..\ExpressionBuilder.Test\Resources\Operations.resx" Link="Resources\Operations.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ExpressionBuilder.Test\Resources\Person.pt-BR.resx" Link="Resources\Person.pt-BR.resx" />
+    <EmbeddedResource Include="..\ExpressionBuilder.Test\Resources\Person.resx" Link="Resources\Person.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>Resources</CustomToolNamespace>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.6.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.1" />
+    <PackageReference Include="nunit" Version="3.10.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ExpressionBuilder\ExpressionBuilder.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="CustomOperations\" />
+    <Folder Include="Integration\" />
+    <Folder Include="Resources\" />
+    <Folder Include="Unit\Helpers\" />
+    <Folder Include="Unit\Operations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\ExpressionBuilder.Test\Northwind.db" Link="Northwind.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

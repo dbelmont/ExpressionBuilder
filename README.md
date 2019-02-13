@@ -9,6 +9,7 @@ Nuget | [![NuGet](https://img.shields.io/nuget/v/LambdaExpressionBuilder.svg)](h
 
 
 * [Features](#features)
+  * [New on version 2.1](#new-on-version-21)
   * [New on version 2](#new-on-version-2)
 * [How to use it](#how-to-use-it)
   * [Convetions](#conventions)
@@ -25,13 +26,20 @@ Nuget | [![NuGet](https://img.shields.io/nuget/v/LambdaExpressionBuilder.svg)](h
 * Ability to reference properties from list items
 * Built-in null-checks
 * Built-in XML serialization
-* Globalization support
+* Globalization support [not available in .NetStandard 2.0 / .NetCore 2.0]
 * Support for complex expressions (those that group up statements within parenthesis)
 * Ability to create your own custom operations
 
 Would this help you in anyway? Well, if your answer is 'yes', you just made my day a bit better. :smile:
 
 Please, feel free to leave comments and to place issues if you find errors or realize there is any missing feature.
+
+## New on version 2.1:
+* Added support for .NetStandard 2.0 (which should include support for .Net Core 2.0) (huge thanks to Joris Labie @labiej)
+* `FilterFactory` class added to offer a ["non-generics" approach for creating filters](https://github.com/dbelmont/ExpressionBuilder/issues/25)
+* Improved support for nested properties (issues [#26](https://github.com/dbelmont/ExpressionBuilder/issues/26) and [#29](https://github.com/dbelmont/ExpressionBuilder/issues/29))
+* Added new ['NotIn' operator](https://github.com/dbelmont/ExpressionBuilder/issues/36)
+* [Fixed bug](https://github.com/dbelmont/ExpressionBuilder/issues/37) that used to throw an exception when using the `In` operator over a nullable property
 
 ## New on version 2:
 * [Custom operations](#custom-operations): create your own operations or overwrite the behaviour of the default operations

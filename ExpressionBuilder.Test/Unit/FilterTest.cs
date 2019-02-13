@@ -2,6 +2,7 @@
 using ExpressionBuilder.Generics;
 using ExpressionBuilder.Operations;
 using ExpressionBuilder.Test.Models;
+using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -76,6 +77,13 @@ namespace ExpressionBuilder.Test.Unit
             filter.StartGroup();
             filter.StartGroup();
             Assert.That(filter.Statements.Count(), Is.EqualTo(1));
+        }
+
+        [TestCase(TestName = "Should create a filter by passing the type as an argument")]
+        public void ShouldCreateAFilterByPassingTheTypeAsAnArgument()
+        {
+            var filter = FilterFactory.Create(typeof(Person));
+            filter.Should().BeOfType(typeof(Filter<Person>));
         }
     }
 }

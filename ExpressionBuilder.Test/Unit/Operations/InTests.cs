@@ -50,6 +50,39 @@ namespace ExpressionBuilder.Test.Unit.Operations
             people.Should().BeEquivalentTo(solution);
         }
 
+        [TestCase(TestName = "'In' operation - should deal nicely with a list of nullable objects")]
+        public void ShouldDealNicelyWithListOfNullables()
+        {
+            var value = new List<long?> { 123, null };
+            var operation = new ExpressionBuilder.Operations.In();
+            var param = Expression.Parameter(typeof(Person), "x");
+            var member = Expression.Property(param, "EmployeeReferenceNumber");
+            var constant1 = Expression.Constant(value);
+            var expression = (MethodCallExpression)operation.GetExpression(member, constant1, null);
+
+            var lambda = Expression.Lambda<Func<Person, bool>>(expression, param);
+            var people = TestData.People.Where(lambda.Compile());
+            var solution = TestData.People.Where(x => value.Contains(x.EmployeeReferenceNumber));
+            people.Should().BeEquivalentTo(solution);
+        }
+
+        [TestCase(TestName = "'In' operation - should deal nicely with a list of nullable objects against a non-nullable member")]
+        public void ShouldDealNicelyWithListOfNullablesAgainstNonnullableMember()
+        {
+            var value = new List<long?> { 123, null };
+            var operation = new ExpressionBuilder.Operations.In();
+            var param = Expression.Parameter(typeof(Person), "x");
+            var parent = Expression.Property(param, "EmployeeReferenceNumber");
+            var member = Expression.Property(parent, "Value");
+            var constant1 = Expression.Constant(value);
+            var expression = (MethodCallExpression)operation.GetExpression(member, constant1, null);
+
+            var lambda = Expression.Lambda<Func<Person, bool>>(expression, param);
+            var people = TestData.People.Where(lambda.Compile());
+            var solution = TestData.People.Where(x => value.Contains(x.EmployeeReferenceNumber));
+            people.Should().BeEquivalentTo(solution);
+        }
+
         [TestCase(TestName = "'In' operation - Get expression (Failure: non list constant)")]
         public void GetExpressionWithNonListConstant_Failure()
         {

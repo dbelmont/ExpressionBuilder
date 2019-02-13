@@ -27,7 +27,7 @@ namespace ExpressionBuilder.Common
         /// <summary>
         /// Default type group, only supports EqualTo and NotEqualTo.
         /// </summary>
-        Default = 0,
+        Default = -1,
 
         /// <summary>
         /// Supports all text related operations.
