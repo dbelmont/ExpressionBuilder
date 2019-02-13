@@ -9,7 +9,7 @@ Nuget | [![NuGet](https://img.shields.io/nuget/v/LambdaExpressionBuilder.svg)](h
 
 
 * [Features](#features)
-  * [New on version 2.1](#new-on-version-2.1)
+  * [New on version 2.1](#new-on-version-21)
   * [New on version 2](#new-on-version-2)
 * [How to use it](#how-to-use-it)
   * [Convetions](#conventions)
