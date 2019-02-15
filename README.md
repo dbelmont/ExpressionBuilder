@@ -35,7 +35,7 @@ Would this help you in anyway? Well, if your answer is 'yes', you just made my d
 Please, feel free to leave comments and to place issues if you find errors or realize there is any missing feature.
 
 ## New on version 2.1:
-* Added support for .NetStandard 2.0 (which should include support for .Net Core 2.0) (huge thanks to Joris Labie @labiej)
+* Added support for .NetStandard 2.0 (which should include support for .Net Core 2.0) (huge thanks to Joris Labie @labiej and Simon Cropp @SimonCropp)
 * `FilterFactory` class added to offer a ["non-generics" approach for creating filters](https://github.com/dbelmont/ExpressionBuilder/issues/25)
 * Improved support for nested properties (issues [#26](https://github.com/dbelmont/ExpressionBuilder/issues/26) and [#29](https://github.com/dbelmont/ExpressionBuilder/issues/29))
 * Added new ['NotIn' operator](https://github.com/dbelmont/ExpressionBuilder/issues/36)
