@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 using ExpressionBuilder.Common;
 
 namespace ExpressionBuilder.Configuration
@@ -15,7 +14,7 @@ namespace ExpressionBuilder.Configuration
 
         public static void LoadSettings(Settings settings)
         {
-#if NETSTANDARD2_0
+#if (NETSTANDARD2_0 || NETSTANDARD2_1 || NETSTANDARD2_2)
 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)

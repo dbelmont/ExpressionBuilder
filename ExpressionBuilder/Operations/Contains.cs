@@ -9,7 +9,7 @@ namespace ExpressionBuilder.Operations
     /// </summary>
     public class Contains : OperationBase
     {
-        private readonly MethodInfo stringContainsMethod = typeof(string).GetMethod("Contains");
+        private readonly MethodInfo stringContainsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
 
         /// <inheritdoc />
         public Contains()
