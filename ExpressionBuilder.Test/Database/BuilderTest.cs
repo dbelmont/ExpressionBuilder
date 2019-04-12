@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP2_0
+﻿#if (NETSTANDARD2_0 || NETSTANDARD2_1 || NETSTANDARD2_2 || NETCOREAPP2_0 || NETCOREAPP2_1 || NETCOREAPP2_2)
 
 using ExpressionBuilder.Test.NetCore.Database;
 

@@ -26,7 +26,7 @@ namespace ExpressionBuilder.Test.Unit
 
             var sb = new StringBuilder();
             sb.Append("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
-#if NETCOREAPP2_0
+#if (NETSTANDARD2_0 || NETSTANDARD2_1 || NETSTANDARD2_2 || NETCOREAPP2_0 || NETCOREAPP2_1 || NETCOREAPP2_2)
             sb.Append("<FilterOfPerson Type=\"ExpressionBuilder.Test.Models.Person, ExpressionBuilder.Test.NetCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\">");
 #else
             sb.Append("<FilterOfPerson Type=\"ExpressionBuilder.Test.Models.Person, ExpressionBuilder.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\">");
