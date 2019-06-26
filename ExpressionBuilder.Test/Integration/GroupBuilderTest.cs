@@ -60,7 +60,7 @@ namespace ExpressionBuilder.Test.Integration
             var people1 = People.Where(andExpression);
             var solution = People.Where(filter);
             Assert.That(people1, Is.EquivalentTo(solution));
-            var people2 = People.Where(andExpression);
+            var people2 = People.Where(orExpression);
             Assert.That(people2, Is.EquivalentTo(solution));
         }
 
@@ -97,7 +97,7 @@ namespace ExpressionBuilder.Test.Integration
             f2.By("Name", Operation.DoesNotContain, "doe");
             f3.By("Name", Operation.EndsWith, "Doe");
             f4.By("Birth.Country", Operation.IsNullOrWhiteSpace);
-            var orExpression = GroupBuilder.GetFilter(GroupBuilder.Group<Person>(Connector.Or, GroupBuilder.Group<Person>(Connector.And, f1, f2), GroupBuilder.Group<Person>(Connector.And, f3, f4)));
+            var orExpression = Connector.Or.Group(Connector.And.Group<Person>(f1, f2), Connector.And.Group<Person>(f3, f4)).GetFilter();
             var people = People.Where(orExpression);
             var filter = new Filter<Person>();
             filter.By("Birth.Country", Operation.EqualTo, "USA").And.By("Name", Operation.DoesNotContain, "doe")

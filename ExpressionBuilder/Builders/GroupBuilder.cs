@@ -24,7 +24,6 @@ namespace ExpressionBuilder.Builders
             {
                 return (c) => true;
             }
-            FilterBuilder _filterBuilder = new FilterBuilder();
             if (filters.Length == 1)
             {
                 return filters[0];
