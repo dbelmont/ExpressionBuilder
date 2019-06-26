@@ -35,13 +35,13 @@ namespace ExpressionBuilder.Configuration
                 }
             }
 #else
+            settings.SupportedTypes = new List<SupportedType>();
             var configSection = ConfigurationManager.GetSection(ExpressionBuilderConfig.SectionName) as ExpressionBuilderConfig;
             if (configSection == null)
             {
                 return;
             }
 
-            settings.SupportedTypes = new List<SupportedType>();
             foreach (ExpressionBuilderConfig.SupportedTypeElement supportedType in configSection.SupportedTypes)
             {
                 Type type = Type.GetType(supportedType.Type, false, true);
