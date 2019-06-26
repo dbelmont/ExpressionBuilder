@@ -71,6 +71,7 @@
     <Compile Include="Database\BuilderTest.cs" />
     <Compile Include="Database\Northwind.cs" />
     <Compile Include="Integration\BuilderTest.cs" />
+    <Compile Include="Integration\GroupBuilderTest.cs" />
     <Compile Include="Integration\OperationTests.cs" />
     <Compile Include="Integration\PropertyLoaderTest.cs" />
     <Compile Include="Models\Contact.cs" />
