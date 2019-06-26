@@ -18,7 +18,7 @@ namespace ExpressionBuilder.Builders
         /// <param name="connector"></param>
         /// <param name="filters">The LINQ expressions to combine.</param>
         /// <returns>Single combined LINQ expression.</returns>
-        public static Expression<Func<TClass, bool>> StartGroup<TClass>(Connector connector, params Expression<Func<TClass, bool>>[] filters) where TClass : class
+        public static Expression<Func<TClass, bool>> Group<TClass>(this Connector connector, params Expression<Func<TClass, bool>>[] filters) where TClass : class
         {
             if (filters == null)
             {
@@ -55,7 +55,7 @@ namespace ExpressionBuilder.Builders
         /// <typeparam name="TClass"></typeparam>
         /// <param name="filter">The expression to compile</param>
         /// <returns>The function that can be used inside LINQ functions (e.g. Where, Any, ...).</returns>
-        public static Func<TClass, bool> GetFilter<TClass>(Expression<Func<TClass, bool>> filter) where TClass : class
+        public static Func<TClass, bool> GetFilter<TClass>(this Expression<Func<TClass, bool>> filter) where TClass : class
         {
             if (filter == null)
             {

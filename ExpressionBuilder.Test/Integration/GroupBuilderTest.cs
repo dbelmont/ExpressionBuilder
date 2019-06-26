@@ -43,8 +43,8 @@ namespace ExpressionBuilder.Test.Integration
         [TestCase(TestName = "Passing null array should return true")]
         public void GroupWithEmptyFilterArray()
         {
-            var andExpression = GroupBuilder.GetFilter(GroupBuilder.StartGroup<Person>(Common.Connector.And, null));
-            var orExpression = GroupBuilder.GetFilter(GroupBuilder.StartGroup<Person>(Common.Connector.Or, null));
+            var andExpression = GroupBuilder.GetFilter(GroupBuilder.Group<Person>(Common.Connector.And, null));
+            var orExpression = GroupBuilder.GetFilter(GroupBuilder.Group<Person>(Common.Connector.Or, null));
             Assert.AreEqual(andExpression.Invoke(null), true);
             Assert.AreEqual(orExpression.Invoke(null), true);
             Assert.AreEqual(andExpression.Invoke(null), orExpression.Invoke(null));
@@ -55,8 +55,8 @@ namespace ExpressionBuilder.Test.Integration
         {
             var filter = new Filter<Person>();
             filter.By("Birth.Country", Operation.IsEmpty, null, (object)null, Connector.And);
-            var andExpression = GroupBuilder.GetFilter(GroupBuilder.StartGroup<Person>(Common.Connector.And, filter));
-            var orExpression = GroupBuilder.GetFilter(GroupBuilder.StartGroup<Person>(Common.Connector.Or, filter));
+            var andExpression = GroupBuilder.GetFilter(GroupBuilder.Group<Person>(Common.Connector.And, filter));
+            var orExpression = GroupBuilder.GetFilter(GroupBuilder.Group<Person>(Common.Connector.Or, filter));
             var people1 = People.Where(andExpression);
             var solution = People.Where(filter);
             Assert.That(people1, Is.EquivalentTo(solution));
@@ -71,14 +71,14 @@ namespace ExpressionBuilder.Test.Integration
             f1.By("Birth.Date", Operation.IsNotNull);
             var f2 = new Filter<Person>();
             f2.By("Birth.Date", Operation.GreaterThan, new DateTime(1980, 1, 1));
-            var orExpression = GroupBuilder.GetFilter<Person>(GroupBuilder.StartGroup<Person>(Common.Connector.Or, f1, f2));
+            var orExpression = Connector.Or.Group<Person>(f1, f2).GetFilter();
             var orPeople = People.Where(orExpression);
             var orFilter = new Filter<Person>();
             orFilter.By("Birth.Date", Operation.IsNotNull).Or.By("Birth.Date", Operation.GreaterThan, new DateTime(1980, 1, 1));
             var orSolution = People.Where(orFilter);
             Assert.That(orPeople, Is.EquivalentTo(orSolution));
 
-            var andExpression = GroupBuilder.GetFilter<Person>(GroupBuilder.StartGroup<Person>(Common.Connector.And, f1, f2));
+            var andExpression = Connector.And.Group<Person>(f1, f2).GetFilter();
             var andPeople = People.Where(andExpression);
             var andFilter = new Filter<Person>();
             andFilter.By("Birth.Date", Operation.IsNotNull).And.By("Birth.Date", Operation.GreaterThan, new DateTime(1980, 1, 1));
@@ -97,7 +97,7 @@ namespace ExpressionBuilder.Test.Integration
             f2.By("Name", Operation.DoesNotContain, "doe");
             f3.By("Name", Operation.EndsWith, "Doe");
             f4.By("Birth.Country", Operation.IsNullOrWhiteSpace);
-            var orExpression = GroupBuilder.GetFilter(GroupBuilder.StartGroup<Person>(Connector.Or, GroupBuilder.StartGroup<Person>(Connector.And, f1, f2), GroupBuilder.StartGroup<Person>(Connector.And, f3, f4)));
+            var orExpression = GroupBuilder.GetFilter(GroupBuilder.Group<Person>(Connector.Or, GroupBuilder.Group<Person>(Connector.And, f1, f2), GroupBuilder.Group<Person>(Connector.And, f3, f4)));
             var people = People.Where(orExpression);
             var filter = new Filter<Person>();
             filter.By("Birth.Country", Operation.EqualTo, "USA").And.By("Name", Operation.DoesNotContain, "doe")
