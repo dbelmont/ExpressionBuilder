@@ -1,4 +1,5 @@
 ﻿using ExpressionBuilder.Common;
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -9,7 +10,13 @@ namespace ExpressionBuilder.Operations
     /// </summary>
     public class Contains : OperationBase
     {
-        private readonly MethodInfo stringContainsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+        private readonly MethodInfo stringContainsMethod = typeof(string).GetMethod(
+            "Contains",
+            BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance,
+            Type.DefaultBinder,
+            new[] { typeof(string) },
+            new ParameterModifier[0]
+        );
 
         /// <inheritdoc />
         public Contains()
