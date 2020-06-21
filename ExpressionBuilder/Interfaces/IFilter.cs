@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using ExpressionBuilder.Common;
+﻿using ExpressionBuilder.Common;
+using System.Collections.Generic;
 
 namespace ExpressionBuilder.Interfaces
 {

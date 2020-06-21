@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ExpressionBuilder.Operations;
+using System;
 using System.Collections.Generic;
-using ExpressionBuilder.Operations;
 
 namespace ExpressionBuilder.Interfaces
 {

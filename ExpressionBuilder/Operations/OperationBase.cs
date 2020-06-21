@@ -1,6 +1,6 @@
-﻿using System;
-using ExpressionBuilder.Common;
+﻿using ExpressionBuilder.Common;
 using ExpressionBuilder.Interfaces;
+using System;
 using System.Linq.Expressions;
 
 namespace ExpressionBuilder.Operations

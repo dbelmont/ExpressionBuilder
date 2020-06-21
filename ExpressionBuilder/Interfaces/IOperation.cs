@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ExpressionBuilder.Common;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
-using ExpressionBuilder.Common;
 
 namespace ExpressionBuilder.Interfaces
 {

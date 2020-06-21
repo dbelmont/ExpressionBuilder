@@ -1,10 +1,11 @@
 ﻿#if NETSTANDARD2_0
 using Microsoft.Extensions.Configuration;
 #endif
+using ExpressionBuilder.Common;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using ExpressionBuilder.Common;
+using System.IO;
 
 namespace ExpressionBuilder.Configuration
 {
@@ -17,10 +18,9 @@ namespace ExpressionBuilder.Configuration
 #if (NETSTANDARD2_0 || NETSTANDARD2_1 || NETSTANDARD2_2)
 
             var builder = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json",
+                .AddJsonFile(Path.GetFullPath("./appsettings.json"),
                     optional: true,
-                    reloadOnChange: true);
+                    reloadOnChange: false);
 
             var _config = builder.Build();
 
