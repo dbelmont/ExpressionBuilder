@@ -2,28 +2,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
-    <Authors>David Belmont</Authors>
-    <RepositoryUrl>https://github.com/dbelmont/ExpressionBuilder</RepositoryUrl>
+    <Authors>David Belmont, Majid Iqbal</Authors>
+    <RepositoryUrl>https://github.com/Akinzekeel/ExpressionBuilder</RepositoryUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/dbelmont/ExpressionBuilder/master/ExpressionBuilder/ExpressionBuilder.png</PackageIconUrl>
-    <PackageProjectUrl>http://dbelmont.github.io/ExpressionBuilder/</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/dbelmont/ExpressionBuilder/blob/master/LICENSE</PackageLicenseUrl>
-    <Copyright>David Belmont © 2019</Copyright>
+    <PackageProjectUrl>https://github.com/Akinzekeel/ExpressionBuilder</PackageProjectUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <Copyright>David Belmont © 2019, Majid Iqbal</Copyright>
     <PackageTags>LINQ Lambda Expression Builder LINQ Database Queryable</PackageTags>
-    <PackageReleaseNotes>Main changes in this version:
-      • Added support for .NetStandard 2.0 (which should include support for .Net Core 2.0) (huge thanks to Joris Labie @labiej)
-      • 'FilterFactory' class added to offer a "non-generics" approach for creating filters (issue #25)
-      • Improved support for nested properties (issues #26 and #29)
-      • Added new 'NotIn' operator (issue #36)
-      • Fixed bug that used to throw an exception when using the `In` operator over a nullable property (issue #37)</PackageReleaseNotes>
+    <PackageReleaseNotes>This is a fork of dbelmont/LamdaExpressionBuilder. The fork is aimed towards .Net Core 3.1 and newer which may not work well with the original source code.</PackageReleaseNotes>
     <Description>This library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters.
 
       Useful to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.
 </Description>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Version>2.1.0-rc</Version>
+    <Version>1.0.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>LambdaExpressionBuilder</PackageId>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
     <DocumentationFile>C:\Dev\ExpressionBuilder\ExpressionBuilder\ExpressionBuilder.xml</DocumentationFile>
