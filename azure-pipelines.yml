@@ -36,6 +36,14 @@ steps:
     command: 'test'
     projects: 'ExpressionBuilder/ExpressionBuilder.csproj'
     arguments: '--no-restore -c $(buildConfiguration)'
+    
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'ExpressionBuilder/ExpressionBuilder.csproj'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'BUILD_BUILDNUMBER'
+    verbosityPack: 'Normal'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts'
