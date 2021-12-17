@@ -29,13 +29,29 @@ namespace ExpressionBuilder.Helpers
         /// </summary>
         public static void LoadDefaultOperations()
         {
-            var @interface = typeof(IOperation);
-            var operationsFound = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => a.DefinedTypes.Any(t => t.Namespace == "ExpressionBuilder.Operations"))
-                .SelectMany(s => s.GetTypes())
-                .Where(p => @interface.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract)
-                .Select(t => (IOperation)Activator.CreateInstance(t));
-            _operations = new HashSet<IOperation>(operationsFound, new OperationEqualityComparer());
+            var listOfOperations = new List<IOperation>
+            {
+                new ExpressionBuilder.Operations.Between(),
+                new ExpressionBuilder.Operations.Contains(),
+                new ExpressionBuilder.Operations.DoesNotContain(),
+                new ExpressionBuilder.Operations.EndsWith(),
+                new ExpressionBuilder.Operations.EqualTo(),
+                new ExpressionBuilder.Operations.GreaterThan(),
+                new ExpressionBuilder.Operations.GreaterThanOrEqualTo(),
+                new ExpressionBuilder.Operations.In(),
+                new ExpressionBuilder.Operations.IsEmpty(),
+                new ExpressionBuilder.Operations.IsNotEmpty(),
+                new ExpressionBuilder.Operations.IsNotNull(),
+                new ExpressionBuilder.Operations.IsNotNullNorWhiteSpace(),
+                new ExpressionBuilder.Operations.IsNull(),
+                new ExpressionBuilder.Operations.IsNullOrWhiteSpace(),
+                new ExpressionBuilder.Operations.LessThan(),
+                new ExpressionBuilder.Operations.LessThanOrEqualTo(),
+                new ExpressionBuilder.Operations.NotEqualTo(),
+                new ExpressionBuilder.Operations.NotIn(),
+                new ExpressionBuilder.Operations.StartsWith(),
+            };
+            _operations = new HashSet<IOperation>(listOfOperations, new OperationEqualityComparer());
         }
 
         /// <summary>
@@ -73,11 +89,14 @@ namespace ExpressionBuilder.Helpers
 
         private void GetCustomSupportedTypes()
         {
-            foreach (var supportedType in _settings.SupportedTypes)
+            if (_settings.SupportedTypes != null)
             {
-                if (supportedType.Type != null)
+                foreach (var supportedType in _settings.SupportedTypes)
                 {
-                    TypeGroups[supportedType.TypeGroup].Add(supportedType.Type);
+                    if (supportedType.Type != null)
+                    {
+                        TypeGroups[supportedType.TypeGroup].Add(supportedType.Type);
+                    }
                 }
             }
         }
