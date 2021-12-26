@@ -18,7 +18,7 @@ namespace ExpressionBuilder.Generics
     public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     {
         private readonly List<List<IFilterStatement>> _statements;
-
+        
         public IFilter Group
         {
             get
